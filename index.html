@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102219">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Platz 161">
+  <title>Die Hentschel's – Platz 161</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="setupGate" class="gate hidden" aria-live="polite"></div>
+
+  <header class="topbar">
+    <button class="brand" data-go="dashboard" aria-label="Startseite">
+      <img src="assets/logo.jpg" alt="Die Hentschel's – Platz 161">
+      <span><strong>Platz 161</strong><small id="campNameTop">Campingverwaltung</small></span>
+    </button>
+    <div class="top-actions">
+      <span id="syncBadge" class="status local">Lokal</span>
+      <button id="installBtn" class="icon-btn hidden" title="App installieren" aria-label="App installieren">＋</button>
+      <button id="accountBtn" class="icon-btn" title="Konto und Einstellungen" aria-label="Konto und Einstellungen">⚙</button>
+    </div>
+  </header>
+
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="view-dashboard" class="view active"></section>
+    <section id="view-organize" class="view"></section>
+    <section id="view-costs" class="view"></section>
+    <section id="view-care" class="view"></section>
+    <section id="view-more" class="view"></section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Hauptnavigation">
+    <button class="nav-btn active" data-view="dashboard"><span>⌂</span><small>Start</small></button>
+    <button class="nav-btn" data-view="organize"><span>✓</span><small>Listen</small></button>
+    <button class="nav-btn" data-view="costs"><span>€</span><small>Kosten</small></button>
+    <button class="nav-btn" data-view="care"><span>♧</span><small>Pflege</small></button>
+    <button class="nav-btn" data-view="more"><span>•••</span><small>Mehr</small></button>
+  </nav>
+
+  <dialog id="modal" class="modal">
+    <form method="dialog" class="modal-card" id="modalCard">
+      <div class="modal-head">
+        <h2 id="modalTitle">Eintrag</h2>
+        <button value="cancel" class="icon-btn" aria-label="Schließen">×</button>
+      </div>
+      <div id="modalBody"></div>
+      <div id="modalActions" class="modal-actions"></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
