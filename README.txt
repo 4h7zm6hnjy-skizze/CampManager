@@ -1,27 +1,37 @@
-CampManager v15
+CampManager v16 – KOMPLETTE NEUVERSION
 
-WICHTIG:
-Oben neben "CampManager" muss sichtbar "v15" stehen. Dann ist garantiert die neue Datei geladen.
+Diese Version wurde vollständig neu aufgebaut.
 
-Unter "Kosten" sind jetzt direkt zwei große Schaltflächen sichtbar:
-- Jahresmiete
-- Jahresabschluss
+Enthalten:
+- mehrere Stellplätze
+- Profilbild je Stellplatz
+- offene Einkäufe
+- Petroleum: Einkauf / Verbrauch / Bestand setzen
+- Strom: Jahresverbrauch / Stromkosten / Zählermiete
+- Rasen
+- Hecke max. 2 Einträge/Jahr
+- Übernachtungszähler
+- Gesprächstagebuch je Stellplatz
+- Verträge
+- Gasprüfungen
+- Dokumentenscanner für Kamera / Bilder / PDFs
+- Familienverwaltung
+- Backup / Import
+- optionaler Supabase Sync
+- Jahresmiete:
+  * Grundbetrag
+  * 90 Übernachtungen inklusive
+  * Erwachsenenpreis ab der 91. Übernachtung
+  * Kinderpreis ab der 91. Übernachtung
+  * zusätzliche Erwachsenen-Übernachtungen
+  * zusätzliche Kinder-Übernachtungen
+  * automatische Berechnung
+- Jahresabschluss:
+  * Jahresauswahl
+  * komplette Kostenübersicht
+  * Übernachtungen
+  * PDF-/Druckansicht
 
-Jahresmiete:
-- Jahr
-- Grundbetrag
-- 90 Übernachtungen inklusive
-- Erwachsenenpreis ab der 91. Übernachtung
-- Kinderpreis ab der 91. Übernachtung
-- zusätzliche Erwachsenen-Übernachtungen
-- zusätzliche Kinder-Übernachtungen
-- automatische Berechnung
-
-Jahresabschluss:
-- Jahr auswählen
-- alle Kostenquellen als Übersicht
-- Gesamtbetrag
-- Übernachtungen
-- PDF-/Druckansicht
-
-Alle bisherigen Funktionen und Daten bleiben erhalten.
+Wichtig:
+Oben im App-Kopf muss sichtbar "v16" stehen.
+In GitHub nur die vorhandene index.html ersetzen.

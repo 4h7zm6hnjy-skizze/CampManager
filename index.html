@@ -9,1071 +9,385 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="CampManager">
-<title>CampManager – v10 Dokumentenscanner</title>
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>CampManager v16</title>
 <style>
 :root{
-  --bg:#f4f1e9;--card:#fff;--ink:#14221a;--muted:#6d776f;--line:#e2ddd1;
-  --green:#173c29;--green2:#2f6a49;--soft:#edf3ef;--gold:#c98a34;--danger:#a84032;
-  --dangerbg:#fae8e4;--warnbg:#fff3db;--goodbg:#e9f4ed;--shadow:0 10px 30px rgba(26,42,31,.09);
-  --radius:22px;--safe:env(safe-area-inset-bottom,0px)
+ --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
+ --green:#173c29;--green2:#2e6548;--soft:#edf3ef;--danger:#a43e32;--gold:#c78b38;
+ --shadow:0 10px 28px rgba(21,38,27,.08);--radius:20px;--safe:env(safe-area-inset-bottom,0px)
 }
 *{box-sizing:border-box}
-html{background:var(--bg);-webkit-text-size-adjust:100%;overflow-x:hidden;max-width:100%}
-body{margin:0;min-height:100vh;overflow-x:hidden;max-width:100%;color:var(--ink);background:linear-gradient(180deg,#faf8f3 0,#f2eee4 100%);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}
 button,input,select,textarea{font:inherit;min-width:0}
-button{cursor:pointer;max-width:100%;touch-action:manipulation}
+button{cursor:pointer;touch-action:manipulation}
 .hidden{display:none!important}
-.topbar{position:sticky;top:0;z-index:30;height:76px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(250,248,243,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(226,221,209,.9)}
-.brand{display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:0;text-align:left;color:inherit;min-width:0}
-.brand-logo{width:58px;height:50px;object-fit:contain;padding:3px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.10)}
-.brand-fallback{width:58px;height:50px;border-radius:12px;background:var(--green);color:#fff;display:none;place-items:center;font-size:24px}
-.brand-copy{display:flex;flex-direction:column;min-width:0}
-.brand-copy strong{font-size:17px}
-.brand-copy small{color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px}
-.top-actions{display:flex;align-items:center;gap:7px}
-.status{border:0;font-size:11px;font-weight:800;padding:7px 9px;border-radius:999px;background:#efe9dc;color:#675c4a;white-space:nowrap}
-.status.cloud{background:#e3f2e8;color:#24593a}.status.syncing{background:#fff0d2;color:#7b5720}.status.error{background:#f8ded8;color:#7e3228}
-.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--ink);display:grid;place-items:center;font-size:19px;box-shadow:0 3px 10px rgba(0,0,0,.04)}
-.app-shell{max-width:1100px;margin:0 auto;padding:18px 16px calc(98px + var(--safe))}
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px;border:0;background:transparent;padding:0;color:inherit;text-align:left;min-width:0}
+.logo{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px;border:1px solid var(--line)}
+.brandcopy{min-width:0}.brandcopy b{font-size:16px}.brandcopy small{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;margin-top:2px}
+.ver{font-size:10px;background:var(--green);color:#fff;padding:2px 6px;border-radius:999px;vertical-align:2px}
+.topright{display:flex;align-items:center;gap:6px}
+.placebtn,.status{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-weight:800;font-size:12px;color:var(--ink)}
+.placebtn{display:flex;align-items:center;gap:6px}
+.placebtn img{width:23px;height:23px;border-radius:7px;object-fit:cover}
+.iconbtn{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:12px}
+main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .view{display:none}.view.active{display:block}
-.view-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:16px}
-.view-head h1{margin:0;font-size:27px}.view-head p{margin:4px 0 0;color:var(--muted)}
-.hero{background:linear-gradient(135deg,#173c29 0%,#102319 72%);color:#fff;border-radius:28px;padding:20px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(180px,.5fr);gap:18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
-.hero:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-85px;top:-125px;background:radial-gradient(circle,#d79a42 0,rgba(215,154,66,.08) 66%,transparent 68%)}
-.hero-copy{position:relative;z-index:1}.hero h1{font-size:30px;margin:5px 0}.hero p{margin:0;color:#dbe7df}
-.hero-logo{width:100%;height:auto;max-height:230px;object-fit:contain;background:#fff;border-radius:18px;align-self:center;position:relative;z-index:1;border:1px solid rgba(255,255,255,.15)}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
-.card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.card.full{grid-column:1/-1}.card.half{grid-column:span 6}
-.card h2,.card h3{margin:0 0 8px}.card h2{font-size:18px}.card h3{font-size:15px}.card p{margin:4px 0;color:var(--muted)}
-.metric{font-size:30px;font-weight:850;letter-spacing:-.035em}.metric small{font-size:13px;color:var(--muted);font-weight:650}
-.card-action{border:1px solid var(--line);text-align:left;color:inherit;background:#fff}.card-action:active{transform:scale(.995)}
-.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.quick{border:1px solid var(--line);background:#fff;padding:14px 12px;border-radius:16px;text-align:center;color:var(--ink)}.quick b{display:block;font-size:21px;margin-bottom:4px}.quick small{color:var(--muted)}
-.section-tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}.section-tabs::-webkit-scrollbar{display:none}
-.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 12px;border-radius:999px;font-weight:750;font-size:13px}.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
-.list{display:flex;flex-direction:column;gap:9px}
-.row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;background:#fff;border:1px solid var(--line)}
-.row-main{flex:1;min-width:0}.row-title{font-weight:780;overflow-wrap:anywhere}.row-sub{font-size:13px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
-.row-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
-.mini{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 9px}.danger{color:var(--danger)}.done .row-title{text-decoration:line-through;color:var(--muted)}
-.btn{border:0;background:var(--green);color:#fff;font-weight:800;padding:11px 15px;border-radius:13px}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:var(--danger);color:#fff}.btn.block{width:100%}.btn:disabled{opacity:.5;cursor:not-allowed}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
-.empty{padding:28px 16px;border:1px dashed #ccc4b7;border-radius:18px;text-align:center;color:var(--muted);background:rgba(255,255,255,.45)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800}
-.field input,.field select,.field textarea{border:1px solid #dcd5c8;background:#fff;border-radius:12px;padding:11px 12px;color:var(--ink);outline:none;width:100%;font-size:16px;line-height:1.2;touch-action:manipulation}.field textarea{min-height:82px;resize:vertical}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:#7aa08a;box-shadow:0 0 0 3px rgba(65,113,82,.12)}
-.modal-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:8px;background:rgba(9,20,14,.56);backdrop-filter:blur(4px);overflow:hidden}
-.modal-card{width:min(100%,600px);max-width:100%;max-height:calc(100dvh - 16px);background:#faf8f3;border-radius:22px;border:1px solid var(--line);padding:14px;box-shadow:0 30px 90px rgba(0,0,0,.28);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.modal-card form,.modal-card .form-grid,.modal-card .field{max-width:100%;min-width:0}
-.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;position:sticky;top:-14px;background:#faf8f3;padding:4px 0 8px;z-index:3}.modal-head h2{margin:0;font-size:clamp(22px,6vw,30px);line-height:1.08}.modal-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:10px;position:sticky;bottom:-14px;background:#faf8f3;padding:8px 0 2px;z-index:3}.modal-actions .btn{width:100%;min-width:0;white-space:nowrap}.modal-actions .btn{width:100%;min-width:0}
-.bottom-nav{position:fixed;z-index:25;bottom:0;left:0;right:0;padding:7px 10px calc(7px + var(--safe));display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
-.nav-btn{border:0;background:transparent;color:#6f776f;border-radius:14px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:2px}.nav-btn span{font-size:20px;line-height:1}.nav-btn small{font-size:11px;font-weight:800}.nav-btn.active{color:var(--green);background:#edf3ef}
-.toast{position:fixed;z-index:120;left:50%;bottom:90px;max-width:calc(100vw - 24px);transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#102219;color:#fff;padding:11px 15px;border-radius:999px;font-weight:700;box-shadow:var(--shadow);transition:.2s;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
-.badge{display:inline-flex;align-items:center;border-radius:999px;background:#eef2ee;color:#31543e;padding:4px 8px;font-size:12px;font-weight:800}.badge.hero-badge{background:rgba(255,255,255,.12);color:#fff}
-.notice{background:#f7f3e9;border:1px solid #e5dcc6;border-radius:16px;padding:12px;margin:12px 0}.notice.good{background:var(--goodbg);border-color:#cfe3d6}.notice.bad{background:var(--dangerbg);border-color:#ecc8c1}.notice.warn{background:var(--warnbg);border-color:#ecd9b2}
-.small-note{font-size:12px;color:var(--muted);line-height:1.45}.divider{height:1px;background:var(--line);margin:16px 0}.kpi{display:flex;align-items:center;justify-content:space-between;gap:12px}.kpi strong{font-size:18px}
-.cost-bars{display:flex;flex-direction:column;gap:9px}.cost-line{display:grid;grid-template-columns:150px 1fr 90px;gap:9px;align-items:center;font-size:13px}.bar{height:9px;background:#eee8dc;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green2),var(--gold))}.right{text-align:right}
-.codebox{background:#132019;color:#e7efe9;padding:12px;border-radius:14px;white-space:pre-wrap;overflow:auto;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;max-height:260px}
-.overdue{border-color:#ecc8c1;background:#fff9f7}
+.hero{background:linear-gradient(135deg,#173c29,#10261a);color:#fff;border-radius:26px;padding:18px;display:grid;grid-template-columns:1.5fr .6fr;gap:14px;align-items:center;box-shadow:var(--shadow)}
+.hero h1{margin:6px 0;font-size:28px}.hero p{margin:0;color:#dce7df}.hero img{width:100%;max-height:200px;object-fit:contain;background:#fff;border-radius:16px}
+.badge{display:inline-flex;border-radius:999px;padding:4px 8px;background:#edf3ef;color:#2b5c3f;font-size:12px;font-weight:800}.hero .badge{background:rgba(255,255,255,.13);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
+.card.half{grid-column:span 6}.card.full{grid-column:1/-1}
+.card h2,.card h3{margin:0 0 7px}.card h2{font-size:18px}.card h3{font-size:15px}.card p{margin:3px 0;color:var(--muted)}
+.cardaction{border:1px solid var(--line);text-align:left;color:inherit}
+.metric{font-size:28px;font-weight:850;letter-spacing:-.03em}.metric small{font-size:12px;color:var(--muted)}
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:13px}.head h1{margin:0;font-size:25px}.head p{margin:3px 0 0;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 13px}
+.btn{border:0;background:var(--green);color:#fff;font-weight:800;padding:10px 13px;border-radius:12px}.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:var(--danger)}.btn.block{width:100%}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-weight:800;font-size:13px;color:var(--ink)}.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:10px;padding:12px;border-radius:15px;background:#fff;border:1px solid var(--line)}
+.rowmain{flex:1;min-width:0}.rowtitle{font-weight:800;overflow-wrap:anywhere}.rowsub{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}.rowactions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.mini{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 8px}.mini.danger{color:var(--danger)}
+.empty{padding:25px 14px;text-align:center;border:1px dashed #cfc6b8;border-radius:16px;color:var(--muted);background:rgba(255,255,255,.45)}
+.notice{padding:11px;border:1px solid #dfd6bf;border-radius:14px;background:#f9f4e8;margin:10px 0}.notice.good{background:#eaf4ed;border-color:#cfe2d5}.notice.warn{background:#fff1da;border-color:#ecd8af}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:4px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}
+.field input,.field select,.field textarea{width:100%;font-size:16px;line-height:1.2;border:1px solid #d9d2c5;background:#fff;border-radius:11px;padding:10px;color:var(--ink);outline:none}.field textarea{min-height:74px;resize:vertical}
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:8px;background:rgba(9,20,14,.58);backdrop-filter:blur(4px)}
+.modalcard{width:min(100%,620px);max-height:calc(100dvh - 16px);overflow-y:auto;overflow-x:hidden;background:#faf8f3;border-radius:22px;border:1px solid var(--line);padding:12px;box-shadow:0 30px 90px rgba(0,0,0,.28)}
+.modalhead{display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:-12px;background:#faf8f3;padding:3px 0 8px;z-index:2}.modalhead h2{margin:0;font-size:23px}
+.modalactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:sticky;bottom:-12px;background:#faf8f3;padding:8px 0 2px;margin-top:10px}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:35;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 8px calc(6px + var(--safe));background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+.nav{border:0;background:transparent;border-radius:12px;padding:6px 3px;color:#6c756d;display:flex;flex-direction:column;align-items:center;gap:2px}.nav span{font-size:19px}.nav small{font-size:10px;font-weight:800}.nav.active{background:#edf3ef;color:var(--green)}
+.toast{position:fixed;left:50%;bottom:86px;z-index:120;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#102319;color:#fff;padding:10px 14px;border-radius:999px;font-weight:750;transition:.2s;max-width:calc(100vw - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.quick button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px}.quick b{display:block;font-size:20px}.quick small{color:var(--muted)}
+.avatar{width:44px;height:44px;border-radius:13px;object-fit:cover;background:#f2efe7;border:1px solid var(--line);flex:0 0 44px}.avatar.ph{display:grid;place-items:center;font-size:20px}
+.photoPreview{width:88px;height:88px;border-radius:16px;object-fit:cover;background:#eee;border:1px solid var(--line)}
+.costline{display:grid;grid-template-columns:150px 1fr 90px;gap:8px;align-items:center;font-size:13px}.bar{height:8px;background:#eee8dd;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green2),var(--gold))}.right{text-align:right}
+.docgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.doc{border:1px solid var(--line);background:#fff;border-radius:15px;padding:11px}.docthumb{width:100%;aspect-ratio:4/3;border-radius:11px;background:#f1eee7;display:grid;place-items:center;font-size:36px;overflow:hidden}.docthumb img{width:100%;height:100%;object-fit:contain;background:#fff}
+.conversation{white-space:pre-wrap;line-height:1.42;margin-top:6px}
+.divider{height:1px;background:var(--line);margin:14px 0}
 @media(max-width:760px){
-  .hero{grid-template-columns:1fr}.hero-logo{max-height:280px}.card,.card.half{grid-column:1/-1}
-  .quick-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
-  .cost-line{grid-template-columns:115px 1fr 80px}.view-head h1{font-size:24px}.brand-copy small{max-width:135px}.modal-card{padding:11px;border-radius:20px}.modal-head{top:-11px;margin-bottom:8px}.form-grid{gap:8px}.field{gap:4px}.field textarea{min-height:68px}.modal-actions{bottom:-11px;margin-top:8px;padding-top:7px}
-  .status{padding:7px 8px}.top-actions{gap:5px}
+ .hero{grid-template-columns:1fr}.hero img{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.brandcopy small{max-width:120px}
 }
-@media(min-width:900px){
-  .bottom-nav{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:22px 22px 0 0}
-  .app-shell{padding-bottom:110px}.hero{padding:24px}
-}
-
-.doc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.doc-card{border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px;min-width:0}
-.doc-thumb{width:100%;aspect-ratio:4/3;border-radius:12px;background:#f2efe7;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;margin-bottom:10px;cursor:pointer}
-.doc-thumb img{width:100%;height:100%;object-fit:contain;background:#fff}
-.doc-icon{font-size:38px}
-.doc-title{font-weight:800;overflow-wrap:anywhere}
-.doc-meta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
-.doc-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.scanner-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.scanner-choice .btn{min-height:52px}
-@media(max-width:560px){.doc-grid{grid-template-columns:1fr}.scanner-choice{grid-template-columns:1fr}}
-
-
-.place-avatar{width:46px;height:46px;border-radius:14px;object-fit:cover;background:#f2efe7;border:1px solid var(--line);flex:0 0 46px}
-.place-avatar.placeholder{display:grid;place-items:center;font-size:20px;color:var(--green)}
-.place-photo-preview{width:92px;height:92px;border-radius:18px;object-fit:cover;background:#f2efe7;border:1px solid var(--line);display:block}
-.place-photo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.place-switch-row{display:flex;align-items:center;gap:12px;width:100%}
-
-
-.conversation-note{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.45;margin-top:6px;color:var(--ink)}
-
-
-#closingYearSelect{font-size:16px}
-
+@media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <button class="brand" id="brandBtn" type="button" aria-label="Startseite">
-    <img id="brandLogo" class="brand-logo" src="logo.jpg" alt="CampManager Logo">
-    <span id="brandFallback" class="brand-fallback">⛺</span>
-    <span class="brand-copy"><strong>CampManager <span style="font-size:11px;background:#173c29;color:#fff;padding:2px 6px;border-radius:999px;vertical-align:2px">v15</span></strong><small id="campNameTop">Platz 161</small></span>
-  </button>
-  <div class="top-actions">
-    <button id="placeSwitchBtn" class="status" type="button" style="display:flex;align-items:center;gap:6px">Platz 161 ▾</button>
-    <span id="syncBadge" class="status">Lokal</span>
-    <button id="accountBtn" class="icon-btn" type="button" aria-label="Einstellungen">⚙</button>
-  </div>
+<header class="top">
+ <button class="brand" id="homeBtn" type="button">
+  <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
+  <div class="brandcopy"><b>CampManager <span class="ver">v16</span></b><small id="topName">Campingplatz</small></div>
+ </button>
+ <div class="topright">
+  <button class="placebtn" id="placeBtn" type="button"><span>Platz ▾</span></button>
+  <span class="status" id="syncStatus">Lokal</span>
+  <button class="iconbtn" id="settingsBtn" type="button">⚙</button>
+ </div>
 </header>
 
-<main class="app-shell" id="app">
-  <section id="view-dashboard" class="view active"></section>
-  <section id="view-shopping" class="view"></section>
-  <section id="view-costs" class="view"></section>
-  <section id="view-care" class="view"></section>
-  <section id="view-more" class="view"></section>
+<main>
+ <section id="v-dashboard" class="view active"></section>
+ <section id="v-shopping" class="view"></section>
+ <section id="v-costs" class="view"></section>
+ <section id="v-care" class="view"></section>
+ <section id="v-more" class="view"></section>
 </main>
 
-<nav class="bottom-nav" aria-label="Hauptnavigation">
-  <button class="nav-btn active" type="button" data-view="dashboard"><span>⌂</span><small>Start</small></button>
-  <button class="nav-btn" type="button" data-view="shopping"><span>✓</span><small>Einkäufe</small></button>
-  <button class="nav-btn" type="button" data-view="costs"><span>€</span><small>Kosten</small></button>
-  <button class="nav-btn" type="button" data-view="care"><span>♧</span><small>Pflege</small></button>
-  <button class="nav-btn" type="button" data-view="more"><span>•••</span><small>Mehr</small></button>
+<nav class="bottom">
+ <button class="nav active" data-view="dashboard"><span>⌂</span><small>Start</small></button>
+ <button class="nav" data-view="shopping"><span>✓</span><small>Einkäufe</small></button>
+ <button class="nav" data-view="costs"><span>€</span><small>Kosten</small></button>
+ <button class="nav" data-view="care"><span>♧</span><small>Pflege</small></button>
+ <button class="nav" data-view="more"><span>•••</span><small>Mehr</small></button>
 </nav>
 
-<div id="modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-card">
-    <div class="modal-head">
-      <h2 id="modalTitle">Eintrag</h2>
-      <button type="button" class="icon-btn" data-modal-close aria-label="Schließen">×</button>
-    </div>
-    <div id="modalBody"></div>
-    <div id="modalActions" class="modal-actions"></div>
-  </div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+ <div class="modalcard">
+  <div class="modalhead"><h2 id="modalTitle">Eintrag</h2><button class="iconbtn" type="button" data-close>×</button></div>
+  <div id="modalBody"></div>
+  <div id="modalActions" class="modalactions"></div>
+ </div>
 </div>
-<div id="toast" class="toast" role="status"></div>
+<div id="toast" class="toast"></div>
 
 <script>
-(() => {
-'use strict';
+(()=>{'use strict';
 
-const STORAGE_KEY='campmanager_complete_v15';
-const CLOUD_CFG_KEY='campmanager_cloud_cfg_v6';
-const CLOUD_SESSION_KEY='campmanager_cloud_session_v6';
-const OLD_KEYS=['campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1','campmanager_onefile_v1','platz161_state_v4','platz161_state_v2'];
-
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-const uid=()=>globalThis.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2);
+const KEY='campmanager_complete_v16';
+const OLD=['campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
 const esc=(v='')=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const today=()=>new Date().toISOString().slice(0,10);
-const yearNow=()=>new Date().getFullYear();
-const fmtDate=v=>v?new Date(v+'T12:00:00').toLocaleDateString('de-DE'):'–';
+const today=()=>new Date().toISOString().slice(0,10), yearNow=()=>new Date().getFullYear();
+const fmt=v=>v?new Date(v+'T12:00:00').toLocaleDateString('de-DE'):'–';
 const money=v=>Number(v||0).toLocaleString('de-DE',{style:'currency',currency:'EUR'});
 const num=(v,d=0)=>Number(v||0).toLocaleString('de-DE',{maximumFractionDigits:d});
-const parseDate=v=>v?new Date(v+'T12:00:00'):null;
-const nightsBetween=(a,b)=>a&&b?Math.max(0,Math.round((parseDate(b)-parseDate(a))/86400000)):0;
+const dparse=v=>v?new Date(v+'T12:00:00'):null;
+const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
-  return {
-    id:uid(),
-    site:{campName:name,pitch,area:'',notes:'',photoData:''},
-    nextArrival:'',
-    shopping:[],
-    costs:[],
-    petroleum:[],
-    electricity:[],
-    stays:[],
-    lawn:[],
-    hedge:[],
-    contracts:[],
-    gasChecks:[],
-    documents:[],
-    conversations:[],
-    annualRent:[]
-  };
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],petroleum:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],documents:[],conversations:[]}
 }
 function defaults(){
-  const first=blankPlace('Campingplatz','161');
-  return {
-    version:6,
-    updatedAt:new Date().toISOString(),
-    activePlaceId:first.id,
-    family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],
-    places:[first]
-  };
+ const p=blankPlace('Campingplatz','161');
+ return {version:16,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
-function normalizePlace(p){
-  return {
-    id:p?.id||uid(),
-    site:{campName:'Campingplatz',pitch:'',area:'',notes:'',photoData:'',...(p?.site||{})},
-    nextArrival:p?.nextArrival||'',
-    shopping:Array.isArray(p?.shopping)?p.shopping:[],
-    costs:Array.isArray(p?.costs)?p.costs:[],
-    petroleum:Array.isArray(p?.petroleum)?p.petroleum:[],
-    electricity:Array.isArray(p?.electricity)?p.electricity:[],
-    stays:Array.isArray(p?.stays)?p.stays:[],
-    lawn:Array.isArray(p?.lawn)?p.lawn:[],
-    hedge:Array.isArray(p?.hedge)?p.hedge:[],
-    contracts:Array.isArray(p?.contracts)?p.contracts:[],
-    gasChecks:Array.isArray(p?.gasChecks)?p.gasChecks:[],
-    documents:Array.isArray(p?.documents)?p.documents:[],
-    conversations:Array.isArray(p?.conversations)?p.conversations:[],
-    annualRent:Array.isArray(p?.annualRent)?p.annualRent:[]
-  };
+function normPlace(p={}){
+ return {
+  id:p.id||uid(),
+  site:{campName:'Campingplatz',pitch:'',area:'',notes:'',photoData:'',...(p.site||{})},
+  shopping:Array.isArray(p.shopping)?p.shopping:[],
+  costs:Array.isArray(p.costs)?p.costs:[],
+  annualRent:Array.isArray(p.annualRent)?p.annualRent:[],
+  petroleum:Array.isArray(p.petroleum)?p.petroleum:[],
+  electricity:Array.isArray(p.electricity)?p.electricity:[],
+  stays:Array.isArray(p.stays)?p.stays:[],
+  lawn:Array.isArray(p.lawn)?p.lawn:[],
+  hedge:Array.isArray(p.hedge)?p.hedge:[],
+  contracts:Array.isArray(p.contracts)?p.contracts:[],
+  gasChecks:Array.isArray(p.gasChecks)?p.gasChecks:[],
+  documents:Array.isArray(p.documents)?p.documents:[],
+  conversations:Array.isArray(p.conversations)?p.conversations:[]
+ }
 }
 function normalize(raw){
-  const d=defaults();
-  if(!raw||typeof raw!=='object')return d;
-
-  // New multi-place format.
-  if(Array.isArray(raw.places)&&raw.places.length){
-    const places=raw.places.map(normalizePlace);
-    return {
-      version:6,
-      updatedAt:raw.updatedAt||new Date().toISOString(),
-      activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,
-      family:Array.isArray(raw.family)?raw.family:d.family,
-      places
-    };
-  }
-
-  // Migration from all previous single-place versions.
-  const migrated=normalizePlace({
-    site:raw.site||{campName:'Campingplatz',pitch:'161'},
-    nextArrival:raw.nextArrival,
-    shopping:raw.shopping,
-    costs:raw.costs,
-    petroleum:raw.petroleum,
-    electricity:raw.electricity,
-    stays:raw.stays,
-    lawn:raw.lawn,
-    hedge:raw.hedge,
-    contracts:raw.contracts,
-    gasChecks:raw.gasChecks,
-    documents:raw.documents,
-    conversations:raw.conversations,
-    annualRent:raw.annualRent
-  });
-  return {
-    version:6,
-    updatedAt:raw.updatedAt||new Date().toISOString(),
-    activePlaceId:migrated.id,
-    family:Array.isArray(raw.family)?raw.family:d.family,
-    places:[migrated]
-  };
+ const d=defaults(); if(!raw||typeof raw!=='object')return d;
+ if(Array.isArray(raw.places)&&raw.places.length){
+  const places=raw.places.map(normPlace);
+  return {version:16,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+ }
+ const p=normPlace(raw);
+ return {version:16,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
-
-const DOC_DB='campmanager_documents_v1';
-const DOC_STORE='files';
-
-function openDocDb(){
-  return new Promise((resolve,reject)=>{
-    const req=indexedDB.open(DOC_DB,1);
-    req.onupgradeneeded=()=>{
-      const db=req.result;
-      if(!db.objectStoreNames.contains(DOC_STORE))db.createObjectStore(DOC_STORE);
-    };
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
-  });
+function load(){
+ try{
+  const cur=localStorage.getItem(KEY); if(cur)return normalize(JSON.parse(cur));
+  for(const k of OLD){const x=localStorage.getItem(k);if(x)return normalize(JSON.parse(x))}
+ }catch(e){console.warn(e)}
+ return defaults()
 }
-async function docPut(key,blob){
-  const db=await openDocDb();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(DOC_STORE,'readwrite');
-    tx.objectStore(DOC_STORE).put(blob,key);
-    tx.oncomplete=()=>{db.close();resolve(true)};
-    tx.onerror=()=>{db.close();reject(tx.error)};
-  });
-}
-async function docGet(key){
-  const db=await openDocDb();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(DOC_STORE,'readonly');
-    const req=tx.objectStore(DOC_STORE).get(key);
-    req.onsuccess=()=>{db.close();resolve(req.result||null)};
-    req.onerror=()=>{db.close();reject(req.error)};
-  });
-}
-async function docDelete(key){
-  const db=await openDocDb();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(DOC_STORE,'readwrite');
-    tx.objectStore(DOC_STORE).delete(key);
-    tx.oncomplete=()=>{db.close();resolve(true)};
-    tx.onerror=()=>{db.close();reject(tx.error)};
-  });
-}
-async function compressImage(file,maxSide=1800,quality=.84){
-  if(!file.type.startsWith('image/'))return file;
-  try{
-    const bmp=await createImageBitmap(file);
-    let w=bmp.width,h=bmp.height;
-    const scale=Math.min(1,maxSide/Math.max(w,h));
-    w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));
-    const canvas=document.createElement('canvas');
-    canvas.width=w;canvas.height=h;
-    canvas.getContext('2d').drawImage(bmp,0,0,w,h);
-    bmp.close();
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
-    return blob||file;
-  }catch(e){
-    console.warn('Bildkomprimierung nicht verfügbar',e);
-    return file;
-  }
-}
-
-function loadState(){
-  try{
-    const now=localStorage.getItem(STORAGE_KEY);
-    if(now)return normalize(JSON.parse(now));
-    for(const key of OLD_KEYS){
-      const old=localStorage.getItem(key);
-      if(old)return normalize(JSON.parse(old));
-    }
-  }catch(e){console.error('Daten laden fehlgeschlagen',e)}
-  return defaults();
-}
-
-let state=loadState();
-let activeView='dashboard';
-const activeTab={costs:'overview',care:'lawn',more:'stays'};
-let cloudCfg=loadCloudCfg();
-let cloudSession=loadCloudSession();
-let pushTimer=null;
-let lastRemoteStamp='';
-const pendingDocuments=new Map();
-
+let state=load(), view='dashboard';
+const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
-function saveLocal(){
-  state.version=15;
-  state.updatedAt=new Date().toISOString();
-  try{
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
-    return true;
-  }catch(e){
-    console.error('Speichern fehlgeschlagen',e);
-    toast('Speichern im Browser fehlgeschlagen');
-    return false;
-  }
+function persist(){
+ state.version=16;state.updatedAt=new Date().toISOString();
+ try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
-function save({cloud=true}={}){
-  const persisted=saveLocal();
-  renderAll();
-  if(cloud)scheduleCloudPush();
-  return persisted;
-}
-function toast(t){
-  const el=$('#toast');if(!el)return;
-  el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2200)
-}
-function empty(t){return '<div class="empty">'+esc(t)+'</div>'}
-function tabs(section,items){return '<div class="section-tabs">'+items.map(([k,l])=>'<button type="button" class="chip '+(activeTab[section]===k?'active':'')+'" data-section="'+section+'" data-tab="'+k+'">'+esc(l)+'</button>').join('')+'</div>'}
+function save(){const ok=persist();render();schedulePush();return ok}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2100)}
+function empty(t){return `<div class="empty">${esc(t)}</div>`}
+function tabs(sec,items){return `<div class="tabs">${items.map(([k,l])=>`<button type="button" class="chip ${tab[sec]===k?'active':''}" data-tabsec="${sec}" data-tab="${k}">${esc(l)}</button>`).join('')}</div>`}
+function avatar(p,cls='avatar'){return p.site.photoData?`<img class="${cls}" src="${p.site.photoData}" alt="">`:`<span class="${cls} ph">⛺</span>`}
 
 function petroleumStock(p=place()){
-  const rows=[...p.petroleum].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
-  let stock=0;
-  for(const x of rows){
-    const liters=Number(x.liters||0);
-    if(x.kind==='stock')stock=liters;
-    else if(x.kind==='purchase')stock+=liters;
-    else stock-=liters;
-  }
-  return stock;
+ let s=0;[...p.petroleum].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||''))).forEach(x=>{
+  const l=Number(x.liters||0); if(x.kind==='stock')s=l;else if(x.kind==='purchase')s+=l;else s-=l
+ });return s
 }
-function totalNights(p=place(),year=null){
-  return p.stays.reduce((sum,x)=>{
-    if(!x.arrival||!x.departure)return sum;
-    if(year&&Number(x.arrival.slice(0,4))!==Number(year))return sum;
-    return sum+nightsBetween(x.arrival,x.departure);
-  },0)
+function totalNights(p=place(),y=null){return p.stays.reduce((s,x)=>s+((!y||Number((x.arrival||'').slice(0,4))===Number(y))?nights(x.arrival,x.departure):0),0)}
+function annualRentTotal(x){return x?Number(x.baseAmount||0)+Number(x.extraAdultNights||0)*Number(x.adultPrice||0)+Number(x.extraChildNights||0)*Number(x.childPrice||0):0}
+function annualRentFor(p,y){return p.annualRent.find(x=>Number(x.year)===Number(y))||null}
+function contractActive(x,y){const a=y+'-01-01',b=y+'-12-31';return !(x.startDate&&x.startDate>b)&&!(x.endDate&&x.endDate<a)}
+function costData(p,y){
+ const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gas:0,contracts:0};
+ const r=annualRentFor(p,y);if(r)d.annual+=annualRentTotal(r);
+ p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const k=x.category||'other';d[k]=(d[k]||0)+Number(x.amount||0)});
+ p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>d.electricity+=Number(x.cost||0)+Number(x.meterRent||0));
+ p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.petroleum+=Number(x.price||0));
+ p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))).forEach(x=>d.gas+=Number(x.cost||0));
+ p.contracts.filter(x=>contractActive(x,y)).forEach(x=>d.contracts+=Number(x.annualCost||0));
+ return d
 }
-function annualRentTotal(x){
-  if(!x)return 0;
-  return Number(x.baseAmount||0)
-    + Number(x.extraAdultNights||0)*Number(x.adultPrice||0)
-    + Number(x.extraChildNights||0)*Number(x.childPrice||0);
-}
-function annualRentForYear(p=place(),y=yearNow()){
-  return (p.annualRent||[]).find(x=>Number(x.year)===Number(y))||null;
-}
-function contractActiveInYear(x,y){
-  const start=String(y)+'-01-01',end=String(y)+'-12-31';
-  if(x.startDate&&x.startDate>end)return false;
-  if(x.endDate&&x.endDate<start)return false;
-  return true;
-}
-function costData(p=place(),y=yearNow()){
-  const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gas:0,contracts:0};
-  const rent=annualRentForYear(p,y);
-  if(rent)d.annual+=annualRentTotal(rent);
-
-  // Alte/manuell erfasste Jahresgebühren bleiben erhalten.
-  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{
-    const key=x.category||'other';
-    d[key]=(d[key]||0)+Number(x.amount||0);
-  });
-  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{
-    d.electricity+=Number(x.cost||0)+Number(x.meterRent||0);
-  });
-  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>{
-    d.petroleum+=Number(x.price||0);
-  });
-  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))).forEach(x=>{
-    d.gas+=Number(x.cost||0);
-  });
-  p.contracts.filter(x=>contractActiveInYear(x,y)).forEach(x=>{
-    d.contracts+=Number(x.annualCost||0);
-  });
-  return d;
+function nextDeadline(p){
+ const r=[];p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;if(d)r.push({d,t:'Vertrag: '+(x.name||'')})});p.gasChecks.forEach(x=>{if(x.nextDue)r.push({d:x.nextDue,t:'Gasprüfung'})});r.sort((a,b)=>a.d.localeCompare(b.d));return r.find(x=>x.d>=today())||r[0]||null
 }
 
-function deadlineStatus(date){
-  if(!date)return'';
-  const d=Math.ceil((parseDate(date)-parseDate(today()))/86400000);
-  if(d<0)return'Überfällig';if(d===0)return'Heute';if(d===1)return'Morgen';if(d<=30)return'in '+d+' Tagen';return fmtDate(date)
-}
-function nextDeadline(p=place()){
-  const rows=[];
-  p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;if(d)rows.push({date:d,title:x.noticeDate?'Vertragsfrist':'Vertragsende',detail:x.name,type:'contracts'})});
-  p.gasChecks.forEach(x=>{if(x.nextDue)rows.push({date:x.nextDue,title:'Gasprüfung',detail:x.company||'Nächste Prüfung',type:'gas'})});
-  rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  return rows.find(x=>x.date>=today())||rows[0]||null
-}
-
-
-function placeAvatarHtml(p,cls='place-avatar'){
-  const photo=p?.site?.photoData||'';
-  if(photo)return `<img class="${cls}" src="${photo}" alt="Platzbild">`;
-  return `<span class="${cls} placeholder">⛺</span>`;
-}
-async function imageFileToDataUrl(file,maxSide=420,quality=.78){
-  if(!file)return '';
-  if(!file.type.startsWith('image/'))throw new Error('Bitte eine Bilddatei auswählen');
-  const bmp=await createImageBitmap(file);
-  let w=bmp.width,h=bmp.height;
-  const scale=Math.min(1,maxSide/Math.max(w,h));
-  w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));
-  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-  const ctx=canvas.getContext('2d');ctx.drawImage(bmp,0,0,w,h);bmp.close();
-  return canvas.toDataURL('image/jpeg',quality);
-}
-
-function setSync(kind,text){const b=$('#syncBadge');if(!b)return;b.className='status'+(kind?' '+kind:'');b.textContent=text}
 function renderTop(){
-  const p=place();
-  $('#campNameTop').textContent=(p.site.campName||'Campingplatz')+' · Platz '+(p.site.pitch||'–');
-  const ps=$('#placeSwitchBtn');
-  ps.innerHTML=`${p.site.photoData?`<img src="${p.site.photoData}" alt="" style="width:24px;height:24px;border-radius:7px;object-fit:cover">`:''}<span>Platz ${esc(p.site.pitch||'–')} ▾</span>`;
-  setSync(cloudReady()&&cloudSession?.access_token?'cloud':'',cloudReady()&&cloudSession?.access_token?'Cloud':'Lokal')
+ const p=place();$('#topName').textContent=(p.site.campName||'Campingplatz')+' · Platz '+(p.site.pitch||'–');
+ $('#placeBtn').innerHTML=`${p.site.photoData?`<img src="${p.site.photoData}" alt="">`:''}<span>Platz ${esc(p.site.pitch||'–')} ▾</span>`;
+ $('#syncStatus').textContent=cloudReady()&&session?.access_token?'Cloud':'Lokal'
 }
-
 function renderDashboard(){
-  const p=place(),y=yearNow(),c=costData(p,y),total=Object.values(c).reduce((a,b)=>a+b,0),next=nextDeadline(p);
-  $('#view-dashboard').innerHTML=`
-  <div class="hero">
-    <div class="hero-copy">
-      <div class="badge hero-badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</div>
-      <h1>Die Hentschel's</h1>
-      <p>${esc(p.site.campName||'Campingplatz')} · Platz ${esc(p.site.pitch||'–')}</p>
-    </div>
-    <img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="this.style.display='none'">
-  </div>
-  <div class="grid">
-    <button type="button" class="card card-action" data-go="shopping"><h3>Offene Einkäufe</h3><div class="metric">${p.shopping.filter(x=>!x.done).length}</div><p>noch zu besorgen</p></button>
-    <button type="button" class="card card-action" data-go="more" data-tab="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${totalNights(p,y)}</div><p>Gesamt: ${totalNights(p)} Nächte</p></button>
-    <button type="button" class="card card-action" data-go="costs" data-tab="petroleum"><h3>Petroleum</h3><div class="metric">${num(petroleumStock(p),1)} <small>Liter</small></div><p>aktueller Bestand</p></button>
-    <button type="button" class="card card-action" data-go="costs" data-tab="overview"><h3>Kosten ${y}</h3><div class="metric">${money(total)}</div><p>Jahresübersicht</p></button>
-    <button type="button" class="card card-action ${next&&next.date<today()?'overdue':''}" data-go="more" data-tab="${next?.type||'contracts'}"><h3>Nächste Frist</h3><div class="metric" style="font-size:21px">${next?fmtDate(next.date):'–'}</div><p>${next?esc(next.title+' · '+deadlineStatus(next.date)):'Keine Frist eingetragen'}</p></button>
-    <div class="card full"><h2>Schnellzugriff</h2><div class="quick-grid">
-      <button type="button" class="quick" data-add="shopping"><b>＋</b><small>Einkauf</small></button>
-      <button type="button" class="quick" data-add="petroleum"><b>⛽</b><small>Petroleum</small></button>
-      <button type="button" class="quick" data-add="stay"><b>☾</b><small>Übernachtung</small></button>
-      <button type="button" class="quick" data-add="gas"><b>✓</b><small>Gasprüfung</small></button>
-    </div></div>
-    ${upcomingCard(p)}
-  </div>`
+ const p=place(),y=yearNow(),c=costData(p,y),total=Object.values(c).reduce((a,b)=>a+b,0),dl=nextDeadline(p);
+ $('#v-dashboard').innerHTML=`<div class="hero"><div><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span><h1>Die Hentschel's</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div><img src="logo.jpg" alt="Logo" onerror="this.style.display='none'"></div>
+ <div class="grid">
+  <button class="card cardaction" data-go="shopping"><h3>Offene Einkäufe</h3><div class="metric">${p.shopping.filter(x=>!x.done).length}</div><p>noch offen</p></button>
+  <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${totalNights(p,y)}</div><p>Gesamt ${totalNights(p)}</p></button>
+  <button class="card cardaction" data-go="costs" data-jump="petroleum"><h3>Petroleum</h3><div class="metric">${num(petroleumStock(p),1)} <small>L</small></div><p>aktueller Bestand</p></button>
+  <button class="card cardaction" data-go="costs" data-jump="annualRent"><h3>Jahresmiete</h3><div class="metric">${annualRentFor(p,y)?money(annualRentTotal(annualRentFor(p,y))):'–'}</div><p>Grundbetrag + Zusatznächte</p></button>
+  <button class="card cardaction" data-go="costs" data-jump="closing"><h3>Jahresabschluss</h3><div class="metric">${money(total)}</div><p>PDF-Auswertung ${y}</p></button>
+  <button class="card cardaction" data-go="more" data-jump="conversations"><h3>Gespräche</h3><div class="metric">${p.conversations.length}</div><p>Gesprächstagebuch</p></button>
+  <div class="card full"><h2>Schnellzugriff</h2><div class="quick">
+   <button data-add="shopping"><b>＋</b><small>Einkauf</small></button>
+   <button data-add="stay"><b>☾</b><small>Übernachtung</small></button>
+   <button data-add="conversation"><b>✎</b><small>Gespräch</small></button>
+   <button data-add="petroleum"><b>⛽</b><small>Petroleum</small></button>
+  </div></div>
+  <div class="card full"><h2>Nächste Frist</h2>${dl?`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(dl.t)}</div><div class="rowsub">${fmt(dl.d)}</div></div></div>`:empty('Keine Frist eingetragen.')}</div>
+ </div>`
 }
-function upcomingCard(p){
-  const rows=[];
-  p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;if(d&&d>=today())rows.push({date:d,title:x.noticeDate?'Vertragsfrist':'Vertragsende',detail:x.name})});
-  p.gasChecks.forEach(x=>{if(x.nextDue&&x.nextDue>=today())rows.push({date:x.nextDue,title:'Gasprüfung',detail:x.company||'Nächste Prüfung'})});
-  rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  return `<div class="card full"><h2>Nächste Termine</h2>${rows.length?'<div class="list">'+rows.slice(0,5).map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(x.title)}</div><div class="row-sub">${esc(x.detail)}</div></div><div><strong>${fmtDate(x.date)}</strong><div class="row-sub">${esc(deadlineStatus(x.date))}</div></div></div>`).join('')+'</div>':empty('Noch keine Vertrags- oder Prüftermine eingetragen.')}</div>`
-}
-
 function renderShopping(){
-  const p=place(),rows=[...p.shopping].sort((a,b)=>Number(a.done)-Number(b.done)||String(a.name).localeCompare(String(b.name),'de'));
-  $('#view-shopping').innerHTML=`<div class="view-head"><div><h1>Offene Einkäufe</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
-  <div class="toolbar"><button type="button" class="btn" data-add="shopping">＋ Einkauf hinzufügen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row ${x.done?'done':''}"><input type="checkbox" data-toggle-shopping="${x.id}" ${x.done?'checked':''}><div class="row-main"><div class="row-title">${esc(x.name)}</div><div class="row-sub">${x.quantity?esc(x.quantity):''}${x.note?' · '+esc(x.note):''}</div></div><div class="row-actions"><button type="button" class="mini" data-edit="shopping" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="shopping" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Keine Einkäufe eingetragen.')}`
+ const p=place(),rows=[...p.shopping].sort((a,b)=>Number(a.done)-Number(b.done));
+ $('#v-shopping').innerHTML=`<div class="head"><div><h1>Einkäufe</h1><p>Platz ${esc(p.site.pitch)}</p></div></div><div class="toolbar"><button class="btn" data-add="shopping">＋ Hinzufügen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><input type="checkbox" data-check="${x.id}" ${x.done?'checked':''}><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div><div class="rowsub">${esc(x.quantity||'')}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="shopping" data-id="${x.id}">✎</button><button class="mini danger" data-del="shopping" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Einkäufe.')}`
 }
-
 function renderCosts(){
-  const p=place(),t=activeTab.costs;
-  $('#view-costs').innerHTML=`<div class="view-head"><div><h1>Kosten & Verbrauch</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
-
-  <div class="grid" style="margin-top:0;margin-bottom:14px">
-    <button type="button" class="card half card-action" data-cost-jump="annualRent">
-      <h2>🏕️ Jahresmiete</h2>
-      <p>Grundbetrag, 90 Übernachtungen inklusive, Erwachsenen- und Kinderpreise</p>
-    </button>
-    <button type="button" class="card half card-action" data-cost-jump="closing">
-      <h2>📄 Jahresabschluss</h2>
-      <p>Alle Jahreskosten prüfen und als PDF-/Druckansicht ausgeben</p>
-    </button>
-  </div>
-
-  ${tabs('costs',[['overview','Übersicht'],['annualRent','Jahresmiete'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['electricity','Strom']])}
-  ${t==='overview'?costOverview(p):t==='annualRent'?annualRentPanel(p):t==='closing'?annualClosingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):electricityRows(p)}`
+ const p=place(),t=tab.costs;
+ $('#v-costs').innerHTML=`<div class="head"><div><h1>Kosten & Verbrauch</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
+ <div class="grid" style="margin-top:0">
+  <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, 90 inklusive, Erwachsene/Kinder danach</p></button>
+  <button class="card half cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
+ </div>
+ ${tabs('costs',[['overview','Übersicht'],['annualRent','Jahresmiete'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['electricity','Strom']])}
+ ${t==='overview'?costOverview(p):t==='annualRent'?annualRentPanel(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):electricityRows(p)}`
 }
 function costOverview(p){
-  const y=yearNow(),d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);
-  const labels={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
-  return `<div class="grid">
-    <div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(total)}</div><p>alle erfassten Kostenquellen</p></div>
-    <div class="card half"><h2>Petroleum-Bestand</h2><div class="metric">${num(petroleumStock(p),1)} <small>Liter</small></div></div>
-    <div class="card full"><h2>Aufteilung ${y}</h2><div class="cost-bars">${Object.entries(d).map(([k,v])=>`<div class="cost-line"><span>${esc(labels[k]||k)}</span><div class="bar"><i style="width:${total?Math.min(100,v/total*100):0}%"></i></div><strong class="right">${money(v)}</strong></div>`).join('')}</div></div>
-  </div>`
+ const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
+ return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung</h2>${Object.entries(d).map(([k,v])=>`<div class="costline"><span>${lab[k]}</span><div class="bar"><i style="width:${tot?Math.min(100,v/tot*100):0}%"></i></div><b class="right">${money(v)}</b></div>`).join('')}</div></div>`
 }
-
 function annualRentPanel(p){
-  const rows=[...(p.annualRent||[])].sort((a,b)=>Number(b.year)-Number(a.year));
-  const current=annualRentForYear(p,yearNow());
-  return `<div class="card full" style="margin-bottom:14px"><h2>Jahresmiete verwalten</h2><p>Grundbetrag + 90 Übernachtungen inklusive. Ab der 91. Übernachtung werden Erwachsene und Kinder getrennt berechnet.</p></div><div class="notice good"><strong>Jahresmiete:</strong> Der Grundbetrag enthält standardmäßig 90 Übernachtungen. Ab der 91. Übernachtung können Erwachsenen- und Kinderpreise getrennt berechnet werden.</div>
-  <div class="toolbar"><button type="button" class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>
-  ${current?`<div class="grid">
-    <div class="card half"><h2>Jahresmiete ${yearNow()}</h2><div class="metric">${money(annualRentTotal(current))}</div><p>berechneter Gesamtbetrag</p></div>
-    <div class="card half"><h2>Inklusive</h2><div class="metric">${num(current.includedNights||90)} <small>Übernachtungen</small></div><p>danach Personenpreise</p></div>
-  </div>`:''}
-  ${rows.length?'<div class="list">'+rows.map(x=>{
-    const adultExtra=Number(x.extraAdultNights||0)*Number(x.adultPrice||0);
-    const childExtra=Number(x.extraChildNights||0)*Number(x.childPrice||0);
-    return `<div class="row"><div class="row-main">
-      <div class="row-title">${esc(x.year)} · ${money(annualRentTotal(x))}</div>
-      <div class="row-sub">Grundbetrag ${money(x.baseAmount)} · ${num(x.includedNights||90)} Übernachtungen inklusive</div>
-      <div class="row-sub">ab Übernachtung ${Number(x.includedNights||90)+1}: Erwachsene ${money(x.adultPrice)} / Kinder ${money(x.childPrice)}</div>
-      <div class="row-sub">berechnet: ${num(x.extraAdultNights)} Erw. = ${money(adultExtra)} · ${num(x.extraChildNights)} Kinder = ${money(childExtra)}</div>
-      ${x.note?'<div class="row-sub">'+esc(x.note)+'</div>':''}
-    </div><div class="row-actions"><button type="button" class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`;
-  }).join('')+'</div>':empty('Noch keine Jahresmiete eingetragen.')}`
+ const rows=[...p.annualRent].sort((a,b)=>Number(b.year)-Number(a.year));
+ return `<div class="notice good"><b>Jahresmiete:</b> Grundbetrag enthält standardmäßig 90 Übernachtungen. Danach getrennte Preise für Erwachsene und Kinder.</div><div class="toolbar"><button class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(annualRentTotal(x))}</div><div class="rowsub">Grundbetrag ${money(x.baseAmount)} · ${num(x.includedNights||90)} inklusive</div><div class="rowsub">ab ${Number(x.includedNights||90)+1}. Übernachtung: Erwachsene ${money(x.adultPrice)} · Kinder ${money(x.childPrice)}</div><div class="rowsub">Zusatz: ${num(x.extraAdultNights)} Erw. / ${num(x.extraChildNights)} Kinder</div>${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Jahresmiete angelegt.')}`
 }
-
-function annualClosingYears(p){
-  const ys=new Set([yearNow(),yearNow()-1,yearNow()-2]);
-  (p.annualRent||[]).forEach(x=>ys.add(Number(x.year)));
-  p.costs.forEach(x=>ys.add(Number(x.year)));
-  p.electricity.forEach(x=>ys.add(Number(x.year)));
-  p.petroleum.forEach(x=>{if(x.date)ys.add(Number(x.date.slice(0,4)))});
-  p.gasChecks.forEach(x=>{if(x.date)ys.add(Number(x.date.slice(0,4)))});
-  p.stays.forEach(x=>{if(x.arrival)ys.add(Number(x.arrival.slice(0,4)))});
-  return [...ys].filter(Boolean).sort((a,b)=>b-a);
-}
-function annualClosingRows(p,y){
-  const rows=[];
-  const rent=annualRentForYear(p,y);
-  if(rent)rows.push({
-    date:String(y),
-    category:'Jahresmiete',
-    description:`Grundbetrag ${money(rent.baseAmount)}; ${num(rent.includedNights||90)} inklusive; ${num(rent.extraAdultNights)} Erw. x ${money(rent.adultPrice)}; ${num(rent.extraChildNights)} Kinder x ${money(rent.childPrice)}`,
-    amount:annualRentTotal(rent)
-  });
-  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{
-    const labels={annual:'Jahresgebühr (manuell)',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'};
-    rows.push({date:String(y),category:labels[x.category]||x.category||'Kosten',description:x.note||'',amount:Number(x.amount||0)});
-  });
-  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{
-    rows.push({date:String(y),category:'Strom',description:`${num(x.consumption,1)} kWh; Strom ${money(x.cost)}; Zählermiete ${money(x.meterRent)}`,amount:Number(x.cost||0)+Number(x.meterRent||0)});
-  });
-  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>{
-    rows.push({date:fmtDate(x.date),category:'Petroleum',description:`${num(x.liters,1)} Liter${x.note?' · '+x.note:''}`,amount:Number(x.price||0)});
-  });
-  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>{
-    rows.push({date:fmtDate(x.date),category:'Gasprüfung',description:[x.company,x.result,x.notes].filter(Boolean).join(' · '),amount:Number(x.cost||0)});
-  });
-  p.contracts.filter(x=>contractActiveInYear(x,y)&&Number(x.annualCost||0)>0).forEach(x=>{
-    rows.push({date:String(y),category:'Vertrag',description:[x.name,x.provider].filter(Boolean).join(' · '),amount:Number(x.annualCost||0)});
-  });
-  return rows;
-}
-function annualClosingPanel(p){
-  const years=annualClosingYears(p),selected=Number(window._campClosingYear||yearNow());
-  const y=years.includes(selected)?selected:years[0];
-  window._campClosingYear=y;
-  const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0),rows=annualClosingRows(p,y);
-  const labels={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
-  const docs=(p.documents||[]).filter(x=>String(x.year||'')===String(y)||(x.date||'').startsWith(String(y))).length;
-  return `<div class="card full" style="margin-bottom:14px"><h2>Jahresabschluss als PDF</h2><p>Jahr auswählen, Gesamtkosten prüfen und anschließend die Übersicht als PDF sichern oder drucken.</p></div><div class="notice good"><strong>Jahresabschluss:</strong> Jahr auswählen und alle erfassten Kosten als Übersicht prüfen. Über „PDF erstellen“ öffnet sich die druckfertige PDF-Ansicht.</div>
-  <div class="form-grid" style="margin-bottom:14px"><div class="field"><label>Jahr</label><select id="closingYearSelect">${years.map(v=>`<option value="${v}" ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div>
-  <div class="grid">
-    <div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(total)}</div><p>${rows.length} Kostenpositionen</p></div>
-    <div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div><p>im Tagebuch ${y}</p></div>
-    <div class="card full"><h2>Kostenübersicht</h2><div class="cost-bars">${Object.entries(d).map(([k,v])=>`<div class="cost-line"><span>${esc(labels[k]||k)}</span><div class="bar"><i style="width:${total?Math.min(100,v/total*100):0}%"></i></div><strong class="right">${money(v)}</strong></div>`).join('')}</div></div>
-  </div>
-  <div class="toolbar"><button type="button" class="btn" id="annualPdfBtn">📄 PDF erstellen</button></div>
-  <div class="notice"><strong>Belege:</strong> ${docs} Dokument(e) sind für ${y} im Dokumentenbereich hinterlegt.</div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(x.category)} · ${esc(x.date)}</div><div class="row-sub">${esc(x.description||'')}</div></div><strong>${money(x.amount)}</strong></div>`).join('')+'</div>':empty('Für dieses Jahr sind noch keine Kosten erfasst.')}`
-}
-function annualClosingReportHtml(p,y){
-  const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0),rows=annualClosingRows(p,y),rent=annualRentForYear(p,y);
-  const labels={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
-  const summary=Object.entries(d).map(([k,v])=>`<tr><td>${esc(labels[k]||k)}</td><td class="r">${money(v)}</td></tr>`).join('');
-  const detail=rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.category)}</td><td>${esc(x.description||'')}</td><td class="r">${money(x.amount)}</td></tr>`).join('');
-  const rentHtml=rent?`<section><h2>Jahresmiete</h2><table>
-    <tr><td>Grundbetrag</td><td class="r">${money(rent.baseAmount)}</td></tr>
-    <tr><td>Inklusive Übernachtungen</td><td class="r">${num(rent.includedNights||90)}</td></tr>
-    <tr><td>Erwachsenenpreis ab Übernachtung ${Number(rent.includedNights||90)+1}</td><td class="r">${money(rent.adultPrice)}</td></tr>
-    <tr><td>Kinderpreis ab Übernachtung ${Number(rent.includedNights||90)+1}</td><td class="r">${money(rent.childPrice)}</td></tr>
-    <tr><td>Zusätzliche Erwachsenen-Übernachtungen</td><td class="r">${num(rent.extraAdultNights)}</td></tr>
-    <tr><td>Zusätzliche Kinder-Übernachtungen</td><td class="r">${num(rent.extraChildNights)}</td></tr>
-    <tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(rent))}</td></tr>
-  </table></section>`:'';
-  return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jahresabschluss ${y}</title>
-  <style>
-    *{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#172019;margin:0;background:#fff}
-    main{max-width:900px;margin:auto;padding:28px}.head{border-bottom:3px solid #173c29;padding-bottom:14px;margin-bottom:20px}
-    h1{margin:0 0 6px;font-size:28px}h2{font-size:18px;margin:24px 0 8px}.muted{color:#68736b}
-    table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 7px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}
-    th{background:#f1f4f1}.r{text-align:right;white-space:nowrap}.total td{font-weight:800;border-top:2px solid #173c29}
-    .big{font-size:25px;font-weight:800}.no-print{margin:16px 0}.btn{background:#173c29;color:white;border:0;border-radius:9px;padding:10px 14px;font-weight:700}
-    @media print{.no-print{display:none}main{padding:0} @page{size:A4;margin:14mm}}
-  </style></head><body><main>
-    <div class="no-print"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div>
-    <div class="head"><h1>CampManager - Jahresabschluss ${y}</h1><div>${esc(p.site.campName||'Campingplatz')} · Platz ${esc(p.site.pitch||'–')}</div><div class="muted">Erstellt am ${new Date().toLocaleDateString('de-DE')}</div></div>
-    <section><h2>Zusammenfassung</h2><table>${summary}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(total)}</td></tr></table>
-    <p><strong>Übernachtungen ${y}:</strong> ${totalNights(p,y)}</p></section>
-    ${rentHtml}
-    <section><h2>Alle Kostenpositionen</h2><table><thead><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr></thead><tbody>${detail||'<tr><td colspan="4">Keine Kostenpositionen vorhanden.</td></tr>'}</tbody></table></section>
-  </main></body></html>`;
-}
-function openAnnualClosingPdf(p,y){
-  const w=window.open('','_blank');
-  if(!w){toast('PDF-Fenster wurde blockiert');return}
-  w.document.open();
-  w.document.write(annualClosingReportHtml(p,y));
-  w.document.close();
-  setTimeout(()=>{try{w.focus();w.print()}catch(e){}},500);
-}
-
 function costRows(p){
-  const labels={annual:'Jahresgebühr (manuell)',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'};
-  const rows=[...p.costs].sort((a,b)=>Number(b.year)-Number(a.year));
-  return `<div class="toolbar"><button type="button" class="btn" data-add="cost">＋ Kosten hinzufügen</button></div>${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(labels[x.category]||x.category)} · ${esc(x.year)}</div><div class="row-sub">${esc(x.note||'')}</div></div><strong>${money(x.amount)}</strong><div class="row-actions"><button type="button" class="mini" data-edit="cost" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="cost" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch keine allgemeinen Kosten eingetragen.')}`
+ const lab={annual:'Jahresgebühr (manuell)',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'},rows=[...p.costs].sort((a,b)=>Number(b.year)-Number(a.year));
+ return `<div class="toolbar"><button class="btn" data-add="cost">＋ Kosten</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(lab[x.category]||x.category)} · ${esc(x.year)}</div><div class="rowsub">${esc(x.note||'')}</div></div><b>${money(x.amount)}</b><div class="rowactions"><button class="mini" data-edit="cost" data-id="${x.id}">✎</button><button class="mini danger" data-del="cost" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Kosten.')}`
 }
 function petroleumRows(p){
-  const rows=[...p.petroleum].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-  return `<div class="grid"><div class="card half"><h2>Aktueller Bestand</h2><div class="metric">${num(petroleumStock(p),1)} <small>Liter</small></div></div><div class="card half"><h2>Buchungen</h2><div class="metric">${rows.length}</div></div></div>
-  <div class="notice"><strong>Bestand setzen</strong> übernimmt den tatsächlich vorhandenen Literstand. Danach werden Einkäufe addiert und Verbräuche abgezogen.</div>
-  <div class="toolbar"><button type="button" class="btn" data-add="petroleum">＋ Petroleum buchen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${x.kind==='purchase'?'Einkauf':x.kind==='stock'?'Bestand gesetzt':'Verbrauch'} · ${num(x.liters,1)} L</div><div class="row-sub">${fmtDate(x.date)}${x.note?' · '+esc(x.note):''}</div></div>${x.kind==='purchase'&&x.price?'<strong>'+money(x.price)+'</strong>':''}<div class="row-actions"><button type="button" class="mini" data-edit="petroleum" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="petroleum" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch keine Petroleum-Buchungen.')}`
+ const rows=[...p.petroleum].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ return `<div class="grid"><div class="card half"><h2>Bestand</h2><div class="metric">${num(petroleumStock(p),1)} L</div></div></div><div class="notice"><b>Bestand setzen</b> überschreibt den tatsächlichen Literstand an diesem Datum.</div><div class="toolbar"><button class="btn" data-add="petroleum">＋ Petroleum buchen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.kind==='purchase'?'Einkauf':x.kind==='stock'?'Bestand gesetzt':'Verbrauch'} · ${num(x.liters,1)} L</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div>${x.kind==='purchase'&&x.price?`<b>${money(x.price)}</b>`:''}<div class="rowactions"><button class="mini" data-edit="petroleum" data-id="${x.id}">✎</button><button class="mini danger" data-del="petroleum" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Petroleum-Buchungen.')}`
 }
 function electricityRows(p){
-  const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
-  return `<div class="notice"><strong>Nur Jahreswerte:</strong> Verbrauch, Stromkosten und Zählermiete.</div>
-  <div class="toolbar"><button type="button" class="btn" data-add="electricity">＋ Jahreswert hinzufügen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(x.year)} · ${num(x.consumption,1)} kWh</div><div class="row-sub">Strom ${money(x.cost)} · Zählermiete ${money(x.meterRent)}</div></div><strong>${money(Number(x.cost||0)+Number(x.meterRent||0))}</strong><div class="row-actions"><button type="button" class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch keine Strom-Jahreswerte.')}`
+ const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
+ return `<div class="notice">Nur Jahreswerte: Verbrauch, Stromkosten und Zählermiete.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Jahreswert</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.year} · ${num(x.consumption,1)} kWh</div><div class="rowsub">Strom ${money(x.cost)} · Zählermiete ${money(x.meterRent)}</div></div><b>${money(Number(x.cost||0)+Number(x.meterRent||0))}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Stromwerte.')}`
 }
+function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));return [...s].filter(Boolean).sort((a,b)=>b-a)}
+function closingRows(p,y){
+ const r=[],ar=annualRentFor(p,y);
+ if(ar)r.push({d:String(y),c:'Jahresmiete',t:`Grundbetrag ${money(ar.baseAmount)}, ${num(ar.includedNights||90)} inkl., ${num(ar.extraAdultNights)} Erw. x ${money(ar.adultPrice)}, ${num(ar.extraChildNights)} Kinder x ${money(ar.childPrice)}`,a:annualRentTotal(ar)});
+ p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
+ p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:'Strom',t:`${num(x.consumption,1)} kWh, Strom ${money(x.cost)}, Zählermiete ${money(x.meterRent)}`,a:Number(x.cost||0)+Number(x.meterRent||0)}));
+ p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
+ p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>r.push({d:fmt(x.date),c:'Gasprüfung',t:[x.company,x.result,x.notes].filter(Boolean).join(' · '),a:Number(x.cost||0)}));
+ p.contracts.filter(x=>contractActive(x,y)&&Number(x.annualCost||0)>0).forEach(x=>r.push({d:String(y),c:'Vertrag',t:[x.name,x.provider].filter(Boolean).join(' · '),a:Number(x.annualCost||0)}));
+ return r
+}
+let closingYear=yearNow();
+function closingPanel(p){
+ const years=yearsFor(p);if(!years.includes(closingYear))closingYear=years[0];
+ const y=closingYear,d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),docs=p.documents.filter(x=>String(x.year||'')===String(y)||(x.date||'').startsWith(String(y))).length;
+ return `<div class="notice good"><b>Jahresabschluss:</b> Jahr wählen, alle Kosten prüfen und anschließend als PDF sichern.</div><div class="formgrid"><div class="field"><label>Jahr</label><select id="closeYear">${years.map(v=>`<option ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div></div><div class="toolbar"><button class="btn" id="pdfBtn">📄 Jahresabschluss als PDF</button></div><div class="notice"><b>Belege:</b> ${docs} Dokument(e) für ${y}</div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.c)} · ${esc(x.d)}</div><div class="rowsub">${esc(x.t)}</div></div><b>${money(x.a)}</b></div>`).join('')}</div>`:empty('Keine Kosten für dieses Jahr.')}`
+}
+function reportHtml(p,y){
+ const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
+ return `<!doctype html><html><head><meta charset="utf-8"><title>Jahresabschluss ${y}</title><style>body{font-family:Arial,sans-serif;color:#172019;margin:0}main{max-width:900px;margin:auto;padding:28px}h1{margin:0 0 5px}h2{font-size:18px;margin-top:24px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}.r{text-align:right;white-space:nowrap}.total td{font-weight:bold;border-top:2px solid #173c29}.btn{background:#173c29;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}.np{margin-bottom:18px}@media print{.np{display:none}@page{size:A4;margin:14mm}main{padding:0}}</style></head><body><main><div class="np"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div><h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${ar?`<h2>Jahresmiete</h2><table><tr><td>Grundbetrag</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Inklusive Übernachtungen</td><td class="r">${num(ar.includedNights||90)}</td></tr><tr><td>Erwachsenenpreis danach</td><td class="r">${money(ar.adultPrice)}</td></tr><tr><td>Kinderpreis danach</td><td class="r">${money(ar.childPrice)}</td></tr><tr><td>Zusätzliche Erwachsenen-Übernachtungen</td><td class="r">${num(ar.extraAdultNights)}</td></tr><tr><td>Zusätzliche Kinder-Übernachtungen</td><td class="r">${num(ar.extraChildNights)}</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar))}</td></tr></table>`:''}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table></main></body></html>`
+}
+function openPdf(){const w=window.open('','_blank');if(!w){toast('Pop-up blockiert');return}w.document.write(reportHtml(place(),closingYear));w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch{}},400)}
 
 function renderCare(){
-  const p=place(),t=activeTab.care;
-  $('#view-care').innerHTML=`<div class="view-head"><div><h1>Rasen & Hecke</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
-  ${tabs('care',[['lawn','Rasen'],['hedge','Hecke']])}${t==='lawn'?lawnRows(p):hedgeRows(p)}`
+ const p=place(),t=tab.care;$('#v-care').innerHTML=`<div class="head"><div><h1>Rasen & Hecke</h1><p>Platz ${esc(p.site.pitch)}</p></div></div>${tabs('care',[['lawn','Rasen'],['hedge','Hecke']])}${t==='lawn'?lawnPanel(p):hedgePanel(p)}`
 }
-function lawnRows(p){
-  const rows=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  return `<div class="toolbar"><button type="button" class="btn" data-add="lawn">＋ Rasenschnitt eintragen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">Rasen gemäht</div><div class="row-sub">${fmtDate(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="row-actions"><button type="button" class="mini" data-edit="lawn" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="lawn" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch kein Rasenschnitt eingetragen.')}`
-}
-function hedgeRows(p){
-  const y=yearNow(),count=p.hedge.filter(x=>(x.date||'').startsWith(String(y))).length,rows=[...p.hedge].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  return `<div class="grid"><div class="card half"><h2>Heckenschnitt ${y}</h2><div class="metric">${count}<small> / 2</small></div><p>${count>=2?'Beide Termine erfasst':'Noch '+(2-count)+' Termin(e) möglich'}</p></div></div>
-  <div class="toolbar"><button type="button" class="btn" data-add="hedge" ${count>=2?'disabled':''}>＋ Heckenschnitt eintragen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">Hecke geschnitten</div><div class="row-sub">${fmtDate(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="row-actions"><button type="button" class="mini" data-edit="hedge" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="hedge" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch kein Heckenschnitt eingetragen.')}`
-}
+function lawnPanel(p){const rows=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="toolbar"><button class="btn" data-add="lawn">＋ Rasenschnitt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Rasen gemäht</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="lawn" data-id="${x.id}">✎</button><button class="mini danger" data-del="lawn" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Rasenschnitt.')}`}
+function hedgePanel(p){const y=yearNow(),count=p.hedge.filter(x=>(x.date||'').startsWith(String(y))).length,rows=[...p.hedge].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="grid"><div class="card half"><h2>Heckenschnitt ${y}</h2><div class="metric">${count} / 2</div></div></div><div class="toolbar"><button class="btn" data-add="hedge" ${count>=2?'disabled':''}>＋ Heckenschnitt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Hecke geschnitten</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="hedge" data-id="${x.id}">✎</button><button class="mini danger" data-del="hedge" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Heckenschnitt.')}`}
 
 function renderMore(){
-  const p=place(),t=activeTab.more;
-  $('#view-more').innerHTML=`<div class="view-head"><div><h1>Verwaltung</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
-  ${tabs('more',[['stays','Übernachtungen'],['conversations','Gespräche'],['documents','Dokumente'],['calendar','Kalender'],['contracts','Verträge'],['gas','Gasprüfung'],['site','Stellplatz'],['family','Familie']])}
-  ${t==='stays'?stayRows(p):t==='conversations'?conversationPanel(p):t==='documents'?documentPanel(p):t==='calendar'?calendarPanel(p):t==='contracts'?contractRows(p):t==='gas'?gasRows(p):t==='site'?sitePanel(p):familyPanel()}`
+ const p=place(),t=tab.more;$('#v-more').innerHTML=`<div class="head"><div><h1>Verwaltung</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>${tabs('more',[['stays','Übernachtungen'],['conversations','Gespräche'],['documents','Dokumente'],['contracts','Verträge'],['gas','Gasprüfung'],['site','Stellplatz'],['family','Familie']])}${t==='stays'?stayPanel(p):t==='conversations'?conversationPanel(p):t==='documents'?documentPanel(p):t==='contracts'?contractPanel(p):t==='gas'?gasPanel(p):t==='site'?sitePanel(p):familyPanel()}`
 }
-function stayRows(p){
-  const rows=[...p.stays].sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival)));
-  return `<div class="grid"><div class="card half"><h2>Dieses Jahr</h2><div class="metric">${totalNights(p,yearNow())}</div><p>Übernachtungen ${yearNow()}</p></div><div class="card half"><h2>Gesamt</h2><div class="metric">${totalNights(p)}</div><p>Übernachtungen</p></div></div>
-  <div class="toolbar"><button type="button" class="btn" data-add="stay">＋ Aufenthalt hinzufügen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${fmtDate(x.arrival)} – ${fmtDate(x.departure)}</div><div class="row-sub">${nightsBetween(x.arrival,x.departure)} Übernachtungen${x.people?' · '+esc(x.people):''}${x.note?' · '+esc(x.note):''}</div></div><div class="row-actions"><button type="button" class="mini" data-cal="stay" data-id="${x.id}">📅</button><button type="button" class="mini" data-edit="stay" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="stay" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch keine Aufenthalte eingetragen.')}`
-}
-function contractRows(p){
-  const rows=[...p.contracts].sort((a,b)=>String(a.noticeDate||a.endDate||'9999').localeCompare(String(b.noticeDate||b.endDate||'9999')));
-  return `<div class="toolbar"><button type="button" class="btn" data-add="contract">＋ Vertrag hinzufügen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>{const d=x.noticeDate||x.endDate;return `<div class="row ${d&&d<today()?'overdue':''}"><div class="row-main"><div class="row-title">${esc(x.name)}</div><div class="row-sub">${x.provider?esc(x.provider)+' · ':''}${x.startDate?'Beginn '+fmtDate(x.startDate)+' · ':''}${x.noticeDate?'Frist '+fmtDate(x.noticeDate)+' · ':''}${x.endDate?'Ende '+fmtDate(x.endDate):''}${x.annualCost?' · '+money(x.annualCost)+'/Jahr':''}</div>${d?'<div class="row-sub">'+esc(deadlineStatus(d))+'</div>':''}</div><div class="row-actions"><button type="button" class="mini" data-cal="contract" data-id="${x.id}">📅</button><button type="button" class="mini" data-edit="contract" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="contract" data-id="${x.id}">×</button></div></div>`}).join('')+'</div>':empty('Noch keine Verträge eingetragen.')}`
-}
-function gasRows(p){
-  const rows=[...p.gasChecks].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  return `<div class="toolbar"><button type="button" class="btn" data-add="gas">＋ Gasprüfung hinzufügen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row ${x.nextDue&&x.nextDue<today()?'overdue':''}"><div class="row-main"><div class="row-title">Prüfung ${fmtDate(x.date)} · ${esc(x.result||'')}</div><div class="row-sub">Nächste Prüfung: ${fmtDate(x.nextDue)}${x.company?' · '+esc(x.company):''}${x.cost?' · '+money(x.cost):''}</div>${x.nextDue?'<div class="row-sub">'+esc(deadlineStatus(x.nextDue))+'</div>':''}${x.notes?'<div class="row-sub">'+esc(x.notes)+'</div>':''}</div><div class="row-actions"><button type="button" class="mini" data-cal="gas" data-id="${x.id}">📅</button><button type="button" class="mini" data-edit="gas" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="gas" data-id="${x.id}">×</button></div></div>`).join('')+'</div>':empty('Noch keine Gasprüfung eingetragen.')}`
-}
-function sitePanel(p){
-  return `<div class="grid">
-    <div class="card half"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">${placeAvatarHtml(p,'place-avatar')}<div><h2 style="margin:0">Aktiver Stellplatz</h2><div class="row-sub">${esc(p.site.campName||'Campingplatz')}</div></div></div><div class="metric">${esc(p.site.pitch||'–')}</div>${p.site.area?'<p>'+esc(p.site.area)+' m²</p>':''}<div class="toolbar"><button type="button" class="btn secondary" data-place-edit="${p.id}">Bearbeiten</button></div></div>
-    <div class="card full">
-      <div class="kpi"><div><h2>Meine Stellplätze</h2><p>Jeder Platz besitzt eigene Daten.</p></div><button type="button" class="btn" data-place-add>＋ Platz</button></div>
-      <div class="list" style="margin-top:12px">${state.places.map(x=>`<div class="row">${placeAvatarHtml(x)}<div class="row-main"><div class="row-title">${esc(x.site.campName||'Campingplatz')} · Platz ${esc(x.site.pitch||'–')} ${x.id===state.activePlaceId?'<span class="badge">Aktiv</span>':''}</div><div class="row-sub">${x.site.area?esc(x.site.area)+' m² · ':''}${x.site.notes?esc(x.site.notes):'Keine Notiz'}</div></div><div class="row-actions">${x.id===state.activePlaceId?'':`<button type="button" class="mini" data-place-switch="${x.id}">Wechseln</button>`}<button type="button" class="mini" data-place-edit="${x.id}">✎</button>${state.places.length>1?`<button type="button" class="mini danger" data-place-delete="${x.id}">×</button>`:''}</div></div>`).join('')}</div>
-    </div>
-    ${p.site.notes?'<div class="card full"><h2>Notizen</h2><p>'+esc(p.site.notes)+'</p></div>':''}
-  </div>`
-}
-function familyPanel(){
-  return `<div class="notice">Familienmitglieder gelten für alle Stellplätze.</div>
-  <div class="toolbar"><button type="button" class="btn" data-add="family">＋ Person hinzufügen</button></div>
-  <div class="list">${state.family.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(x.name)}</div></div><div class="row-actions"><button type="button" class="mini" data-edit="family" data-id="${x.id}">✎</button><button type="button" class="mini danger" data-del="family" data-id="${x.id}">×</button></div></div>`).join('')}</div>`
-}
+function stayPanel(p){const rows=[...p.stays].sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival)));return `<div class="grid"><div class="card half"><h2>${yearNow()}</h2><div class="metric">${totalNights(p,yearNow())}</div><p>Übernachtungen</p></div><div class="card half"><h2>Gesamt</h2><div class="metric">${totalNights(p)}</div></div></div><div class="toolbar"><button class="btn" data-add="stay">＋ Aufenthalt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${fmt(x.arrival)} – ${fmt(x.departure)}</div><div class="rowsub">${nights(x.arrival,x.departure)} Nächte${x.people?' · '+esc(x.people):''}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="stay" data-id="${x.id}">✎</button><button class="mini danger" data-del="stay" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Aufenthalte.')}`}
+function conversationPanel(p){const rows=[...p.conversations].sort((a,b)=>(String(b.date)+' '+String(b.time)).localeCompare(String(a.date)+' '+String(a.time)));return `<div class="notice good"><b>Gesprächstagebuch:</b> für diesen Stellplatz.</div><div class="toolbar"><button class="btn" data-add="conversation">＋ Gespräch</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${fmt(x.date)} · ${esc(x.time||'–')} Uhr</div><div class="rowsub">Gesprächspartner: ${esc(x.partner||'–')}</div>${x.note?`<div class="conversation">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="conversation" data-id="${x.id}">✎</button><button class="mini danger" data-del="conversation" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Gespräche.')}`}
+function contractPanel(p){const rows=[...p.contracts].sort((a,b)=>String(a.noticeDate||a.endDate||'9999').localeCompare(String(b.noticeDate||b.endDate||'9999')));return `<div class="toolbar"><button class="btn" data-add="contract">＋ Vertrag</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div><div class="rowsub">${x.provider?esc(x.provider)+' · ':''}${x.noticeDate?'Frist '+fmt(x.noticeDate)+' · ':''}${x.endDate?'Ende '+fmt(x.endDate):''}${x.annualCost?' · '+money(x.annualCost)+'/Jahr':''}</div></div><div class="rowactions"><button class="mini" data-edit="contract" data-id="${x.id}">✎</button><button class="mini danger" data-del="contract" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Verträge.')}`}
+function gasPanel(p){const rows=[...p.gasChecks].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="toolbar"><button class="btn" data-add="gas">＋ Gasprüfung</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Prüfung ${fmt(x.date)} · ${esc(x.result||'')}</div><div class="rowsub">Nächste: ${fmt(x.nextDue)}${x.company?' · '+esc(x.company):''}${x.cost?' · '+money(x.cost):''}</div></div><div class="rowactions"><button class="mini" data-edit="gas" data-id="${x.id}">✎</button><button class="mini danger" data-del="gas" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Gasprüfung.')}`}
+function sitePanel(p){return `<div class="grid"><div class="card half"><div style="display:flex;align-items:center;gap:10px">${avatar(p)}<div><h2>Aktiver Stellplatz</h2><p>${esc(p.site.campName)}</p></div></div><div class="metric" style="margin-top:8px">${esc(p.site.pitch||'–')}</div><div class="toolbar"><button class="btn sec" data-placeedit="${p.id}">Bearbeiten</button></div></div><div class="card full"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><h2>Meine Stellplätze</h2><p>Jeder Platz hat eigene Daten.</p></div><button class="btn" data-placeadd>＋ Platz</button></div><div class="list" style="margin-top:10px">${state.places.map(x=>`<div class="row">${avatar(x)}<div class="rowmain"><div class="rowtitle">${esc(x.site.campName)} · Platz ${esc(x.site.pitch||'–')} ${x.id===state.activePlaceId?'<span class="badge">Aktiv</span>':''}</div><div class="rowsub">${x.site.area?esc(x.site.area)+' m² · ':''}${esc(x.site.notes||'')}</div></div><div class="rowactions">${x.id===state.activePlaceId?'':`<button class="mini" data-placeswitch="${x.id}">Wechseln</button>`}<button class="mini" data-placeedit="${x.id}">✎</button>${state.places.length>1?`<button class="mini danger" data-placedel="${x.id}">×</button>`:''}</div></div>`).join('')}</div></div></div>`}
+function familyPanel(){return `<div class="notice">Familienmitglieder gelten für alle Stellplätze.</div><div class="toolbar"><button class="btn" data-add="family">＋ Person</button></div><div class="list">${state.family.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div></div><div class="rowactions"><button class="mini" data-edit="family" data-id="${x.id}">✎</button><button class="mini danger" data-del="family" data-id="${x.id}">×</button></div></div>`).join('')}</div>`}
 
+/* Dokumente lokal in IndexedDB */
+const DB='campmanager_documents_v1', STORE='files';
+function openDB(){return new Promise((res,rej)=>{const q=indexedDB.open(DB,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(STORE))q.result.createObjectStore(STORE)};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function dbPut(k,b){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(b,k);t.oncomplete=()=>{db.close();res()};t.onerror=()=>rej(t.error)})}
+async function dbGet(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readonly'),q=t.objectStore(STORE).get(k);q.onsuccess=()=>{db.close();res(q.result||null)};q.onerror=()=>rej(q.error)})}
+async function dbDel(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(k);t.oncomplete=()=>{db.close();res()};t.onerror=()=>rej(t.error)})}
+async function compress(file,max=1800,q=.82){if(!file.type.startsWith('image/'))return file;const bmp=await createImageBitmap(file);let w=bmp.width,h=bmp.height,s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close();return await new Promise(r=>c.toBlob(r,'image/jpeg',q))||file}
+const DOCCAT=[['electricity','Strom / Jahresrechnung'],['annual','Stellplatz / Jahresrechnung'],['petroleum','Petroleum'],['repair','Reparatur'],['purchase','Neuanschaffung'],['gas','Gasprüfung'],['contract','Vertrag'],['other','Sonstiges']];
+function docLabel(k){return DOCCAT.find(x=>x[0]===k)?.[1]||'Sonstiges'}
+function documentPanel(p){const rows=[...p.documents].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="notice good"><b>Dokumentenscanner:</b> Rechnung fotografieren oder Bild/PDF auswählen.</div><div class="toolbar"><button class="btn" data-docscan>📷 Scannen</button><button class="btn sec" data-docupload>📁 Datei/PDF</button></div><input id="camInput" type="file" accept="image/*" capture="environment" hidden><input id="fileInput" type="file" accept="image/*,application/pdf" hidden>${rows.length?`<div class="docgrid">${rows.map(x=>`<div class="doc"><div class="docthumb" data-docopen="${x.id}">${x.mime?.startsWith('image/')?'🧾':'📄'}</div><div class="rowtitle" style="margin-top:8px">${esc(x.title||docLabel(x.category))}</div><div class="rowsub">${docLabel(x.category)} · ${fmt(x.date)}${x.amount?' · '+money(x.amount):''}</div><div class="toolbar"><button class="mini" data-docopen="${x.id}">Öffnen</button><button class="mini" data-docedit="${x.id}">✎</button><button class="mini danger" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Dokumente.')}`}
 
-const DOC_CATEGORIES=[
-  ['electricity','Strom / Jahresrechnung'],
-  ['annual','Stellplatz / Jahresrechnung'],
-  ['petroleum','Petroleum'],
-  ['repair','Reparatur'],
-  ['purchase','Neuanschaffung'],
-  ['gas','Gasprüfung'],
-  ['contract','Vertrag'],
-  ['insurance','Versicherung'],
-  ['other','Sonstiges']
-];
-function docCategoryLabel(key){
-  return DOC_CATEGORIES.find(x=>x[0]===key)?.[1]||key||'Sonstiges';
-}
+function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view)}
+function show(v){view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===v));scrollTo(0,0)}
 
-function conversationPanel(p){
-  const rows=[...(p.conversations||[])].sort((a,b)=>{
-    const ad=String(a.date||'')+' '+String(a.time||'');
-    const bd=String(b.date||'')+' '+String(b.time||'');
-    return bd.localeCompare(ad);
-  });
-  return `<div class="notice good"><strong>Gesprächstagebuch:</strong> Gespräche und Absprachen zu diesem Stellplatz mit Datum, Uhrzeit und Gesprächspartner dokumentieren.</div>
-  <div class="toolbar"><button type="button" class="btn" data-add="conversation">＋ Gespräch eintragen</button></div>
-  ${rows.length?'<div class="list">'+rows.map(x=>`<div class="row">
-    <div class="row-main">
-      <div class="row-title">${fmtDate(x.date)} · ${esc(x.time||'–')} Uhr</div>
-      <div class="row-sub">Gesprächspartner: ${esc(x.partner||'–')}</div>
-      ${x.note?'<div class="conversation-note">'+esc(x.note)+'</div>':''}
-    </div>
-    <div class="row-actions">
-      <button type="button" class="mini" data-edit="conversation" data-id="${x.id}">✎</button>
-      <button type="button" class="mini danger" data-del="conversation" data-id="${x.id}">×</button>
-    </div>
-  </div>`).join('')+'</div>':empty('Noch keine Gespräche dokumentiert.')}`;
-}
-
-function documentPanel(p){
-  const rows=[...(p.documents||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
-  return `<div class="notice good"><strong>Dokumenten-Scanner:</strong> Rechnung mit der Kamera fotografieren oder eine vorhandene Bild-/PDF-Datei auswählen. Danach legst du fest, wo sie abgelegt wird.</div>
-  <div class="scanner-choice">
-    <button type="button" class="btn" data-doc-scan>📷 Rechnung scannen</button>
-    <button type="button" class="btn secondary" data-doc-upload>📁 Bild / PDF auswählen</button>
-  </div>
-  <input id="docCameraInput" type="file" accept="image/*" capture="environment" hidden>
-  <input id="docFileInput" type="file" accept="image/*,application/pdf" hidden>
-  <div class="divider"></div>
-  <div class="kpi"><div><h2>Dokumente</h2><p>${rows.length} gespeichert</p></div></div>
-  ${rows.length?'<div class="doc-grid" style="margin-top:12px">'+rows.map(x=>`<div class="doc-card">
-      <div class="doc-thumb" data-doc-open="${x.id}"><span class="doc-icon">${x.mime?.startsWith('image/')?'🧾':'📄'}</span></div>
-      <div class="doc-title">${esc(x.title||docCategoryLabel(x.category))}</div>
-      <div class="doc-meta">${esc(docCategoryLabel(x.category))} · ${fmtDate(x.date)}${x.year?' · '+esc(x.year):''}${x.amount?' · '+money(x.amount):''}</div>
-      ${x.note?'<div class="row-sub">'+esc(x.note)+'</div>':''}
-      <div class="doc-actions">
-        <button type="button" class="mini" data-doc-open="${x.id}">Öffnen</button>
-        <button type="button" class="mini" data-doc-edit="${x.id}">✎</button>
-        <button type="button" class="mini danger" data-doc-delete="${x.id}">×</button>
-      </div>
-    </div>`).join('')+'</div>':empty('Noch keine Rechnungen oder Dokumente gespeichert.')}`;
-}
-async function handleDocumentFile(file){
-  if(!file)return;
-  if(file.size>25*1024*1024){toast('Datei ist zu groß – maximal 25 MB');return}
-  const docId=uid();
-  let blob=file;
-  if(file.type.startsWith('image/'))blob=await compressImage(file);
-  try{
-    await docPut(docId,blob);
-  }catch(e){
-    console.error(e);toast('Dokument konnte nicht gespeichert werden');return;
-  }
-  const pending={
-    id:docId,
-    mime:blob.type||file.type||'application/octet-stream',
-    filename:file.name||('scan-'+today()+'.jpg'),
-    size:blob.size,
-    createdAt:new Date().toISOString(),
-    title:'Rechnung',
-    category:'other',
-    date:today(),
-    year:String(yearNow()),
-    amount:'',
-    note:''
-  };
-  pendingDocuments.set(docId,pending);
-  openDocumentEditor(pending,true);
-}
-function openDocumentEditor(doc,isNew=false){
-  const x=doc||{};
-  modal(isNew?'Dokument speichern':'Dokument bearbeiten',`<form id="documentForm" data-doc-id="${esc(x.id||'')}" data-doc-new="${isNew?'1':'0'}"><div class="form-grid">
-    ${field('Titel','title',x.title||'Rechnung','text','required')}
-    ${select('Kategorie','category',x.category||'other',DOC_CATEGORIES)}
-    ${field('Belegdatum','date',x.date||today(),'date','required')}
-    ${field('Jahr','year',x.year||yearNow(),'number','min="2000" max="2200"')}
-    ${field('Betrag €','amount',x.amount||'','number','step="0.01" min="0"')}
-    ${area('Notiz','note',x.note||'')}
-  </div></form>`,saveButtons('documentForm'));
-}
-async function openDocument(docId){
-  const meta=place().documents.find(x=>x.id===docId);
-  if(!meta){toast('Dokument nicht gefunden');return}
-  let blob=null;
-  try{blob=await docGet(docId)}catch(e){console.warn(e)}
-  if(!blob){toast('Datei ist auf diesem Gerät nicht vorhanden');return}
-  const url=URL.createObjectURL(blob);
-  if(blob.type.startsWith('image/')){
-    modal(meta.title||'Dokument',`<img src="${url}" alt="Dokument" style="display:block;max-width:100%;max-height:70dvh;object-fit:contain;margin:auto;border-radius:12px;background:#fff">`,`<button type="button" class="btn secondary" data-modal-close>Schließen</button>`);
-    const cleanup=()=>URL.revokeObjectURL(url);
-    setTimeout(cleanup,60000);
-  }else{
-    const a=document.createElement('a');
-    a.href=url;a.target='_blank';a.rel='noopener';a.click();
-    setTimeout(()=>URL.revokeObjectURL(url),60000);
-  }
-}
-async function deleteDocument(docId){
-  if(!confirm('Dokument wirklich löschen?'))return;
-  const p=place();
-  p.documents=p.documents.filter(x=>x.id!==docId);
-  try{await docDelete(docId)}catch(e){console.warn(e)}
-  save();toast('Dokument gelöscht');
-}
-
-function calendarEvents(p=place()){
-  const out=[];
-  p.stays.forEach(x=>{if(x.arrival)out.push({type:'stay',id:x.id,date:x.arrival,endDate:x.departure||x.arrival,title:'Camping-Aufenthalt – Platz '+(p.site.pitch||''),description:[x.people,x.note].filter(Boolean).join(' · ')})});
-  p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;if(d)out.push({type:'contract',id:x.id,date:d,endDate:d,title:(x.noticeDate?'Vertragsfrist: ':'Vertragsende: ')+(x.name||'Vertrag'),description:[x.provider,x.notes].filter(Boolean).join(' · ')})});
-  p.gasChecks.forEach(x=>{if(x.nextDue)out.push({type:'gas',id:x.id,date:x.nextDue,endDate:x.nextDue,title:'Gasprüfung – '+(x.company||p.site.campName||'Campingplatz'),description:[x.result,x.notes].filter(Boolean).join(' · ')})});
-  return out.sort((a,b)=>String(a.date).localeCompare(String(b.date)))
-}
-function calendarPanel(p){
-  const rows=calendarEvents(p),future=rows.filter(x=>x.date>=today());
-  return `<div class="notice good"><strong>Apple-/Gerätekalender:</strong> Termine werden als .ics-Datei übergeben. Auf dem iPhone kannst du sie anschließend dem Kalender hinzufügen.</div>
-  <div class="toolbar"><button type="button" class="btn" id="exportCalendarAll">📅 Alle Termine</button><button type="button" class="btn secondary" id="exportCalendarFuture">Nur zukünftige</button></div>
-  ${future.length?'<div class="list">'+future.map(x=>`<div class="row"><div class="row-main"><div class="row-title">${esc(x.title)}</div><div class="row-sub">${fmtDate(x.date)}${x.endDate&&x.endDate!==x.date?' – '+fmtDate(x.endDate):''}</div></div><button type="button" class="mini" data-cal="${x.type}" data-id="${x.id}">📅</button></div>`).join('')+'</div>':empty('Keine zukünftigen Kalendereinträge.')}`
-}
-function icsDate(date,add=0){const d=parseDate(date);if(add)d.setDate(d.getDate()+add);return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')}
-function icsEscape(v=''){return String(v).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;')}
-function icsEvent(ev){
-  return ['BEGIN:VEVENT','UID:'+icsEscape((ev.type||'event')+'-'+(ev.id||uid())+'@campmanager'),'DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z'),'DTSTART;VALUE=DATE:'+icsDate(ev.date),'DTEND;VALUE=DATE:'+icsDate(ev.endDate||ev.date,1),'SUMMARY:'+icsEscape(ev.title||'CampManager Termin'),ev.description?'DESCRIPTION:'+icsEscape(ev.description):'','END:VEVENT'].filter(Boolean).join('\r\n')
-}
-async function exportIcs(events,filename){
-  if(!events.length){toast('Keine Kalendereinträge vorhanden');return}
-  const content=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//CampManager//DE','CALSCALE:GREGORIAN','METHOD:PUBLISH',...events.map(icsEvent),'END:VCALENDAR'].join('\r\n');
-  const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});
-  const file=new File([blob],filename,{type:'text/calendar'});
-  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-    try{await navigator.share({files:[file],title:'CampManager Kalender'});return}catch(e){if(e?.name==='AbortError')return}
-  }
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)
-}
-function addOneCalendar(type,itemId){
-  const ev=calendarEvents().find(x=>x.type===type&&String(x.id)===String(itemId));
-  if(!ev){toast('Kein Datum vorhanden');return}
-  exportIcs([ev],'campmanager-'+type+'-'+ev.date+'.ics')
-}
-
-function showView(v){
-  activeView=v;
-  $$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));
-  $$('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.view===v));
-  window.scrollTo(0,0)
-}
-function renderAll(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();showView(activeView)}
-
-function modal(title,body,actions=''){
-  const d=$('#modal');
-  $('#modalTitle').textContent=title;
-  $('#modalBody').innerHTML=body;
-  $('#modalActions').innerHTML=actions;
-  d.classList.remove('hidden');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){
-  const d=$('#modal');
-  const form=$('#documentForm');
-  const pendingId=form?.dataset.docNew==='1'?form.dataset.docId:null;
-  d.classList.add('hidden');
-  document.body.style.overflow='';
-  if(pendingId&&pendingDocuments.has(pendingId)){
-    pendingDocuments.delete(pendingId);
-    docDelete(pendingId).catch(()=>{});
-  }
-}
-const field=(l,n,v='',t='text',extra='')=>`<div class="field"><label>${esc(l)}</label><input name="${n}" type="${t}" value="${esc(v??'')}" ${extra}></div>`;
+function modal(title,body,actions){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalActions').innerHTML=actions||'';$('#modal').classList.remove('hidden');document.body.style.overflow='hidden'}
+function closeModal(){$('#modal').classList.add('hidden');document.body.style.overflow=''}
+const field=(l,n,v='',t='text',ex='')=>`<div class="field"><label>${esc(l)}</label><input name="${n}" type="${t}" value="${esc(v??'')}" ${ex}></div>`;
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
-const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(v)===String(a)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
-const saveButtons=(formId)=>`<button type="button" class="btn secondary" data-modal-close>Abbrechen</button><button type="submit" class="btn" form="${formId}">Speichern</button>`;
+const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(a)===String(v)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
+const actions=id=>`<button class="btn sec" type="button" data-close>Abbrechen</button><button class="btn" type="submit" form="${id}">Speichern</button>`;
+function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,electricity:p.electricity,lawn:p.lawn,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,conversation:p.conversations,family:state.family}[type]}
 
-function collection(type){
-  const p=place();
-  return {shopping:p.shopping,cost:p.costs,petroleum:p.petroleum,electricity:p.electricity,annualrent:p.annualRent,lawn:p.lawn,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,conversation:p.conversations,family:state.family}[type]
+function editor(type,x=null){
+ const e=x||{};let title='Eintrag',body='';
+ if(type==='shopping'){title='Einkauf';body=field('Artikel','name',e.name,'text','required')+field('Menge','quantity',e.quantity)+area('Notiz','note',e.note)}
+ if(type==='cost'){title='Kosten';body=select('Kategorie','category',e.category||'other',[['annual','Jahresgebühr manuell'],['repairs','Reparatur'],['purchases','Neuanschaffung'],['other','Sonstiges']])+field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Betrag €','amount',e.amount,'number','required min="0" step="0.01"')+area('Notiz','note',e.note)}
+ if(type==='annualrent'){title='Jahresmiete';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Grundbetrag €','baseAmount',e.baseAmount,'number','required min="0" step="0.01"')+field('Inklusive Übernachtungen','includedNights',e.includedNights||90,'number','required min="0"')+field('Erwachsene € je Übernachtung danach','adultPrice',e.adultPrice,'number','required min="0" step="0.01"')+field('Kinder € je Übernachtung danach','childPrice',e.childPrice,'number','required min="0" step="0.01"')+field('Zusätzliche Erwachsenen-Übernachtungen','extraAdultNights',e.extraAdultNights||0,'number','required min="0"')+field('Zusätzliche Kinder-Übernachtungen','extraChildNights',e.extraChildNights||0,'number','required min="0"')+area('Notiz','note',e.note)}
+ if(type==='petroleum'){title='Petroleum';body=select('Art','kind',e.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Liter','liters',e.liters,'number','required min="0" step="0.1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+area('Notiz','note',e.note)}
+ if(type==='electricity'){title='Strom Jahreswert';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Verbrauch kWh','consumption',e.consumption,'number','required min="0" step="0.1"')+field('Stromkosten €','cost',e.cost,'number','min="0" step="0.01"')+field('Zählermiete €','meterRent',e.meterRent,'number','min="0" step="0.01"')}
+ if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
+ if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
+ if(type==='conversation'){title='Gespräch';body=field('Datum','date',e.date||today(),'date','required')+field('Uhrzeit','time',e.time||new Date().toTimeString().slice(0,5),'time','required')+field('Gesprächspartner','partner',e.partner,'text','required')+area('Notiz','note',e.note)}
+ if(type==='contract'){title='Vertrag';body=field('Vertrag','name',e.name,'text','required')+field('Anbieter','provider',e.provider)+field('Vertragsbeginn','startDate',e.startDate,'date')+field('Vertragsende','endDate',e.endDate,'date')+field('Kündigungs-/Prüffrist','noticeDate',e.noticeDate,'date')+field('Kosten pro Jahr €','annualCost',e.annualCost,'number','min="0" step="0.01"')+area('Notiz','notes',e.notes)}
+ if(type==='gas'){title='Gasprüfung';body=field('Prüfdatum','date',e.date||today(),'date','required')+field('Nächste Prüfung','nextDue',e.nextDue,'date')+select('Ergebnis','result',e.result||'bestanden',[['bestanden','Bestanden'],['maengel','Mängel'],['offen','Offen']])+field('Prüfer/Firma','company',e.company)+field('Kosten €','cost',e.cost,'number','min="0" step="0.01"')+area('Notiz','notes',e.notes)}
+ if(type==='family'){title='Person';body=field('Name','name',e.name,'text','required')}
+ modal(title,`<form id="editForm" data-type="${type}" data-id="${e.id||''}"><div class="formgrid">${body}</div></form>`,actions('editForm'))
 }
-function openEditor(type,existing=null){
-  const x=existing||{};let title='Eintrag',body='';
-  if(type==='shopping'){title=existing?'Einkauf bearbeiten':'Einkauf hinzufügen';body=`${field('Artikel / Sache','name',x.name,'text','required')}${field('Menge','quantity',x.quantity)}${area('Notiz','note',x.note)}`}
-  if(type==='cost'){title=existing?'Kosten bearbeiten':'Kosten hinzufügen';body=`${select('Kategorie','category',x.category||'annual',[['annual','Stellplatz/Jahresgebühr'],['repairs','Reparatur'],['purchases','Neuanschaffung'],['other','Sonstiges']])}${field('Jahr','year',x.year||yearNow(),'number','min="2000" max="2200" required')}${field('Betrag €','amount',x.amount,'number','step="0.01" min="0" required')}${area('Notiz','note',x.note)}`}
-  if(type==='annualrent'){title=existing?'Jahresmiete bearbeiten':'Jahresmiete anlegen';body=`${field('Jahr','year',x.year||yearNow(),'number','min="2000" max="2200" required')}${field('Grundbetrag €','baseAmount',x.baseAmount,'number','step="0.01" min="0" required')}${field('Inklusive Übernachtungen','includedNights',x.includedNights||90,'number','step="1" min="0" required')}${field('Erwachsene € je Übernachtung danach','adultPrice',x.adultPrice,'number','step="0.01" min="0" required')}${field('Kinder € je Übernachtung danach','childPrice',x.childPrice,'number','step="0.01" min="0" required')}${field('Zusätzliche Erwachsenen-Übernachtungen','extraAdultNights',x.extraAdultNights||0,'number','step="1" min="0" required')}${field('Zusätzliche Kinder-Übernachtungen','extraChildNights',x.extraChildNights||0,'number','step="1" min="0" required')}${area('Notiz','note',x.note)}<div class="field full"><div class="notice"><strong>Berechnung:</strong> Grundbetrag + zusätzliche Erwachsenen-Übernachtungen × Erwachsenenpreis + zusätzliche Kinder-Übernachtungen × Kinderpreis.</div></div>`}
-  if(type==='petroleum'){title=existing?'Petroleum bearbeiten':'Petroleum buchen';body=`${select('Art','kind',x.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])}${field('Datum','date',x.date||today(),'date','required')}${field('Liter','liters',x.liters,'number','step="0.1" min="0" required')}${field('Preis gesamt € (nur Einkauf)','price',x.price,'number','step="0.01" min="0"')}${area('Notiz','note',x.note)}<div class="field full"><div class="notice"><strong>Bestand setzen:</strong> Der eingetragene Wert wird an diesem Datum als tatsächlicher Petroleum-Bestand übernommen.</div></div>`}
-  if(type==='electricity'){title=existing?'Stromwert bearbeiten':'Strom-Jahreswert';body=`${field('Jahr','year',x.year||yearNow(),'number','min="2000" max="2200" required')}${field('Verbrauch kWh','consumption',x.consumption,'number','step="0.1" min="0" required')}${field('Stromkosten €','cost',x.cost,'number','step="0.01" min="0"')}${field('Zählermiete €','meterRent',x.meterRent,'number','step="0.01" min="0"')}`}
-  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=`${field('Datum','date',x.date||today(),'date','required')}${area('Notiz','note',x.note)}`}
-  if(type==='stay'){title=existing?'Aufenthalt bearbeiten':'Aufenthalt hinzufügen';body=`${field('Anreise','arrival',x.arrival||today(),'date','required')}${field('Abreise','departure',x.departure,'date','required')}${field('Personen','people',x.people)}${area('Notiz','note',x.note)}`}
-  if(type==='contract'){title=existing?'Vertrag bearbeiten':'Vertrag hinzufügen';body=`${field('Vertrag','name',x.name,'text','required')}${field('Anbieter','provider',x.provider)}${field('Vertragsbeginn','startDate',x.startDate,'date')}${field('Vertragsende','endDate',x.endDate,'date')}${field('Kündigungs-/Prüffrist','noticeDate',x.noticeDate,'date')}${field('Kosten pro Jahr €','annualCost',x.annualCost,'number','step="0.01" min="0"')}${area('Notiz','notes',x.notes)}`}
-  if(type==='gas'){title=existing?'Gasprüfung bearbeiten':'Gasprüfung hinzufügen';body=`${field('Prüfdatum','date',x.date||today(),'date','required')}${field('Nächste Prüfung','nextDue',x.nextDue,'date')}${select('Ergebnis','result',x.result||'bestanden',[['bestanden','Bestanden'],['maengel','Mängel'],['offen','Offen']])}${field('Prüfer / Firma','company',x.company)}${field('Kosten €','cost',x.cost,'number','step="0.01" min="0"')}${area('Notiz / Mängel','notes',x.notes)}`}
-  if(type==='conversation'){title=existing?'Gespräch bearbeiten':'Gespräch eintragen';body=`${field('Datum','date',x.date||today(),'date','required')}${field('Uhrzeit','time',x.time||new Date().toTimeString().slice(0,5),'time','required')}${field('Gesprächspartner','partner',x.partner,'text','required')}${area('Notiz','note',x.note)}`}
-  if(type==='family'){title=existing?'Person bearbeiten':'Person hinzufügen';body=`${field('Name','name',x.name,'text','required')}`}
-  modal(title,`<form id="editForm" data-editor-type="${esc(type)}" data-existing-id="${esc(existing?.id||'')}"><div class="form-grid">${body}</div></form>`,saveButtons('editForm'));
+function saveEditor(form){
+ const type=form.dataset.type,id=form.dataset.id||null,arr=coll(type),old=id?arr.find(x=>x.id===id):null,item={...(old||{}),...Object.fromEntries(new FormData(form).entries()),id:id||uid(),createdAt:old?.createdAt||new Date().toISOString()};
+ if(type==='shopping')item.done=old?!!old.done:false;
+ if(type==='stay'&&item.departure<item.arrival){toast('Abreise liegt vor der Anreise');return}
+ if(type==='electricity'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Stromwert für dieses Jahr existiert bereits');return}
+ if(type==='annualrent'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Jahresmiete für dieses Jahr existiert bereits');return}
+ if(type==='hedge'&&!id){const y=item.date.slice(0,4);if(arr.filter(x=>(x.date||'').startsWith(y)).length>=2){toast('Maximal 2 Heckenschnitte pro Jahr');return}}
+ if(old)Object.assign(old,item);else arr.push(item);closeModal();save();toast('Gespeichert')
 }
-function saveEditor(type,existingId){
-  const form=$('#editForm');if(!form)return;
-  const arr=collection(type),old=existingId?arr.find(x=>x.id===existingId):null;
-  const item={...(old||{}),...Object.fromEntries(new FormData(form).entries()),id:existingId||uid(),createdAt:old?.createdAt||new Date().toISOString()};
-  if(type==='shopping')item.done=old?!!old.done:false;
-  if(type==='stay'&&item.departure<item.arrival){toast('Abreise darf nicht vor der Anreise liegen');return}
-  if(type==='electricity'&&!existingId&&arr.some(x=>String(x.year)===String(item.year))){toast('Für dieses Jahr existiert bereits ein Stromwert');return}
-  if(type==='annualrent'&&!existingId&&arr.some(x=>String(x.year)===String(item.year))){toast('Für dieses Jahr existiert bereits eine Jahresmiete');return}
-  if(type==='hedge'&&!existingId){
-    const y=(item.date||'').slice(0,4);if(y&&arr.filter(x=>(x.date||'').startsWith(y)).length>=2){toast('Für '+y+' sind bereits 2 Heckenschnitte eingetragen');return}
-  }
-  if(old)Object.assign(old,item);else arr.push(item);
-  closeModal();
-  save();toast('Gespeichert')
+async function imgData(file,max=420,q=.78){const b=await createImageBitmap(file);let w=b.width,h=b.height,s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(b,0,0,w,h);b.close();return c.toDataURL('image/jpeg',q)}
+function placeEditor(id=null){
+ const p=id?state.places.find(x=>x.id===id):null,e=p?.site||{};
+ modal(p?'Stellplatz bearbeiten':'Stellplatz hinzufügen',`<form id="placeForm" data-id="${id||''}"><div class="formgrid"><div class="field full"><label>Profilbild</label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${e.photoData?`<img id="photoPrev" class="photoPreview" src="${e.photoData}">`:`<span id="photoEmpty" class="photoPreview" style="display:grid;place-items:center;font-size:30px">⛺</span>`}<div><label class="btn sec">📷 Bild wählen<input id="photoInput" type="file" accept="image/*" capture="environment" hidden></label>${e.photoData?`<button type="button" class="btn sec" id="photoRemove" style="margin-top:6px">Bild entfernen</button>`:''}</div></div><input type="hidden" name="photoData" value="${esc(e.photoData||'')}"></div>${field('Campingplatz / Name','campName',e.campName,'text','required')}${field('Stellplatznummer','pitch',e.pitch,'text','required')}${field('Fläche m²','area',e.area,'number','min="0" step="0.1"')}${area('Notizen','notes',e.notes)}</div></form>`,actions('placeForm'));
+ $('#photoInput').onchange=async()=>{const f=$('#photoInput').files?.[0];if(!f)return;const data=await imgData(f);$('#placeForm [name="photoData"]').value=data;const old=$('#photoPrev')||$('#photoEmpty');const img=document.createElement('img');img.id='photoPrev';img.className='photoPreview';img.src=data;old.replaceWith(img)};
+ if($('#photoRemove'))$('#photoRemove').onclick=()=>{$('#placeForm [name="photoData"]').value='';const old=$('#photoPrev');const s=document.createElement('span');s.id='photoEmpty';s.className='photoPreview';s.style.cssText='display:grid;place-items:center;font-size:30px';s.textContent='⛺';old?.replaceWith(s);$('#photoRemove')?.remove()}
 }
-function editItem(type,itemId){const x=collection(type).find(x=>x.id===itemId);if(x)openEditor(type,x)}
-function deleteItem(type,itemId){
-  if(!confirm('Eintrag wirklich löschen?'))return;
-  const arr=collection(type),ix=arr.findIndex(x=>x.id===itemId);if(ix<0)return;arr.splice(ix,1);save()
+function savePlace(form){
+ const id=form.dataset.id||null,data=Object.fromEntries(new FormData(form).entries()),p=id?state.places.find(x=>x.id===id):null;
+ if(p)p.site={...p.site,...data};else{const n=blankPlace(data.campName,data.pitch);n.site={...n.site,...data};state.places.push(n);state.activePlaceId=n.id}
+ closeModal();save();toast('Stellplatz gespeichert')
 }
+function switcher(){modal('Stellplatz wechseln',`<div class="list">${state.places.map(p=>`<button type="button" class="row" data-placeswitch="${p.id}" style="width:100%;text-align:left">${avatar(p)}<div class="rowmain"><div class="rowtitle">${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</div><div class="rowsub">${p.id===state.activePlaceId?'Aktiv':'Antippen zum Wechseln'}</div></div></button>`).join('')}</div><div class="toolbar"><button class="btn" data-placeadd>＋ Neuer Platz</button></div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`)}
 
-function openPlaceEditor(placeId=null){
-  const existing=placeId?state.places.find(x=>x.id===placeId):null,x=existing?.site||{};
-  const preview=x.photoData
-    ? `<img id="placePhotoPreview" class="place-photo-preview" src="${x.photoData}" alt="Platzbild">`
-    : `<span id="placePhotoPreviewEmpty" class="place-photo-preview" style="display:grid;place-items:center;font-size:32px">⛺</span>`;
-  modal(existing?'Stellplatz bearbeiten':'Stellplatz hinzufügen',`<form id="placeForm" data-place-id="${esc(placeId||'')}"><div class="form-grid">
-    <div class="field full">
-      <label>Profilbild des Stellplatzes</label>
-      <div class="place-photo-row">
-        ${preview}
-        <div>
-          <label class="btn secondary" style="display:inline-block">📷 Bild auswählen<input id="placePhotoInput" name="placePhoto" type="file" accept="image/*" capture="environment" hidden></label>
-          ${x.photoData?'<button type="button" class="btn secondary" id="removePlacePhoto" style="margin-top:6px">Bild entfernen</button>':''}
-          <p class="small-note">Das Bild wird automatisch verkleinert.</p>
-        </div>
-      </div>
-    </div>
-    ${field('Campingplatz / Name','campName',x.campName,'text','required')}
-    ${field('Stellplatznummer','pitch',x.pitch,'text','required')}
-    ${field('Fläche m²','area',x.area,'number','step="0.1" min="0"')}
-    ${area('Notizen','notes',x.notes)}
-    <input type="hidden" name="photoData" value="${esc(x.photoData||'')}">
-  </div></form>`,saveButtons('placeForm'));
+async function handleDoc(file){
+ if(!file)return;if(file.size>25*1024*1024){toast('Datei zu groß');return}
+ const id=uid(),blob=await compress(file);await dbPut(id,blob);
+ docEditor({id,mime:blob.type||file.type,filename:file.name,size:blob.size,createdAt:new Date().toISOString()},true)
+}
+function docEditor(x,isNew=false){modal(isNew?'Dokument speichern':'Dokument bearbeiten',`<form id="docForm" data-id="${x.id}" data-new="${isNew?'1':'0'}"><div class="formgrid">${field('Titel','title',x.title||'Rechnung')}${select('Kategorie','category',x.category||'other',DOCCAT)}${field('Belegdatum','date',x.date||today(),'date','required')}${field('Jahr','year',x.year||yearNow(),'number','min="2000"')}${field('Betrag €','amount',x.amount||'','number','min="0" step="0.01"')}${area('Notiz','note',x.note||'')}</div></form>`,actions('docForm'))}
+async function openDoc(id){const b=await dbGet(id);if(!b){toast('Datei nicht gefunden');return}const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.target='_blank';a.click();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+async function delDoc(id){if(!confirm('Dokument löschen?'))return;place().documents=place().documents.filter(x=>x.id!==id);await dbDel(id).catch(()=>{});save();toast('Dokument gelöscht')}
 
-  const photoInput=$('#placePhotoInput');
-  if(photoInput){
-    photoInput.onchange=async()=>{
-      const file=photoInput.files?.[0];if(!file)return;
-      try{
-        const data=await imageFileToDataUrl(file);
-        const hidden=$('#placeForm input[name="photoData"]');if(hidden)hidden.value=data;
-        const wrap=photoInput.closest('.place-photo-row');
-        const oldImg=$('#placePhotoPreview'),oldEmpty=$('#placePhotoPreviewEmpty');
-        if(oldImg)oldImg.src=data;
-        else if(oldEmpty){
-          const img=document.createElement('img');img.id='placePhotoPreview';img.className='place-photo-preview';img.src=data;img.alt='Platzbild';
-          oldEmpty.replaceWith(img);
-        }
-      }catch(e){toast(e.message||'Bild konnte nicht geladen werden')}
-    };
-  }
-  const remove=$('#removePlacePhoto');
-  if(remove)remove.onclick=()=>{
-    const hidden=$('#placeForm input[name="photoData"]');if(hidden)hidden.value='';
-    const img=$('#placePhotoPreview');if(img){
-      const ph=document.createElement('span');ph.id='placePhotoPreviewEmpty';ph.className='place-photo-preview';ph.style.display='grid';ph.style.placeItems='center';ph.style.fontSize='32px';ph.textContent='⛺';
-      img.replaceWith(ph);
-    }
-    remove.remove();
-  };
-}
-function switchPlace(id){if(!state.places.some(x=>x.id===id))return;state.activePlaceId=id;closeModal();save();toast('Stellplatz gewechselt')}
-function deletePlace(id){
-  if(state.places.length<=1){toast('Mindestens ein Stellplatz muss bleiben');return}
-  const p=state.places.find(x=>x.id===id);if(!p)return;
-  if(!confirm((p.site.campName||'Campingplatz')+' · Platz '+(p.site.pitch||'')+' wirklich löschen?'))return;
-  state.places=state.places.filter(x=>x.id!==id);
-  if(state.activePlaceId===id)state.activePlaceId=state.places[0].id;
-  save();toast('Stellplatz gelöscht')
-}
-function openPlaceSwitcher(){
-  modal('Stellplatz wechseln',`<div class="list">${state.places.map(p=>`<button type="button" class="row" data-place-switch="${p.id}" style="width:100%;text-align:left">${placeAvatarHtml(p)}<div class="row-main"><div class="row-title">${esc(p.site.campName||'Campingplatz')} · Platz ${esc(p.site.pitch||'–')}</div><div class="row-sub">${p.id===state.activePlaceId?'Aktiv':'Antippen zum Wechseln'}</div></div>${p.id===state.activePlaceId?'<span class="badge">Aktiv</span>':'›'}</button>`).join('')}</div><div class="toolbar"><button type="button" class="btn" data-place-add>＋ Neuer Platz</button></div>`,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>')
-}
+function deleteItem(type,id){if(!confirm('Eintrag wirklich löschen?'))return;const a=coll(type),i=a.findIndex(x=>x.id===id);if(i>=0){a.splice(i,1);save()}}
+function editItem(type,id){const x=coll(type).find(x=>x.id===id);if(x)editor(type,x)}
+function deletePlace(id){if(state.places.length<=1){toast('Mindestens ein Platz muss bleiben');return}if(!confirm('Stellplatz wirklich löschen?'))return;state.places=state.places.filter(x=>x.id!==id);if(state.activePlaceId===id)state.activePlaceId=state.places[0].id;save()}
+function switchPlace(id){state.activePlaceId=id;closeModal();save();toast('Stellplatz gewechselt')}
 
-/* Optionaler Supabase Familien-Sync ohne externe JavaScript-Bibliothek */
-function loadCloudCfg(){try{return JSON.parse(localStorage.getItem(CLOUD_CFG_KEY)||'{}')}catch{return{}}}
-function loadCloudSession(){try{return JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{return null}}
-function saveCloudCfg(v){cloudCfg=v;localStorage.setItem(CLOUD_CFG_KEY,JSON.stringify(v))}
-function saveCloudSession(v){cloudSession=v;if(v)localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(v));else localStorage.removeItem(CLOUD_SESSION_KEY)}
-function cloudReady(){return !!(cloudCfg?.url&&cloudCfg?.anonKey)}
-function cloudBase(){return String(cloudCfg.url||'').replace(/\/+$/,'')}
-async function api(path,{method='GET',body=null,token=null,prefer=null}={}){
-  if(!cloudReady())throw new Error('Cloud nicht eingerichtet');
-  const headers={'apikey':cloudCfg.anonKey,'Authorization':'Bearer '+(token||cloudCfg.anonKey)};
-  if(body!==null)headers['Content-Type']='application/json';if(prefer)headers['Prefer']=prefer;
-  const res=await fetch(cloudBase()+path,{method,headers,body:body!==null?JSON.stringify(body):undefined});
-  const text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}
-  if(!res.ok)throw new Error(data?.msg||data?.message||data?.error_description||('HTTP '+res.status));
-  return data
-}
-async function refreshSession(){
-  if(!cloudSession?.refresh_token)return false;
-  try{const s=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:cloudSession.refresh_token}});saveCloudSession(s);return true}catch(e){saveCloudSession(null);return false}
-}
-async function ensureSession(){if(!cloudSession?.access_token)return false;if(cloudSession.expires_at&&Date.now()/1000>Number(cloudSession.expires_at)-60)return refreshSession();return true}
-async function signIn(email,password){const s=await api('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password}});saveCloudSession(s);return s}
-async function signUp(email,password){const s=await api('/auth/v1/signup',{method:'POST',body:{email,password}});if(s?.access_token)saveCloudSession(s);return s}
-async function signOut(){try{if(cloudSession?.access_token)await api('/auth/v1/logout',{method:'POST',token:cloudSession.access_token})}catch{}saveCloudSession(null);lastRemoteStamp='';renderAll()}
-async function pullCloud({silent=false}={}){
-  if(!cloudReady()||!await ensureSession())return false;if(!silent)setSync('syncing','Lädt…');
-  try{
-    const userId=cloudSession.user?.id;if(!userId)throw new Error('Benutzer-ID fehlt');
-    const rows=await api('/rest/v1/camp_states?select=user_id,data,updated_at&user_id=eq.'+encodeURIComponent(userId)+'&limit=1',{token:cloudSession.access_token});
-    if(rows?.[0]){
-      if(!lastRemoteStamp||String(rows[0].updated_at)>String(lastRemoteStamp)){state=normalize(rows[0].data);saveLocal();lastRemoteStamp=rows[0].updated_at;renderAll()}
-    }else await pushCloud({silent:true});
-    setSync('cloud','Cloud');return true
-  }catch(e){console.error(e);setSync('error','Cloud-Fehler');if(!silent)toast('Cloud laden fehlgeschlagen');return false}
-}
-async function pushCloud({silent=false}={}){
-  if(!cloudReady()||!await ensureSession())return false;if(!silent)setSync('syncing','Speichert…');
-  try{
-    const userId=cloudSession.user?.id;if(!userId)throw new Error('Benutzer-ID fehlt');
-    const stamp=new Date().toISOString();
-    const data=await api('/rest/v1/camp_states?on_conflict=user_id',{method:'POST',token:cloudSession.access_token,prefer:'resolution=merge-duplicates,return=representation',body:{user_id:userId,data:state,updated_at:stamp}});
-    lastRemoteStamp=data?.[0]?.updated_at||stamp;setSync('cloud','Cloud');return true
-  }catch(e){console.error(e);setSync('error','Cloud-Fehler');if(!silent)toast('Cloud speichern fehlgeschlagen');return false}
-}
-function scheduleCloudPush(){if(!cloudReady()||!cloudSession)return;clearTimeout(pushTimer);pushTimer=setTimeout(()=>pushCloud({silent:true}),700)}
-function cloudSql(){return `create table if not exists public.camp_states (
+/* optionaler Supabase Sync */
+let cfg=(()=>{try{return JSON.parse(localStorage.getItem(CFG)||'{}')}catch{return{}}})(),session=(()=>{try{return JSON.parse(localStorage.getItem(SES)||'null')}catch{return null}})(),pushTimer=null;
+function cloudReady(){return !!(cfg.url&&cfg.key)}
+function cloudBase(){return String(cfg.url||'').replace(/\/+$/,'')}
+async function api(path,{method='GET',body=null,token=null,prefer=null}={}){const h={apikey:cfg.key,Authorization:'Bearer '+(token||cfg.key)};if(body!==null)h['Content-Type']='application/json';if(prefer)h.Prefer=prefer;const r=await fetch(cloudBase()+path,{method,headers:h,body:body!==null?JSON.stringify(body):undefined});const t=await r.text();let d=null;try{d=t?JSON.parse(t):null}catch{d=t}if(!r.ok)throw new Error(d?.message||d?.error_description||('HTTP '+r.status));return d}
+async function login(email,password){session=await api('/auth/v1/token?grant_type=password',{method:'POST',body:{email,password}});localStorage.setItem(SES,JSON.stringify(session));render()}
+async function signup(email,password){const s=await api('/auth/v1/signup',{method:'POST',body:{email,password}});if(s?.access_token){session=s;localStorage.setItem(SES,JSON.stringify(s));await pushCloud()}return s}
+async function pushCloud(){if(!cloudReady()||!session?.access_token)return;try{const id=session.user?.id;if(!id)return;await api('/rest/v1/camp_states?on_conflict=user_id',{method:'POST',token:session.access_token,prefer:'resolution=merge-duplicates,return=minimal',body:{user_id:id,data:state,updated_at:new Date().toISOString()}});$('#syncStatus').textContent='Cloud'}catch(e){console.warn(e);$('#syncStatus').textContent='Cloud-Fehler'}}
+async function pullCloud(){if(!cloudReady()||!session?.access_token)return;try{const id=session.user?.id;if(!id)return;const r=await api('/rest/v1/camp_states?select=data&user_id=eq.'+encodeURIComponent(id)+'&limit=1',{token:session.access_token});if(r?.[0]?.data){state=normalize(r[0].data);persist();render()}}catch(e){console.warn(e)}}
+function schedulePush(){if(!cloudReady()||!session?.access_token)return;clearTimeout(pushTimer);pushTimer=setTimeout(pushCloud,700)}
+const SQL=`create table if not exists public.camp_states (
   user_id uuid primary key references auth.users(id) on delete cascade,
   data jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
@@ -1084,184 +398,59 @@ create policy "camp_select_own" on public.camp_states for select using (auth.uid
 drop policy if exists "camp_insert_own" on public.camp_states;
 create policy "camp_insert_own" on public.camp_states for insert with check (auth.uid() = user_id);
 drop policy if exists "camp_update_own" on public.camp_states;
-create policy "camp_update_own" on public.camp_states for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
-drop policy if exists "camp_delete_own" on public.camp_states;
-create policy "camp_delete_own" on public.camp_states for delete using (auth.uid() = user_id);`}
-function openSettings(){
-  const signed=!!cloudSession?.access_token;
-  modal('Einstellungen & Daten',`
-  <h3>Stellplätze</h3><div class="toolbar"><button type="button" class="btn secondary" data-place-edit="${place().id}">Aktiven Platz bearbeiten</button><button type="button" class="btn secondary" id="settingsSwitchPlace">Platz wechseln</button><button type="button" class="btn secondary" data-place-add>＋ Platz</button></div>
-  <p class="small-note">Das Logo wird vollständig angezeigt. Falls keine logo.jpg vorhanden ist, erscheint ein Zelt-Symbol.</p>
-  <div class="divider"></div>
-  <h3>Familien-Synchronisierung</h3>
-  <div class="notice ${signed?'good':''}"><strong>${signed?'Cloud aktiv':'Optional'}</strong><br>${signed?'Angemeldet als '+esc(cloudSession.user?.email||'Familienkonto'):'Lokal funktioniert alles ohne Cloud. Für mehrere Geräte kannst du Supabase kostenlos einrichten.'}</div>
-  <form id="cloudConfigForm"><div class="form-grid">${field('Supabase Project URL','url',cloudCfg.url||'','url','placeholder="https://xxxxx.supabase.co"')}${field('Supabase Anon/Public Key','anonKey',cloudCfg.anonKey||'','text','autocomplete="off"')}</div></form>
-  <div class="toolbar"><button type="button" class="btn secondary" id="saveCloudConfig">Cloud-Daten speichern</button><button type="button" class="btn secondary" id="showSql">SQL anzeigen</button></div>
-  ${cloudReady()?(signed?`<div class="toolbar"><button type="button" class="btn" id="pullNow">Cloud laden</button><button type="button" class="btn" id="pushNow">Cloud speichern</button><button type="button" class="btn secondary" id="logoutCloud">Abmelden</button></div>`:`<form id="authForm"><div class="form-grid">${field('Familien-E-Mail','email','','email','required')}${field('Passwort','password','','password','required minlength="6"')}</div></form><div class="toolbar"><button type="button" class="btn" id="loginCloud">Anmelden</button><button type="button" class="btn secondary" id="registerCloud">Familienkonto erstellen</button></div>`):''}
-  <div class="divider"></div>
-  <h3>Kalender</h3><div class="toolbar"><button type="button" class="btn secondary" id="settingsCalendar">📅 Termine exportieren</button></div>
-  <div class="divider"></div>
-  <h3>Dokumentenscanner</h3>
-  <div class="notice warn"><strong>Speicherort:</strong> Bilder und PDFs liegen zunächst lokal auf diesem Gerät. Die Zuordnung und Metadaten gehören zum jeweiligen Stellplatz. Cloud-Dateispeicherung ergänzen wir nach der Supabase-Einrichtung.</div>
-  <div class="divider"></div>
-  <h3>Datensicherung</h3><div class="toolbar"><button type="button" class="btn secondary" id="exportBackup">Backup exportieren</button><label class="btn secondary">Backup importieren<input id="importBackup" type="file" accept="application/json" hidden></label><button type="button" class="btn danger" id="resetLocal">Lokale Daten löschen</button></div>
-  `,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>');
+create policy "camp_update_own" on public.camp_states for update using (auth.uid() = user_id) with check (auth.uid() = user_id);`;
 
-  $('#settingsSwitchPlace').onclick=()=>{closeModal();openPlaceSwitcher()};
-  $('#saveCloudConfig').onclick=()=>{const d=Object.fromEntries(new FormData($('#cloudConfigForm')).entries());saveCloudCfg({url:String(d.url||'').trim().replace(/\/+$/,''),anonKey:String(d.anonKey||'').trim()});toast('Cloud-Daten gespeichert');closeModal();openSettings()};
-  $('#showSql').onclick=()=>{modal('Supabase SQL',`<p class="small-note">Einmal im Supabase SQL Editor ausführen:</p><pre class="codebox">${esc(cloudSql())}</pre><div class="toolbar"><button type="button" class="btn secondary" id="copySql">SQL kopieren</button></div>`,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>');$('#copySql').onclick=async()=>{try{await navigator.clipboard.writeText(cloudSql());toast('SQL kopiert')}catch{toast('Kopieren nicht möglich')}}};
-  if($('#loginCloud'))$('#loginCloud').onclick=async()=>{const f=$('#authForm');if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries());try{await signIn(d.email,d.password);await pullCloud({silent:true});closeModal();renderAll();toast('Cloud verbunden')}catch(e){toast('Anmeldung fehlgeschlagen: '+e.message)}};
-  if($('#registerCloud'))$('#registerCloud').onclick=async()=>{const f=$('#authForm');if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries());try{const s=await signUp(d.email,d.password);if(s?.access_token){await pushCloud({silent:true});closeModal();renderAll();toast('Familienkonto erstellt')}else toast('Konto erstellt. Bitte E-Mail bestätigen.')}catch(e){toast('Konto konnte nicht erstellt werden: '+e.message)}};
-  if($('#pullNow'))$('#pullNow').onclick=()=>pullCloud();
-  if($('#pushNow'))$('#pushNow').onclick=()=>pushCloud();
-  if($('#logoutCloud'))$('#logoutCloud').onclick=async()=>{await signOut();closeModal();toast('Cloud abgemeldet')};
-  $('#settingsCalendar').onclick=()=>exportIcs(calendarEvents(),'campmanager-kalender.ics');
-  $('#exportBackup').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='campmanager-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-  $('#importBackup').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{state=normalize(JSON.parse(await f.text()));save();closeModal();toast('Backup importiert')}catch{toast('Ungültige Backup-Datei')}};
-  $('#resetLocal').onclick=()=>{if(confirm('Wirklich alle lokalen CampManager-Daten löschen?')){state=defaults();save({cloud:false});closeModal();toast('Lokale Daten gelöscht')}}
+function settings(){
+ modal('Einstellungen',`<h3>Cloud-Sync (optional)</h3><form id="cfgForm"><div class="formgrid">${field('Supabase Project URL','url',cfg.url||'','url')}${field('Publishable / Anon Key','key',cfg.key||'')}</div></form><div class="toolbar"><button class="btn sec" id="saveCfg">Cloud-Daten speichern</button><button class="btn sec" id="showSql">SQL anzeigen</button></div>${cloudReady()&&!session?.access_token?`<form id="authForm"><div class="formgrid">${field('Familien-E-Mail','email','','email','required')}${field('Passwort','password','','password','required minlength="6"')}</div></form><div class="toolbar"><button class="btn" id="login">Anmelden</button><button class="btn sec" id="signup">Konto erstellen</button></div>`:''}${session?.access_token?`<div class="notice good">Cloud angemeldet</div><div class="toolbar"><button class="btn" id="pull">Cloud laden</button><button class="btn" id="push">Cloud speichern</button><button class="btn sec" id="logout">Abmelden</button></div>`:''}<div class="divider"></div><h3>Backup</h3><div class="toolbar"><button class="btn sec" id="backupOut">Backup exportieren</button><label class="btn sec">Backup importieren<input id="backupIn" type="file" accept="application/json" hidden></label></div><div class="notice warn">Gescannte Bild-/PDF-Dateien liegen aktuell lokal auf dem jeweiligen Gerät; ihre Metadaten werden mitgesichert.</div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
+ $('#saveCfg').onclick=()=>{const d=Object.fromEntries(new FormData($('#cfgForm')).entries());cfg={url:String(d.url||'').trim().replace(/\/+$/,''),key:String(d.key||'').trim()};localStorage.setItem(CFG,JSON.stringify(cfg));toast('Cloud-Daten gespeichert');closeModal();settings()};
+ $('#showSql').onclick=()=>modal('Supabase SQL',`<pre style="white-space:pre-wrap;background:#132019;color:#e8efe9;padding:10px;border-radius:12px;font-size:11px">${esc(SQL)}</pre>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
+ if($('#login'))$('#login').onclick=async()=>{const d=Object.fromEntries(new FormData($('#authForm')).entries());try{await login(d.email,d.password);await pullCloud();closeModal();toast('Angemeldet')}catch(e){toast('Anmeldung fehlgeschlagen')}};
+ if($('#signup'))$('#signup').onclick=async()=>{const d=Object.fromEntries(new FormData($('#authForm')).entries());try{const s=await signup(d.email,d.password);toast(s?.access_token?'Konto erstellt':'Bitte E-Mail bestätigen')}catch{toast('Konto konnte nicht erstellt werden')}};
+ if($('#pull'))$('#pull').onclick=()=>pullCloud();
+ if($('#push'))$('#push').onclick=()=>pushCloud();
+ if($('#logout'))$('#logout').onclick=()=>{session=null;localStorage.removeItem(SES);closeModal();render();toast('Abgemeldet')};
+ $('#backupOut').onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='campmanager-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
+ $('#backupIn').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{state=normalize(JSON.parse(await f.text()));save();closeModal();toast('Backup importiert')}catch{toast('Ungültiges Backup')}}
 }
-
 
 document.addEventListener('submit',e=>{
-  const form=e.target;
-  if(!(form instanceof HTMLFormElement))return;
-  if(!['editForm','arrivalForm','placeForm','documentForm'].includes(form.id))return;
-  e.preventDefault();
-
-  if(!form.reportValidity())return;
-
-  if(form.id==='editForm'){
-    const type=form.dataset.editorType;
-    const existingId=form.dataset.existingId||null;
-    saveEditor(type,existingId);
-    return;
-  }
-
-  if(form.id==='documentForm'){
-    const p=place();
-    const docId=form.dataset.docId;
-    const data=Object.fromEntries(new FormData(form).entries());
-    let meta=p.documents.find(x=>x.id===docId);
-    const pending=pendingDocuments.get(docId);
-    if(!meta){
-      meta={...(pending||{}),id:docId,createdAt:pending?.createdAt||new Date().toISOString()};
-      p.documents.push(meta);
-    }
-    Object.assign(meta,data,{
-      year:data.year||String(new Date((data.date||today())+'T12:00:00').getFullYear())
-    });
-    pendingDocuments.delete(docId);
-    if(form.dataset.docNew==='1')form.dataset.docNew='0';
-    closeModal();
-    save();toast('Dokument gespeichert');
-    return;
-  }
-
-  if(form.id==='placeForm'){
-    const placeId=form.dataset.placeId||null;
-    const existing=placeId?state.places.find(x=>x.id===placeId):null;
-    const d=Object.fromEntries(new FormData(form).entries());
-    delete d.placePhoto;
-    if(existing){
-      existing.site={...existing.site,...d};
-    }else{
-      const p=blankPlace(d.campName,d.pitch);
-      p.site={...p.site,...d};
-      state.places.push(p);
-      state.activePlaceId=p.id;
-    }
-    closeModal();
-    save();toast(existing?'Stellplatz gespeichert':'Stellplatz hinzugefügt');
-  }
+ const f=e.target;if(!(f instanceof HTMLFormElement))return;e.preventDefault();if(!f.reportValidity())return;
+ if(f.id==='editForm'){saveEditor(f);return}
+ if(f.id==='placeForm'){savePlace(f);return}
+ if(f.id==='docForm'){const d=Object.fromEntries(new FormData(f).entries()),id=f.dataset.id;let x=place().documents.find(x=>x.id===id);if(!x){x={id,createdAt:new Date().toISOString()};place().documents.push(x)}Object.assign(x,d);closeModal();save();toast('Dokument gespeichert');return}
 });
-
 document.addEventListener('click',e=>{
-  const costJump=e.target.closest('[data-cost-jump]');
-  if(costJump){
-    activeTab.costs=costJump.dataset.costJump;
-    renderCosts();
-    showView('costs');
-    return;
-  }
-  const close=e.target.closest('[data-modal-close]');if(close){closeModal();return}
-  const nav=e.target.closest('[data-view]');if(nav){showView(nav.dataset.view);return}
-  const go=e.target.closest('[data-go]');if(go){const v=go.dataset.go;if(go.dataset.tab)activeTab[v]=go.dataset.tab;renderAll();showView(v);return}
-  const tab=e.target.closest('[data-section][data-tab]');if(tab){activeTab[tab.dataset.section]=tab.dataset.tab;renderAll();showView(tab.dataset.section);return}
-  if(e.target.id==='annualPdfBtn'){openAnnualClosingPdf(place(),Number(window._campClosingYear||yearNow()));return}
-  if(e.target.id==='exportCalendarAll'){exportIcs(calendarEvents(),'campmanager-alle-termine.ics');return}
-  if(e.target.id==='exportCalendarFuture'){exportIcs(calendarEvents().filter(x=>x.date>=today()),'campmanager-zukuenftige-termine.ics');return}
-  const scan=e.target.closest('[data-doc-scan]');if(scan){$('#docCameraInput')?.click();return}
-  const upload=e.target.closest('[data-doc-upload]');if(upload){$('#docFileInput')?.click();return}
-  const dopen=e.target.closest('[data-doc-open]');if(dopen){openDocument(dopen.dataset.docOpen);return}
-  const dedit=e.target.closest('[data-doc-edit]');if(dedit){const x=place().documents.find(r=>r.id===dedit.dataset.docEdit);if(x)openDocumentEditor(x,false);return}
-  const ddel=e.target.closest('[data-doc-delete]');if(ddel){deleteDocument(ddel.dataset.docDelete);return}
-
-  const add=e.target.closest('[data-add]');if(add){openEditor(add.dataset.add);return}
-  const edit=e.target.closest('[data-edit]');if(edit){editItem(edit.dataset.edit,edit.dataset.id);return}
-  const del=e.target.closest('[data-del]');if(del){deleteItem(del.dataset.del,del.dataset.id);return}
-  const cal=e.target.closest('[data-cal]');if(cal){addOneCalendar(cal.dataset.cal,cal.dataset.id||'');return}
-  const sw=e.target.closest('[data-place-switch]');if(sw){switchPlace(sw.dataset.placeSwitch);return}
-  const pa=e.target.closest('[data-place-add]');if(pa){closeModal();openPlaceEditor();return}
-  const pe=e.target.closest('[data-place-edit]');if(pe){closeModal();openPlaceEditor(pe.dataset.placeEdit);return}
-  const pd=e.target.closest('[data-place-delete]');if(pd){deletePlace(pd.dataset.placeDelete);return}
+ if(e.target.closest('[data-close]')){closeModal();return}
+ const n=e.target.closest('[data-view]');if(n){show(n.dataset.view);return}
+ const g=e.target.closest('[data-go]');if(g){const v=g.dataset.go;if(g.dataset.jump)tab[v]=g.dataset.jump;render();show(v);return}
+ const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;render();show(tj.dataset.tabsec);return}
+ const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
+ const a=e.target.closest('[data-add]');if(a){editor(a.dataset.add);return}
+ const ed=e.target.closest('[data-edit]');if(ed){editItem(ed.dataset.edit,ed.dataset.id);return}
+ const de=e.target.closest('[data-del]');if(de){deleteItem(de.dataset.del,de.dataset.id);return}
+ const ps=e.target.closest('[data-placeswitch]');if(ps){switchPlace(ps.dataset.placeswitch);return}
+ const pe=e.target.closest('[data-placeedit]');if(pe){closeModal();placeEditor(pe.dataset.placeedit);return}
+ if(e.target.closest('[data-placeadd]')){closeModal();placeEditor();return}
+ const pd=e.target.closest('[data-placedel]');if(pd){deletePlace(pd.dataset.placedel);return}
+ if(e.target.closest('[data-docscan]')){$('#camInput')?.click();return}
+ if(e.target.closest('[data-docupload]')){$('#fileInput')?.click();return}
+ const dop=e.target.closest('[data-docopen]');if(dop){openDoc(dop.dataset.docopen);return}
+ const ded=e.target.closest('[data-docedit]');if(ded){const x=place().documents.find(x=>x.id===ded.dataset.docedit);if(x)docEditor(x,false);return}
+ const ddl=e.target.closest('[data-docdel]');if(ddl){delDoc(ddl.dataset.docdel);return}
+ if(e.target.id==='pdfBtn'){openPdf();return}
 });
 document.addEventListener('change',e=>{
-  if(e.target.id==='closingYearSelect'){
-    window._campClosingYear=Number(e.target.value)||yearNow();
-    renderCosts();showView('costs');
-    return;
-  }
-  if(e.target.id==='docCameraInput'||e.target.id==='docFileInput'){
-    const file=e.target.files?.[0];
-    e.target.value='';
-    if(file)handleDocumentFile(file);
-    return;
-  }
-  if(e.target.matches('[data-toggle-shopping]')){
-    const x=place().shopping.find(r=>r.id===e.target.dataset.toggleShopping);if(x){x.done=e.target.checked;save()}
-  }
+ if(e.target.matches('[data-check]')){const x=place().shopping.find(x=>x.id===e.target.dataset.check);if(x){x.done=e.target.checked;save()}return}
+ if(e.target.id==='closeYear'){closingYear=Number(e.target.value)||yearNow();renderCosts();show('costs');return}
+ if(e.target.id==='camInput'||e.target.id==='fileInput'){const f=e.target.files?.[0];e.target.value='';if(f)handleDoc(f);return}
 });
+$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal()});
+$('#homeBtn').onclick=()=>show('dashboard');
+$('#placeBtn').onclick=switcher;
+$('#settingsBtn').onclick=settings;
+$('#logoImg').onerror=()=>$('#logoImg').style.display='none';
 
-
-$('#modal').addEventListener('click',e=>{
-  if(e.target===$('#modal'))closeModal();
-});
-
-$('#brandBtn').onclick=()=>showView('dashboard');
-$('#placeSwitchBtn').onclick=openPlaceSwitcher;
-$('#accountBtn').onclick=openSettings;
-$('#brandLogo').onerror=()=>{$('#brandLogo').style.display='none';$('#brandFallback').style.display='grid'};
-
-window.addEventListener('focus',()=>{if(cloudReady()&&cloudSession)pullCloud({silent:true})});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudReady()&&cloudSession)pullCloud({silent:true})});
-
-
-async function cleanupLegacyOfflineCache(){
-  try{
-    if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r=>r.unregister()));
-    }
-  }catch(e){console.warn('Service Worker Cleanup',e)}
-  try{
-    if('caches' in window){
-      const keys=await caches.keys();
-      await Promise.all(keys.filter(k=>/platz161|campmanager/i.test(k)).map(k=>caches.delete(k)));
-    }
-  }catch(e){console.warn('Cache Cleanup',e)}
-}
-
-async function boot(){
-  try{
-    await cleanupLegacyOfflineCache();
-    renderAll();
-    if(cloudReady()&&cloudSession){setSync('syncing','Cloud…');await pullCloud({silent:true});renderAll()}
-  }catch(e){
-    console.error(e);
-    $('#app').innerHTML='<div class="card full"><h2>CampManager konnte nicht starten</h2><p>'+esc(e.message||String(e))+'</p></div>'
-  }
-}
-boot();
+(async()=>{try{if('serviceWorker' in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(r=>r.unregister()))}}catch{}render();if(cloudReady()&&session?.access_token)pullCloud()})();
 })();
 </script>
 </body>
