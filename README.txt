@@ -1,37 +1,11 @@
-CampManager v16 – KOMPLETTE NEUVERSION
+CampManager v17 – Kopfzeilen-Fix
 
-Diese Version wurde vollständig neu aufgebaut.
+Geändert:
+- mobile Kopfzeile auf zwei Zeilen umgebaut
+- CampManager + Status + Einstellungen oben
+- vollständiger Campingplatzname darunter
+- Platz-Auswahl separat daneben
+- kein abgeschnittener Campingplatzname mehr
+- alle Funktionen aus v16 bleiben erhalten
 
-Enthalten:
-- mehrere Stellplätze
-- Profilbild je Stellplatz
-- offene Einkäufe
-- Petroleum: Einkauf / Verbrauch / Bestand setzen
-- Strom: Jahresverbrauch / Stromkosten / Zählermiete
-- Rasen
-- Hecke max. 2 Einträge/Jahr
-- Übernachtungszähler
-- Gesprächstagebuch je Stellplatz
-- Verträge
-- Gasprüfungen
-- Dokumentenscanner für Kamera / Bilder / PDFs
-- Familienverwaltung
-- Backup / Import
-- optionaler Supabase Sync
-- Jahresmiete:
-  * Grundbetrag
-  * 90 Übernachtungen inklusive
-  * Erwachsenenpreis ab der 91. Übernachtung
-  * Kinderpreis ab der 91. Übernachtung
-  * zusätzliche Erwachsenen-Übernachtungen
-  * zusätzliche Kinder-Übernachtungen
-  * automatische Berechnung
-- Jahresabschluss:
-  * Jahresauswahl
-  * komplette Kostenübersicht
-  * Übernachtungen
-  * PDF-/Druckansicht
-
-Wichtig:
-Oben im App-Kopf muss sichtbar "v16" stehen.
-In GitHub nur die vorhandene index.html ersetzen.
+Nach dem Update muss oben "v17" stehen.

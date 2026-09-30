@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>CampManager v16</title>
+<title>CampManager v17</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -21,10 +21,10 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:v
 button,input,select,textarea{font:inherit;min-width:0}
 button{cursor:pointer;touch-action:manipulation}
 .hidden{display:none!important}
-.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:40;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.toprow,.subrow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}.subrow{min-width:0}.topname{font-size:13px;color:var(--muted);font-weight:700;min-width:0;flex:1;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
 .brand{display:flex;align-items:center;gap:9px;border:0;background:transparent;padding:0;color:inherit;text-align:left;min-width:0}
 .logo{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px;border:1px solid var(--line)}
-.brandcopy{min-width:0}.brandcopy b{font-size:16px}.brandcopy small{display:block;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px;margin-top:2px}
+.brandcopy{min-width:0}.brandcopy b{font-size:16px;white-space:nowrap}
 .ver{font-size:10px;background:var(--green);color:#fff;padding:2px 6px;border-radius:999px;vertical-align:2px}
 .topright{display:flex;align-items:center;gap:6px}
 .placebtn,.status{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-weight:800;font-size:12px;color:var(--ink)}
@@ -70,21 +70,33 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .conversation{white-space:pre-wrap;line-height:1.42;margin-top:6px}
 .divider{height:1px;background:var(--line);margin:14px 0}
 @media(max-width:760px){
- .hero{grid-template-columns:1fr}.hero img{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.brandcopy small{max-width:120px}
+ .hero{grid-template-columns:1fr}.hero img{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
+
+@media(min-width:761px){
+ .top{gap:4px}
+ .subrow{padding-left:57px}
+ .topname{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+
 </style>
 </head>
 <body>
 <header class="top">
- <button class="brand" id="homeBtn" type="button">
-  <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-  <div class="brandcopy"><b>CampManager <span class="ver">v16</span></b><small id="topName">Campingplatz</small></div>
- </button>
- <div class="topright">
+ <div class="toprow">
+  <button class="brand" id="homeBtn" type="button">
+   <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
+   <div class="brandcopy"><b>CampManager <span class="ver">v17</span></b></div>
+  </button>
+  <div class="topright">
+   <span class="status" id="syncStatus">Lokal</span>
+   <button class="iconbtn" id="settingsBtn" type="button">⚙</button>
+  </div>
+ </div>
+ <div class="subrow">
+  <div id="topName" class="topname">Campingplatz</div>
   <button class="placebtn" id="placeBtn" type="button"><span>Platz ▾</span></button>
-  <span class="status" id="syncStatus">Lokal</span>
-  <button class="iconbtn" id="settingsBtn" type="button">⚙</button>
  </div>
 </header>
 
@@ -116,8 +128,8 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const KEY='campmanager_complete_v16';
-const OLD=['campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const KEY='campmanager_complete_v17';
+const OLD=['campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -174,7 +186,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=16;state.updatedAt=new Date().toISOString();
+ state.version=17;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();return ok}
@@ -207,7 +219,8 @@ function nextDeadline(p){
 }
 
 function renderTop(){
- const p=place();$('#topName').textContent=(p.site.campName||'Campingplatz')+' · Platz '+(p.site.pitch||'–');
+ const p=place();
+ $('#topName').textContent=p.site.campName||'Campingplatz';
  $('#placeBtn').innerHTML=`${p.site.photoData?`<img src="${p.site.photoData}" alt="">`:''}<span>Platz ${esc(p.site.pitch||'–')} ▾</span>`;
  $('#syncStatus').textContent=cloudReady()&&session?.access_token?'Cloud':'Lokal'
 }
