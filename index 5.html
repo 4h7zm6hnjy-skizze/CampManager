@@ -100,10 +100,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 </nav>
 
 <dialog id="modal" class="modal">
-  <form method="dialog" class="modal-card" id="modalCard">
+  <div class="modal-card" id="modalCard">
     <div class="modal-head">
       <h2 id="modalTitle">Eintrag</h2>
-      <button value="cancel" class="icon-btn" aria-label="Schließen">×</button>
+      <button type="button" class="icon-btn" data-modal-close aria-label="Schließen">×</button>
     </div>
     <div id="modalBody"></div>
     <div id="modalActions" class="modal-actions"></div>
@@ -115,7 +115,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 (() => {
 'use strict';
 
-const STORAGE_KEY='campmanager_full_v4';
+const STORAGE_KEY='campmanager_full_v5';
 const CLOUD_CFG_KEY='campmanager_cloud_cfg_v2';
 const CLOUD_SESSION_KEY='campmanager_cloud_session_v2';
 
@@ -282,7 +282,7 @@ function loadLocal(){
   try{
     const raw=localStorage.getItem(STORAGE_KEY);
     if(raw)return normalize(JSON.parse(raw));
-    const old=localStorage.getItem('campmanager_full_v3')||localStorage.getItem('campmanager_full_v2')||localStorage.getItem('campmanager_full_v1')||localStorage.getItem('campmanager_onefile_v1')||localStorage.getItem('platz161_state_v4')||localStorage.getItem('platz161_state_v2');
+    const old=localStorage.getItem('campmanager_full_v4')||localStorage.getItem('campmanager_full_v3')||localStorage.getItem('campmanager_full_v2')||localStorage.getItem('campmanager_full_v1')||localStorage.getItem('campmanager_onefile_v1')||localStorage.getItem('platz161_state_v4')||localStorage.getItem('platz161_state_v2');
     return old?normalize(JSON.parse(old)):defaults();
   }catch(e){console.warn(e);return defaults()}
 }
@@ -297,7 +297,14 @@ let lastCloudUpdated='';
 function saveLocal(){
   syncActivePlace();
   state.updatedAt=new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    return true;
+  }catch(e){
+    console.error('Speichern fehlgeschlagen',e);
+    toast('Speichern im Browser fehlgeschlagen');
+    return false;
+  }
 }
 function save(){
   saveLocal();
@@ -620,12 +627,17 @@ function showView(v){
 function renderAll(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();showView(activeView)}
 
 function modal(title,body,actions=''){
-  $('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalActions').innerHTML=actions;$('#modal').showModal()
+  const d=$('#modal');
+  if(d.open)d.close();
+  $('#modalTitle').textContent=title;
+  $('#modalBody').innerHTML=body;
+  $('#modalActions').innerHTML=actions;
+  d.showModal();
 }
 const field=(l,n,v='',t='text',extra='')=>`<div class="field"><label>${esc(l)}</label><input name="${n}" type="${t}" value="${esc(v??'')}" ${extra}></div>`;
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
 const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(v)===String(a)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
-const saveButtons=()=>`<button value="cancel" class="btn secondary">Abbrechen</button><button type="button" class="btn" data-modal-save>Speichern</button>`;
+const saveButtons=()=>`<button type="button" class="btn secondary" data-modal-close>Abbrechen</button><button type="button" class="btn" data-modal-save>Speichern</button>`;
 const mapType=t=>({shopping:'shopping',cost:'costs',petroleum:'petroleum',electricity:'electricity',lawn:'lawn',hedge:'hedge',stay:'stays',contract:'contracts',gas:'gasChecks',family:'family'})[t];
 
 function openEditor(type,existing=null){
@@ -671,7 +683,7 @@ function openPlaceSwitcher(){
       </div>
       ${p.id===state.activePlaceId?'<span class="badge">Aktiv</span>':'›'}
     </button>`).join('');
-  modal('Stellplatz wechseln',`<div class="list">${rows}</div><div class="toolbar"><button type="button" class="btn" data-place-add>＋ Neuer Platz</button></div>`,'<button value="cancel" class="btn secondary">Schließen</button>');
+  modal('Stellplatz wechseln',`<div class="list">${rows}</div><div class="toolbar"><button type="button" class="btn" data-place-add>＋ Neuer Platz</button></div>`,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>');
 }
 function openPlaceEditor(placeId=null){
   const existing=placeId?state.places.find(p=>p.id===placeId):null;
@@ -844,7 +856,7 @@ function openAccount(){
   <div class="divider"></div>
   <h3>Datensicherung</h3>
   <div class="toolbar"><button type="button" class="btn secondary" id="exportBtn">Backup exportieren</button><label class="btn secondary">Backup importieren<input id="importFile" type="file" accept="application/json" hidden></label><button type="button" class="btn danger" id="resetBtn">Lokale Daten löschen</button></div>
-  `,'<button value="cancel" class="btn secondary">Schließen</button>');
+  `,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>');
   bindAccountButtons()
 }
 function bindAccountButtons(){
@@ -852,7 +864,7 @@ function bindAccountButtons(){
   if($('#switchSiteBtn'))$('#switchSiteBtn').onclick=()=>{closeModal();openPlaceSwitcher()};
   if($('#addSiteBtn'))$('#addSiteBtn').onclick=()=>{closeModal();openPlaceEditor()};
   $('#saveCloudConfig').onclick=()=>{const d=Object.fromEntries(new FormData($('#cloudConfigForm')).entries());saveCloudCfg({url:String(d.url||'').trim().replace(/\/+$/,''),anonKey:String(d.anonKey||'').trim()});toast('Cloud-Daten gespeichert');openAccount()};
-  $('#showSql').onclick=()=>{modal('Supabase SQL',`<p class="small-note">Diesen SQL-Code einmal im Supabase SQL Editor ausführen:</p><pre class="codebox">${esc(cloudSql())}</pre><div class="toolbar"><button type="button" class="btn secondary" id="copySql">SQL kopieren</button></div>`,'<button value="cancel" class="btn secondary">Schließen</button>');$('#copySql').onclick=async()=>{try{await navigator.clipboard.writeText(cloudSql());toast('SQL kopiert')}catch{toast('Kopieren nicht möglich')}}};
+  $('#showSql').onclick=()=>{modal('Supabase SQL',`<p class="small-note">Diesen SQL-Code einmal im Supabase SQL Editor ausführen:</p><pre class="codebox">${esc(cloudSql())}</pre><div class="toolbar"><button type="button" class="btn secondary" id="copySql">SQL kopieren</button></div>`,'<button type="button" class="btn secondary" data-modal-close>Schließen</button>');$('#copySql').onclick=async()=>{try{await navigator.clipboard.writeText(cloudSql());toast('SQL kopiert')}catch{toast('Kopieren nicht möglich')}}};
   if($('#loginCloud'))$('#loginCloud').onclick=async()=>{const f=$('#authForm');if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries());setSync('syncing','Anmeldung…');try{await signIn(d.email,d.password);await pullCloud({silent:true});toast('Cloud verbunden');closeModal();renderAll()}catch(e){setSync('error','Fehler');toast('Anmeldung fehlgeschlagen: '+e.message)}};
   if($('#registerCloud'))$('#registerCloud').onclick=async()=>{const f=$('#authForm');if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries());try{const s=await signUp(d.email,d.password);if(s&&s.access_token){await pushCloud({silent:true});toast('Familienkonto erstellt');closeModal();renderAll()}else toast('Konto erstellt. Bitte E-Mail bestätigen und danach anmelden.')}catch(e){toast('Konto konnte nicht erstellt werden: '+e.message)}};
   if($('#pullNow'))$('#pullNow').onclick=async()=>{await pullCloud();toast('Cloud-Daten geladen')};
@@ -866,6 +878,7 @@ function bindAccountButtons(){
 function closeModal(){if($('#modal').open)$('#modal').close()}
 
 document.addEventListener('click',e=>{
+  const modalClose=e.target.closest('[data-modal-close]');if(modalClose){closeModal();return}
   const go=e.target.closest('[data-go]');if(go){const v=go.dataset.go;if(go.dataset.tab)activeTab[v]=go.dataset.tab;renderAll();showView(v);return}
   const nav=e.target.closest('[data-view]');if(nav){showView(nav.dataset.view);return}
   const tab=e.target.closest('[data-section][data-tab]');if(tab){activeTab[tab.dataset.section]=tab.dataset.tab;renderAll();showView(tab.dataset.section);return}
