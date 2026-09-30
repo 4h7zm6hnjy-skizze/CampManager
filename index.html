@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>CampManager v19</title>
+<title>CampManager v20</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -101,7 +101,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v19</span></b></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v20</span></b></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -142,8 +142,8 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const KEY='campmanager_complete_v19';
-const OLD=['campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const KEY='campmanager_complete_v20';
+const OLD=['campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -160,7 +160,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:16,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:20,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -184,10 +184,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:16,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:20,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:16,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:20,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -200,7 +200,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=19;state.updatedAt=new Date().toISOString();
+ state.version=20;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();return ok}
@@ -218,7 +218,7 @@ function petroleumStock(p=place()){
  });return s
 }
 function totalNights(p=place(),y=null){return p.stays.reduce((s,x)=>s+((!y||Number((x.arrival||'').slice(0,4))===Number(y))?nights(x.arrival,x.departure):0),0)}
-function annualRentTotal(x){return x?Number(x.baseAmount||0)+Number(x.extraAdultNights||0)*Number(x.adultPrice||0)+Number(x.extraChildNights||0)*Number(x.childPrice||0):0}
+function annualRentTotal(x){return x?Number(x.baseAmount||0)+Number(x.extraAdultNights||0)*Number(x.adultPrice||0)+Number(x.extraChildNights||0)*Number(x.childPrice||0)+Number(x.carCount||0)*Number(x.carAnnualPrice||0)+Number(x.trailerCount||0)*Number(x.trailerAnnualPrice||0):0}
 function annualRentFor(p,y){return p.annualRent.find(x=>Number(x.year)===Number(y))||null}
 function contractActive(x,y){
  const a=y+'-01-01',b=y+'-12-31';
@@ -265,7 +265,7 @@ function renderDashboard(){
   <button class="card cardaction" data-go="shopping"><h3>Offene Einkäufe</h3><div class="metric">${p.shopping.filter(x=>!x.done).length}</div><p>noch offen</p></button>
   <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${totalNights(p,y)}</div><p>Gesamt ${totalNights(p)}</p></button>
   <button class="card cardaction" data-go="costs" data-jump="petroleum"><h3>Petroleum</h3><div class="metric">${num(petroleumStock(p),1)} <small>L</small></div><p>aktueller Bestand</p></button>
-  <button class="card cardaction" data-go="costs" data-jump="annualRent"><h3>Jahresmiete</h3><div class="metric">${annualRentFor(p,y)?money(annualRentTotal(annualRentFor(p,y))):'–'}</div><p>Grundbetrag + Zusatznächte</p></button>
+  <button class="card cardaction" data-go="costs" data-jump="annualRent"><h3>Jahresmiete</h3><div class="metric">${annualRentFor(p,y)?money(annualRentTotal(annualRentFor(p,y))):'–'}</div><p>Grundbetrag + Zusatznächte + Fahrzeuge</p></button>
   <button class="card cardaction" data-go="costs" data-jump="closing"><h3>Jahresabschluss</h3><div class="metric">${money(total)}</div><p>PDF-Auswertung ${y}</p></button>
   <button class="card cardaction" data-go="more" data-jump="conversations"><h3>Gespräche</h3><div class="metric">${p.conversations.length}</div><p>Gesprächstagebuch</p></button>
   <div class="card full"><h2>Schnellzugriff</h2><div class="quick">
@@ -285,7 +285,7 @@ function renderCosts(){
  const p=place(),t=tab.costs;
  $('#v-costs').innerHTML=`<div class="head"><div><h1>Kosten & Verbrauch</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
  <div class="grid" style="margin-top:0">
-  <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, 90 inklusive, Erwachsene/Kinder danach</p></button>
+  <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, Personen, Autos & Anhänger</p></button>
   <button class="card half cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
  </div>
  ${tabs('costs',[['overview','Übersicht'],['annualRent','Jahresmiete'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['electricity','Strom']])}
@@ -297,7 +297,7 @@ function costOverview(p){
 }
 function annualRentPanel(p){
  const rows=[...p.annualRent].sort((a,b)=>Number(b.year)-Number(a.year));
- return `<div class="notice good"><b>Jahresmiete:</b> Grundbetrag enthält standardmäßig 90 Übernachtungen. Danach getrennte Preise für Erwachsene und Kinder.</div><div class="toolbar"><button class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(annualRentTotal(x))}</div><div class="rowsub">Grundbetrag ${money(x.baseAmount)} · ${num(x.includedNights||90)} inklusive</div><div class="rowsub">ab ${Number(x.includedNights||90)+1}. Übernachtung: Erwachsene ${money(x.adultPrice)} · Kinder ${money(x.childPrice)}</div><div class="rowsub">Zusatz: ${num(x.extraAdultNights)} Erw. / ${num(x.extraChildNights)} Kinder</div>${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Jahresmiete angelegt.')}`
+ return `<div class="notice good"><b>Jahresmiete:</b> Grundbetrag enthält standardmäßig 90 Übernachtungen. Danach getrennte Preise für Erwachsene und Kinder. Autos und Anhänger können mit Anzahl und Jahrespreis hinterlegt werden.</div><div class="toolbar"><button class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(annualRentTotal(x))}</div><div class="rowsub">Grundbetrag ${money(x.baseAmount)} · ${num(x.includedNights||90)} inklusive</div><div class="rowsub">ab ${Number(x.includedNights||90)+1}. Übernachtung: Erwachsene ${money(x.adultPrice)} · Kinder ${money(x.childPrice)}</div><div class="rowsub">Zusatz: ${num(x.extraAdultNights)} Erw. / ${num(x.extraChildNights)} Kinder</div><div class="rowsub">Autos: ${num(x.carCount)} × ${money(x.carAnnualPrice)} = ${money(Number(x.carCount||0)*Number(x.carAnnualPrice||0))}</div><div class="rowsub">Anhänger: ${num(x.trailerCount)} × ${money(x.trailerAnnualPrice)} = ${money(Number(x.trailerCount||0)*Number(x.trailerAnnualPrice||0))}</div>${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Jahresmiete angelegt.')}`
 }
 function costRows(p){
  const lab={annual:'Jahresgebühr (manuell)',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'},rows=[...p.costs].sort((a,b)=>Number(b.year)-Number(a.year));
@@ -314,7 +314,7 @@ function electricityRows(p){
 function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));return [...s].filter(Boolean).sort((a,b)=>b-a)}
 function closingRows(p,y){
  const r=[],ar=annualRentFor(p,y);
- if(ar)r.push({d:String(y),c:'Jahresmiete',t:`Grundbetrag ${money(ar.baseAmount)}, ${num(ar.includedNights||90)} inkl., ${num(ar.extraAdultNights)} Erw. x ${money(ar.adultPrice)}, ${num(ar.extraChildNights)} Kinder x ${money(ar.childPrice)}`,a:annualRentTotal(ar)});
+ if(ar)r.push({d:String(y),c:'Jahresmiete',t:`Grundbetrag ${money(ar.baseAmount)}, ${num(ar.includedNights||90)} inkl., ${num(ar.extraAdultNights)} Erw. x ${money(ar.adultPrice)}, ${num(ar.extraChildNights)} Kinder x ${money(ar.childPrice)}, ${num(ar.carCount)} Auto(s) x ${money(ar.carAnnualPrice)}, ${num(ar.trailerCount)} Anhänger x ${money(ar.trailerAnnualPrice)}`,a:annualRentTotal(ar)});
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:'Strom',t:`${num(x.consumption,1)} kWh, Strom ${money(x.cost)}, Zählermiete ${money(x.meterRent)}`,a:Number(x.cost||0)+Number(x.meterRent||0)}));
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
@@ -338,7 +338,7 @@ function closingPanel(p){
 }
 function reportHtml(p,y){
  const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
- return `<!doctype html><html><head><meta charset="utf-8"><title>Jahresabschluss ${y}</title><style>body{font-family:Arial,sans-serif;color:#172019;margin:0}main{max-width:900px;margin:auto;padding:28px}h1{margin:0 0 5px}h2{font-size:18px;margin-top:24px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}.r{text-align:right;white-space:nowrap}.total td{font-weight:bold;border-top:2px solid #173c29}.btn{background:#173c29;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}.np{margin-bottom:18px}@media print{.np{display:none}@page{size:A4;margin:14mm}main{padding:0}}</style></head><body><main><div class="np"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div><h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${ar?`<h2>Jahresmiete</h2><table><tr><td>Grundbetrag</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Inklusive Übernachtungen</td><td class="r">${num(ar.includedNights||90)}</td></tr><tr><td>Erwachsenenpreis danach</td><td class="r">${money(ar.adultPrice)}</td></tr><tr><td>Kinderpreis danach</td><td class="r">${money(ar.childPrice)}</td></tr><tr><td>Zusätzliche Erwachsenen-Übernachtungen</td><td class="r">${num(ar.extraAdultNights)}</td></tr><tr><td>Zusätzliche Kinder-Übernachtungen</td><td class="r">${num(ar.extraChildNights)}</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar))}</td></tr></table>`:''}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table></main></body></html>`
+ return `<!doctype html><html><head><meta charset="utf-8"><title>Jahresabschluss ${y}</title><style>body{font-family:Arial,sans-serif;color:#172019;margin:0}main{max-width:900px;margin:auto;padding:28px}h1{margin:0 0 5px}h2{font-size:18px;margin-top:24px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}.r{text-align:right;white-space:nowrap}.total td{font-weight:bold;border-top:2px solid #173c29}.btn{background:#173c29;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}.np{margin-bottom:18px}@media print{.np{display:none}@page{size:A4;margin:14mm}main{padding:0}}</style></head><body><main><div class="np"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div><h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${ar?`<h2>Jahresmiete</h2><table><tr><td>Grundbetrag</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Inklusive Übernachtungen</td><td class="r">${num(ar.includedNights||90)}</td></tr><tr><td>Erwachsenenpreis danach</td><td class="r">${money(ar.adultPrice)}</td></tr><tr><td>Kinderpreis danach</td><td class="r">${money(ar.childPrice)}</td></tr><tr><td>Zusätzliche Erwachsenen-Übernachtungen</td><td class="r">${num(ar.extraAdultNights)}</td></tr><tr><td>Zusätzliche Kinder-Übernachtungen</td><td class="r">${num(ar.extraChildNights)}</td></tr><tr><td>Autos</td><td class="r">${num(ar.carCount)} × ${money(ar.carAnnualPrice)} = ${money(Number(ar.carCount||0)*Number(ar.carAnnualPrice||0))}</td></tr><tr><td>Anhänger</td><td class="r">${num(ar.trailerCount)} × ${money(ar.trailerAnnualPrice)} = ${money(Number(ar.trailerCount||0)*Number(ar.trailerAnnualPrice||0))}</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar))}</td></tr></table>`:''}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table></main></body></html>`
 }
 function openPdf(){const w=window.open('','_blank');if(!w){toast('Pop-up blockiert');return}w.document.write(reportHtml(place(),closingYear));w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch{}},400)}
 
@@ -390,7 +390,7 @@ function editor(type,x=null){
  const e=x||{};let title='Eintrag',body='';
  if(type==='shopping'){title='Einkauf';body=field('Artikel','name',e.name,'text','required')+field('Menge','quantity',e.quantity)+area('Notiz','note',e.note)}
  if(type==='cost'){title='Kosten';body=select('Kategorie','category',e.category||'other',[['annual','Jahresgebühr manuell'],['repairs','Reparatur'],['purchases','Neuanschaffung'],['other','Sonstiges']])+field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Betrag €','amount',e.amount,'number','required min="0" step="0.01"')+area('Notiz','note',e.note)}
- if(type==='annualrent'){title='Jahresmiete';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Grundbetrag €','baseAmount',e.baseAmount,'number','required min="0" step="0.01"')+field('Inklusive Übernachtungen','includedNights',e.includedNights||90,'number','required min="0"')+field('Erwachsene € je Übernachtung danach','adultPrice',e.adultPrice,'number','required min="0" step="0.01"')+field('Kinder € je Übernachtung danach','childPrice',e.childPrice,'number','required min="0" step="0.01"')+field('Zusätzliche Erwachsenen-Übernachtungen','extraAdultNights',e.extraAdultNights||0,'number','required min="0"')+field('Zusätzliche Kinder-Übernachtungen','extraChildNights',e.extraChildNights||0,'number','required min="0"')+area('Notiz','note',e.note)}
+ if(type==='annualrent'){title='Jahresmiete';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Grundbetrag €','baseAmount',e.baseAmount,'number','required min="0" step="0.01"')+field('Inklusive Übernachtungen','includedNights',e.includedNights||90,'number','required min="0"')+field('Erwachsene € je Übernachtung danach','adultPrice',e.adultPrice,'number','required min="0" step="0.01"')+field('Kinder € je Übernachtung danach','childPrice',e.childPrice,'number','required min="0" step="0.01"')+field('Zusätzliche Erwachsenen-Übernachtungen','extraAdultNights',e.extraAdultNights||0,'number','required min="0"')+field('Zusätzliche Kinder-Übernachtungen','extraChildNights',e.extraChildNights||0,'number','required min="0"')+field('Anzahl Autos','carCount',e.carCount||0,'number','required min="0" step="1"')+field('Jahrespreis pro Auto €','carAnnualPrice',e.carAnnualPrice||0,'number','required min="0" step="0.01"')+field('Anzahl Anhänger','trailerCount',e.trailerCount||0,'number','required min="0" step="1"')+field('Jahrespreis pro Anhänger €','trailerAnnualPrice',e.trailerAnnualPrice||0,'number','required min="0" step="0.01"')+area('Notiz','note',e.note)}
  if(type==='petroleum'){title='Petroleum';body=select('Art','kind',e.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Liter','liters',e.liters,'number','required min="0" step="0.1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+area('Notiz','note',e.note)}
  if(type==='electricity'){title='Strom Jahreswert';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Verbrauch kWh','consumption',e.consumption,'number','required min="0" step="0.1"')+field('Stromkosten €','cost',e.cost,'number','min="0" step="0.01"')+field('Zählermiete €','meterRent',e.meterRent,'number','min="0" step="0.01"')}
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}

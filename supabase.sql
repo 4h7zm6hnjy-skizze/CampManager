@@ -1,4 +1,4 @@
--- CampManager v6 – optionaler Familien-/Mehrgeräte-Sync
+-- CampManager – optionaler Familien-/Mehrgeräte-Sync
 -- Einmal im Supabase SQL Editor ausführen.
 
 create table if not exists public.camp_states (
