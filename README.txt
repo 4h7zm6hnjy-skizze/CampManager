@@ -1,17 +1,12 @@
-CampManager v18 – Verträge monatlich/jährlich
+CampManager v19 – Verwaltungsbereich optimiert
 
-Neu bei Verträgen:
-- Abrechnung auswählen:
-  - Monatlich
-  - Jährlich
-- Betrag in Euro eingeben
-- Anzeige in der Vertragsliste als €/Monat oder €/Jahr
+Geändert:
+- Verwaltung-Reiter auf dem iPhone als sauberes 2-Spalten-Raster
+- keine horizontal abgeschnittenen Punkte mehr
+- alle Reiter gleichmäßig groß
+- aktive Auswahl weiterhin grün markiert
+- auf größeren Displays 4 Spalten
+- Überschrift und Untertitel kompakter ausgerichtet
 
-Jahresabschluss:
-- monatliche Verträge werden mit den aktiven Monaten des gewählten Jahres berechnet
-- Vertragsbeginn und Vertragsende werden berücksichtigt
-- jährliche Verträge werden mit dem Jahresbetrag angesetzt
-- alte Verträge mit dem bisherigen Jahreskosten-Feld bleiben kompatibel
-
-Alle Funktionen aus v17 bleiben erhalten.
-Nach dem Update muss oben v18 stehen.
+Alle Funktionen aus v18 bleiben erhalten.
+Nach dem Update muss oben v19 stehen.

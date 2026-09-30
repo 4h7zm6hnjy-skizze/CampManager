@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>CampManager v18</title>
+<title>CampManager v19</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -46,6 +46,9 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 13px}
 .btn{border:0;background:var(--green);color:#fff;font-weight:800;padding:10px 13px;border-radius:12px}.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.danger{background:var(--danger)}.btn.block{width:100%}
 .tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs.manage-tabs{overflow:visible;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 0 12px}
+.tabs.manage-tabs .chip{width:100%;min-height:44px;white-space:normal;text-align:center;line-height:1.15;padding:9px 7px}
+
 .chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-weight:800;font-size:13px;color:var(--ink)}.chip.active{background:var(--green);color:#fff;border-color:var(--green)}
 .list{display:flex;flex-direction:column;gap:8px}
 .row{display:flex;align-items:center;gap:10px;padding:12px;border-radius:15px;background:#fff;border:1px solid var(--line)}
@@ -70,6 +73,12 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .conversation{white-space:pre-wrap;line-height:1.42;margin-top:6px}
 .divider{height:1px;background:var(--line);margin:14px 0}
 @media(max-width:760px){
+ .head{margin-bottom:10px}
+ .head h1{font-size:24px;line-height:1.1}
+ .head p{font-size:14px;line-height:1.25}
+ .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
+
  .hero{grid-template-columns:1fr}.hero img{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
@@ -80,6 +89,11 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  .topname{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 
+
+@media(min-width:761px){
+ .tabs.manage-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -87,7 +101,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v18</span></b></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v19</span></b></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -128,8 +142,8 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const KEY='campmanager_complete_v18';
-const OLD=['campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const KEY='campmanager_complete_v19';
+const OLD=['campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -186,13 +200,16 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=18;state.updatedAt=new Date().toISOString();
+ state.version=19;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();return ok}
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2100)}
 function empty(t){return `<div class="empty">${esc(t)}</div>`}
-function tabs(sec,items){return `<div class="tabs">${items.map(([k,l])=>`<button type="button" class="chip ${tab[sec]===k?'active':''}" data-tabsec="${sec}" data-tab="${k}">${esc(l)}</button>`).join('')}</div>`}
+function tabs(sec,items){
+ const extra=sec==='more'?' manage-tabs':'';
+ return `<div class="tabs${extra}">${items.map(([k,l])=>`<button type="button" class="chip ${tab[sec]===k?'active':''}" data-tabsec="${sec}" data-tab="${k}">${esc(l)}</button>`).join('')}</div>`
+}
 function avatar(p,cls='avatar'){return p.site.photoData?`<img class="${cls}" src="${p.site.photoData}" alt="">`:`<span class="${cls} ph">⛺</span>`}
 
 function petroleumStock(p=place()){
