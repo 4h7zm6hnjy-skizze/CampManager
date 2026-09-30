@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#173c29">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="CampManager">
@@ -118,7 +121,7 @@ button{cursor:pointer;max-width:100%;touch-action:manipulation}
   <button class="brand" id="brandBtn" type="button" aria-label="Startseite">
     <img id="brandLogo" class="brand-logo" src="logo.jpg" alt="CampManager Logo">
     <span id="brandFallback" class="brand-fallback">⛺</span>
-    <span class="brand-copy"><strong>CampManager</strong><small id="campNameTop">Platz 161</small></span>
+    <span class="brand-copy"><strong>CampManager <span style="font-size:11px;background:#173c29;color:#fff;padding:2px 6px;border-radius:999px;vertical-align:2px">v15</span></strong><small id="campNameTop">Platz 161</small></span>
   </button>
   <div class="top-actions">
     <button id="placeSwitchBtn" class="status" type="button" style="display:flex;align-items:center;gap:6px">Platz 161 ▾</button>
@@ -159,10 +162,10 @@ button{cursor:pointer;max-width:100%;touch-action:manipulation}
 (() => {
 'use strict';
 
-const STORAGE_KEY='campmanager_complete_v14';
+const STORAGE_KEY='campmanager_complete_v15';
 const CLOUD_CFG_KEY='campmanager_cloud_cfg_v6';
 const CLOUD_SESSION_KEY='campmanager_cloud_session_v6';
-const OLD_KEYS=['campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1','campmanager_onefile_v1','platz161_state_v4','platz161_state_v2'];
+const OLD_KEYS=['campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1','campmanager_onefile_v1','platz161_state_v4','platz161_state_v2'];
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -349,7 +352,7 @@ const pendingDocuments=new Map();
 
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function saveLocal(){
-  state.version=14;
+  state.version=15;
   state.updatedAt=new Date().toISOString();
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
@@ -515,8 +518,20 @@ function renderShopping(){
 function renderCosts(){
   const p=place(),t=activeTab.costs;
   $('#view-costs').innerHTML=`<div class="view-head"><div><h1>Kosten & Verbrauch</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
-  ${tabs('costs',[['overview','Übersicht'],['annualRent','Jahresmiete'],['costs','Kosten'],['petroleum','Petroleum'],['electricity','Strom'],['closing','Jahresabschluss']])}
-  ${t==='overview'?costOverview(p):t==='annualRent'?annualRentPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):t==='electricity'?electricityRows(p):annualClosingPanel(p)}`
+
+  <div class="grid" style="margin-top:0;margin-bottom:14px">
+    <button type="button" class="card half card-action" data-cost-jump="annualRent">
+      <h2>🏕️ Jahresmiete</h2>
+      <p>Grundbetrag, 90 Übernachtungen inklusive, Erwachsenen- und Kinderpreise</p>
+    </button>
+    <button type="button" class="card half card-action" data-cost-jump="closing">
+      <h2>📄 Jahresabschluss</h2>
+      <p>Alle Jahreskosten prüfen und als PDF-/Druckansicht ausgeben</p>
+    </button>
+  </div>
+
+  ${tabs('costs',[['overview','Übersicht'],['annualRent','Jahresmiete'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['electricity','Strom']])}
+  ${t==='overview'?costOverview(p):t==='annualRent'?annualRentPanel(p):t==='closing'?annualClosingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):electricityRows(p)}`
 }
 function costOverview(p){
   const y=yearNow(),d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);
@@ -531,7 +546,7 @@ function costOverview(p){
 function annualRentPanel(p){
   const rows=[...(p.annualRent||[])].sort((a,b)=>Number(b.year)-Number(a.year));
   const current=annualRentForYear(p,yearNow());
-  return `<div class="notice good"><strong>Jahresmiete:</strong> Der Grundbetrag enthält standardmäßig 90 Übernachtungen. Ab der 91. Übernachtung können Erwachsenen- und Kinderpreise getrennt berechnet werden.</div>
+  return `<div class="card full" style="margin-bottom:14px"><h2>Jahresmiete verwalten</h2><p>Grundbetrag + 90 Übernachtungen inklusive. Ab der 91. Übernachtung werden Erwachsene und Kinder getrennt berechnet.</p></div><div class="notice good"><strong>Jahresmiete:</strong> Der Grundbetrag enthält standardmäßig 90 Übernachtungen. Ab der 91. Übernachtung können Erwachsenen- und Kinderpreise getrennt berechnet werden.</div>
   <div class="toolbar"><button type="button" class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>
   ${current?`<div class="grid">
     <div class="card half"><h2>Jahresmiete ${yearNow()}</h2><div class="metric">${money(annualRentTotal(current))}</div><p>berechneter Gesamtbetrag</p></div>
@@ -594,7 +609,7 @@ function annualClosingPanel(p){
   const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0),rows=annualClosingRows(p,y);
   const labels={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
   const docs=(p.documents||[]).filter(x=>String(x.year||'')===String(y)||(x.date||'').startsWith(String(y))).length;
-  return `<div class="notice good"><strong>Jahresabschluss:</strong> Jahr auswählen und alle erfassten Kosten als Übersicht prüfen. Über „PDF erstellen“ öffnet sich die druckfertige PDF-Ansicht.</div>
+  return `<div class="card full" style="margin-bottom:14px"><h2>Jahresabschluss als PDF</h2><p>Jahr auswählen, Gesamtkosten prüfen und anschließend die Übersicht als PDF sichern oder drucken.</p></div><div class="notice good"><strong>Jahresabschluss:</strong> Jahr auswählen und alle erfassten Kosten als Übersicht prüfen. Über „PDF erstellen“ öffnet sich die druckfertige PDF-Ansicht.</div>
   <div class="form-grid" style="margin-bottom:14px"><div class="field"><label>Jahr</label><select id="closingYearSelect">${years.map(v=>`<option value="${v}" ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div>
   <div class="grid">
     <div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(total)}</div><p>${rows.length} Kostenpositionen</p></div>
@@ -1161,6 +1176,13 @@ document.addEventListener('submit',e=>{
 });
 
 document.addEventListener('click',e=>{
+  const costJump=e.target.closest('[data-cost-jump]');
+  if(costJump){
+    activeTab.costs=costJump.dataset.costJump;
+    renderCosts();
+    showView('costs');
+    return;
+  }
   const close=e.target.closest('[data-modal-close]');if(close){closeModal();return}
   const nav=e.target.closest('[data-view]');if(nav){showView(nav.dataset.view);return}
   const go=e.target.closest('[data-go]');if(go){const v=go.dataset.go;if(go.dataset.tab)activeTab[v]=go.dataset.tab;renderAll();showView(v);return}

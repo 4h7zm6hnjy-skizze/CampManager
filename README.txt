@@ -1,32 +1,27 @@
-CampManager v14 – Jahresmiete & Jahresabschluss
+CampManager v15
 
-Neu unter Kosten:
-1. Jahresmiete
-   - Jahr
-   - Grundbetrag
-   - standardmäßig 90 Übernachtungen inklusive
-   - Erwachsenenpreis je Übernachtung danach
-   - Kinderpreis je Übernachtung danach
-   - zusätzliche Erwachsenen-Übernachtungen
-   - zusätzliche Kinder-Übernachtungen
-   - automatische Berechnung der Jahresmiete
+WICHTIG:
+Oben neben "CampManager" muss sichtbar "v15" stehen. Dann ist garantiert die neue Datei geladen.
 
-2. Jahresabschluss
-   - Jahr auswählen
-   - Jahresmiete
-   - Reparaturen
-   - Neuanschaffungen
-   - Sonstige Kosten
-   - Stromkosten
-   - Zählermiete
-   - Petroleum
-   - Gasprüfung
-   - laufende Vertragskosten
-   - Gesamtkosten
-   - Übernachtungszahl
-   - Anzahl hinterlegter Belege
-   - PDF-/Druckansicht
+Unter "Kosten" sind jetzt direkt zwei große Schaltflächen sichtbar:
+- Jahresmiete
+- Jahresabschluss
 
-Auf iPhone öffnet „PDF erstellen“ die Druck-/PDF-Ansicht. Dort kann die Übersicht als PDF gesichert oder geteilt werden.
+Jahresmiete:
+- Jahr
+- Grundbetrag
+- 90 Übernachtungen inklusive
+- Erwachsenenpreis ab der 91. Übernachtung
+- Kinderpreis ab der 91. Übernachtung
+- zusätzliche Erwachsenen-Übernachtungen
+- zusätzliche Kinder-Übernachtungen
+- automatische Berechnung
 
-Alle bisherigen Funktionen bleiben enthalten. Daten aus v13 und älteren Versionen werden übernommen.
+Jahresabschluss:
+- Jahr auswählen
+- alle Kostenquellen als Übersicht
+- Gesamtbetrag
+- Übernachtungen
+- PDF-/Druckansicht
+
+Alle bisherigen Funktionen und Daten bleiben erhalten.
