@@ -2,12 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#173c29">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="CampManager">
-<title>CampManager – Komplettversion</title>
+<title>CampManager – Komplettversion v7</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 :root{
@@ -20,7 +20,7 @@
 html{background:var(--bg);-webkit-text-size-adjust:100%}
 body{margin:0;min-height:100vh;color:var(--ink);background:linear-gradient(180deg,#faf8f3 0,#f2eee4 100%);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer}
+button{cursor:pointer;max-width:100%;touch-action:manipulation}
 .hidden{display:none!important}
 .topbar{position:sticky;top:0;z-index:30;height:76px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(250,248,243,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(226,221,209,.9)}
 .brand{display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:0;text-align:left;color:inherit;min-width:0}
@@ -60,11 +60,11 @@ button{cursor:pointer}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
 .empty{padding:28px 16px;border:1px dashed #ccc4b7;border-radius:18px;text-align:center;color:var(--muted);background:rgba(255,255,255,.45)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800}
-.field input,.field select,.field textarea{border:1px solid #dcd5c8;background:#fff;border-radius:12px;padding:11px 12px;color:var(--ink);outline:none;width:100%}.field textarea{min-height:92px;resize:vertical}
+.field input,.field select,.field textarea{border:1px solid #dcd5c8;background:#fff;border-radius:12px;padding:11px 12px;color:var(--ink);outline:none;width:100%;font-size:16px;line-height:1.2;touch-action:manipulation}.field textarea{min-height:82px;resize:vertical}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#7aa08a;box-shadow:0 0 0 3px rgba(65,113,82,.12)}
-.modal{border:0;background:transparent;padding:0;width:min(650px,calc(100vw - 20px));max-height:92vh}.modal::backdrop{background:rgba(9,20,14,.55);backdrop-filter:blur(4px)}
-.modal-card{background:#faf8f3;border-radius:24px;border:1px solid var(--line);padding:16px;box-shadow:0 30px 90px rgba(0,0,0,.28);max-height:92vh;overflow:auto}
-.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.modal-head h2{margin:0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;flex-wrap:wrap}
+.modal{border:0;background:transparent;padding:0;width:calc(100vw - 16px);max-width:620px;max-height:calc(100dvh - 20px);margin:auto;overflow:visible}.modal::backdrop{background:rgba(9,20,14,.55);backdrop-filter:blur(4px)}
+.modal-card{width:100%;max-width:100%;background:#faf8f3;border-radius:24px;border:1px solid var(--line);padding:14px;box-shadow:0 30px 90px rgba(0,0,0,.28);max-height:calc(100dvh - 20px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.modal-head h2{margin:0}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;position:sticky;bottom:-14px;background:#faf8f3;padding:10px 0 2px;z-index:2}.modal-actions .btn{width:100%;min-width:0}
 .bottom-nav{position:fixed;z-index:25;bottom:0;left:0;right:0;padding:7px 10px calc(7px + var(--safe));display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
 .nav-btn{border:0;background:transparent;color:#6f776f;border-radius:14px;padding:7px 5px;display:flex;flex-direction:column;align-items:center;gap:2px}.nav-btn span{font-size:20px;line-height:1}.nav-btn small{font-size:11px;font-weight:800}.nav-btn.active{color:var(--green);background:#edf3ef}
 .toast{position:fixed;z-index:120;left:50%;bottom:90px;max-width:calc(100vw - 24px);transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#102219;color:#fff;padding:11px 15px;border-radius:999px;font-weight:700;box-shadow:var(--shadow);transition:.2s;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
@@ -77,7 +77,7 @@ button{cursor:pointer}
 @media(max-width:760px){
   .hero{grid-template-columns:1fr}.hero-logo{max-height:280px}.card,.card.half{grid-column:1/-1}
   .quick-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
-  .cost-line{grid-template-columns:115px 1fr 80px}.view-head h1{font-size:24px}.brand-copy small{max-width:135px}
+  .cost-line{grid-template-columns:115px 1fr 80px}.view-head h1{font-size:24px}.brand-copy small{max-width:135px}.modal-card{padding:12px}.modal-head{margin-bottom:10px}.form-grid{gap:9px}.field{gap:4px}.field textarea{min-height:72px}.modal-actions{bottom:-12px;margin-top:10px;padding-top:8px}
   .status{padding:7px 8px}.top-actions{gap:5px}
 }
 @media(min-width:900px){
@@ -132,10 +132,10 @@ button{cursor:pointer}
 (() => {
 'use strict';
 
-const STORAGE_KEY='campmanager_complete_v6';
+const STORAGE_KEY='campmanager_complete_v7';
 const CLOUD_CFG_KEY='campmanager_cloud_cfg_v6';
 const CLOUD_SESSION_KEY='campmanager_cloud_session_v6';
-const OLD_KEYS=['campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1','campmanager_onefile_v1','platz161_state_v4','platz161_state_v2'];
+const OLD_KEYS=['campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1','campmanager_onefile_v1','platz161_state_v4','platz161_state_v2'];
 
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -509,7 +509,7 @@ function closeModal(){const d=$('#modal');if(d.open)d.close()}
 const field=(l,n,v='',t='text',extra='')=>`<div class="field"><label>${esc(l)}</label><input name="${n}" type="${t}" value="${esc(v??'')}" ${extra}></div>`;
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
 const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(v)===String(a)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
-const saveButtons=()=>`<button type="button" class="btn secondary" data-modal-close>Abbrechen</button><button type="button" class="btn" data-modal-save>Speichern</button>`;
+const saveButtons=(formId)=>`<button type="button" class="btn secondary" data-modal-close>Abbrechen</button><button type="submit" class="btn" form="${formId}">Speichern</button>`;
 
 function collection(type){
   const p=place();
@@ -526,11 +526,10 @@ function openEditor(type,existing=null){
   if(type==='contract'){title=existing?'Vertrag bearbeiten':'Vertrag hinzufügen';body=`${field('Vertrag','name',x.name,'text','required')}${field('Anbieter','provider',x.provider)}${field('Vertragsbeginn','startDate',x.startDate,'date')}${field('Vertragsende','endDate',x.endDate,'date')}${field('Kündigungs-/Prüffrist','noticeDate',x.noticeDate,'date')}${field('Kosten pro Jahr €','annualCost',x.annualCost,'number','step="0.01" min="0"')}${area('Notiz','notes',x.notes)}`}
   if(type==='gas'){title=existing?'Gasprüfung bearbeiten':'Gasprüfung hinzufügen';body=`${field('Prüfdatum','date',x.date||today(),'date','required')}${field('Nächste Prüfung','nextDue',x.nextDue,'date')}${select('Ergebnis','result',x.result||'bestanden',[['bestanden','Bestanden'],['maengel','Mängel'],['offen','Offen']])}${field('Prüfer / Firma','company',x.company)}${field('Kosten €','cost',x.cost,'number','step="0.01" min="0"')}${area('Notiz / Mängel','notes',x.notes)}`}
   if(type==='family'){title=existing?'Person bearbeiten':'Person hinzufügen';body=`${field('Name','name',x.name,'text','required')}`}
-  modal(title,`<form id="editForm" novalidate><div class="form-grid">${body}</div></form>`,saveButtons());
-  $('[data-modal-save]').onclick=()=>saveEditor(type,existing?.id||null)
+  modal(title,`<form id="editForm" data-editor-type="${esc(type)}" data-existing-id="${esc(existing?.id||'')}"><div class="form-grid">${body}</div></form>`,saveButtons('editForm'));
 }
 function saveEditor(type,existingId){
-  const form=$('#editForm');if(!form.reportValidity())return;
+  const form=$('#editForm');if(!form)return;
   const arr=collection(type),old=existingId?arr.find(x=>x.id===existingId):null;
   const item={...(old||{}),...Object.fromEntries(new FormData(form).entries()),id:existingId||uid(),createdAt:old?.createdAt||new Date().toISOString()};
   if(type==='shopping')item.done=old?!!old.done:false;
@@ -549,18 +548,12 @@ function deleteItem(type,itemId){
   const arr=collection(type),ix=arr.findIndex(x=>x.id===itemId);if(ix<0)return;arr.splice(ix,1);save()
 }
 function openArrival(){
-  const p=place();modal('Nächste Anreise',`<form id="arrivalForm"><div class="form-grid">${field('Datum','date',p.nextArrival,'date')}</div></form>`,saveButtons());
-  $('[data-modal-save]').onclick=()=>{p.nextArrival=new FormData($('#arrivalForm')).get('date')||'';closeModal();if(save())toast('Anreise gespeichert')}
+  const p=place();
+  modal('Nächste Anreise',`<form id="arrivalForm"><div class="form-grid">${field('Datum','date',p.nextArrival,'date')}</div></form>`,saveButtons('arrivalForm'));
 }
 function openPlaceEditor(placeId=null){
   const existing=placeId?state.places.find(x=>x.id===placeId):null,x=existing?.site||{};
-  modal(existing?'Stellplatz bearbeiten':'Stellplatz hinzufügen',`<form id="placeForm"><div class="form-grid">${field('Campingplatz / Name','campName',x.campName,'text','required')}${field('Stellplatznummer','pitch',x.pitch,'text','required')}${field('Fläche m²','area',x.area,'number','step="0.1" min="0"')}${area('Notizen','notes',x.notes)}</div></form>`,saveButtons());
-  $('[data-modal-save]').onclick=()=>{
-    const f=$('#placeForm');if(!f.reportValidity())return;const d=Object.fromEntries(new FormData(f).entries());
-    if(existing)existing.site={...existing.site,...d};
-    else{const p=blankPlace(d.campName,d.pitch);p.site={...p.site,...d};state.places.push(p);state.activePlaceId=p.id}
-    closeModal();if(save())toast(existing?'Stellplatz gespeichert':'Stellplatz hinzugefügt')
-  }
+  modal(existing?'Stellplatz bearbeiten':'Stellplatz hinzufügen',`<form id="placeForm" data-place-id="${esc(placeId||'')}"><div class="form-grid">${field('Campingplatz / Name','campName',x.campName,'text','required')}${field('Stellplatznummer','pitch',x.pitch,'text','required')}${field('Fläche m²','area',x.area,'number','step="0.1" min="0"')}${area('Notizen','notes',x.notes)}</div></form>`,saveButtons('placeForm'));
 }
 function switchPlace(id){if(!state.places.some(x=>x.id===id))return;state.activePlaceId=id;closeModal();save();toast('Stellplatz gewechselt')}
 function deletePlace(id){
@@ -664,6 +657,47 @@ function openSettings(){
   $('#importBackup').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{state=normalize(JSON.parse(await f.text()));save();closeModal();toast('Backup importiert')}catch{toast('Ungültige Backup-Datei')}};
   $('#resetLocal').onclick=()=>{if(confirm('Wirklich alle lokalen CampManager-Daten löschen?')){state=defaults();save({cloud:false});closeModal();toast('Lokale Daten gelöscht')}}
 }
+
+
+document.addEventListener('submit',e=>{
+  const form=e.target;
+  if(!(form instanceof HTMLFormElement))return;
+  if(!['editForm','arrivalForm','placeForm'].includes(form.id))return;
+  e.preventDefault();
+
+  if(!form.reportValidity())return;
+
+  if(form.id==='editForm'){
+    const type=form.dataset.editorType;
+    const existingId=form.dataset.existingId||null;
+    saveEditor(type,existingId);
+    return;
+  }
+
+  if(form.id==='arrivalForm'){
+    const p=place();
+    p.nextArrival=new FormData(form).get('date')||'';
+    closeModal();
+    if(save())toast('Anreise gespeichert');
+    return;
+  }
+
+  if(form.id==='placeForm'){
+    const placeId=form.dataset.placeId||null;
+    const existing=placeId?state.places.find(x=>x.id===placeId):null;
+    const d=Object.fromEntries(new FormData(form).entries());
+    if(existing){
+      existing.site={...existing.site,...d};
+    }else{
+      const p=blankPlace(d.campName,d.pitch);
+      p.site={...p.site,...d};
+      state.places.push(p);
+      state.activePlaceId=p.id;
+    }
+    closeModal();
+    if(save())toast(existing?'Stellplatz gespeichert':'Stellplatz hinzugefügt');
+  }
+});
 
 document.addEventListener('click',e=>{
   const close=e.target.closest('[data-modal-close]');if(close){closeModal();return}
