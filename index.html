@@ -9,7 +9,7 @@
 <meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>CampManager v17</title>
+<title>CampManager v18</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -87,7 +87,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v17</span></b></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v18</span></b></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -128,8 +128,8 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const KEY='campmanager_complete_v17';
-const OLD=['campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const KEY='campmanager_complete_v18';
+const OLD=['campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -186,7 +186,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=17;state.updatedAt=new Date().toISOString();
+ state.version=18;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();return ok}
@@ -203,7 +203,24 @@ function petroleumStock(p=place()){
 function totalNights(p=place(),y=null){return p.stays.reduce((s,x)=>s+((!y||Number((x.arrival||'').slice(0,4))===Number(y))?nights(x.arrival,x.departure):0),0)}
 function annualRentTotal(x){return x?Number(x.baseAmount||0)+Number(x.extraAdultNights||0)*Number(x.adultPrice||0)+Number(x.extraChildNights||0)*Number(x.childPrice||0):0}
 function annualRentFor(p,y){return p.annualRent.find(x=>Number(x.year)===Number(y))||null}
-function contractActive(x,y){const a=y+'-01-01',b=y+'-12-31';return !(x.startDate&&x.startDate>b)&&!(x.endDate&&x.endDate<a)}
+function contractActive(x,y){
+ const a=y+'-01-01',b=y+'-12-31';
+ return !(x.startDate&&x.startDate>b)&&!(x.endDate&&x.endDate<a)
+}
+function contractBaseAmount(x){return Number(x.costAmount ?? x.annualCost ?? 0)}
+function contractBillingPeriod(x){return x.billingPeriod||'yearly'}
+function contractMonthsInYear(x,y){
+ if(!contractActive(x,y))return 0;
+ let startMonth=1,endMonth=12;
+ if(x.startDate&&Number(x.startDate.slice(0,4))===Number(y))startMonth=Number(x.startDate.slice(5,7))||1;
+ if(x.endDate&&Number(x.endDate.slice(0,4))===Number(y))endMonth=Number(x.endDate.slice(5,7))||12;
+ return Math.max(0,endMonth-startMonth+1)
+}
+function contractCostForYear(x,y){
+ const amount=contractBaseAmount(x);
+ if(!amount||!contractActive(x,y))return 0;
+ return contractBillingPeriod(x)==='monthly'?amount*contractMonthsInYear(x,y):amount
+}
 function costData(p,y){
  const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gas:0,contracts:0};
  const r=annualRentFor(p,y);if(r)d.annual+=annualRentTotal(r);
@@ -211,7 +228,7 @@ function costData(p,y){
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>d.electricity+=Number(x.cost||0)+Number(x.meterRent||0));
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.petroleum+=Number(x.price||0));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))).forEach(x=>d.gas+=Number(x.cost||0));
- p.contracts.filter(x=>contractActive(x,y)).forEach(x=>d.contracts+=Number(x.annualCost||0));
+ p.contracts.filter(x=>contractActive(x,y)).forEach(x=>d.contracts+=contractCostForYear(x,y));
  return d
 }
 function nextDeadline(p){
@@ -285,7 +302,15 @@ function closingRows(p,y){
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:'Strom',t:`${num(x.consumption,1)} kWh, Strom ${money(x.cost)}, Zählermiete ${money(x.meterRent)}`,a:Number(x.cost||0)+Number(x.meterRent||0)}));
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>r.push({d:fmt(x.date),c:'Gasprüfung',t:[x.company,x.result,x.notes].filter(Boolean).join(' · '),a:Number(x.cost||0)}));
- p.contracts.filter(x=>contractActive(x,y)&&Number(x.annualCost||0)>0).forEach(x=>r.push({d:String(y),c:'Vertrag',t:[x.name,x.provider].filter(Boolean).join(' · '),a:Number(x.annualCost||0)}));
+ p.contracts.filter(x=>contractActive(x,y)&&contractBaseAmount(x)>0).forEach(x=>{
+ const months=contractMonthsInYear(x,y),period=contractBillingPeriod(x);
+ r.push({
+  d:String(y),
+  c:'Vertrag',
+  t:[x.name,x.provider,period==='monthly'?`${money(contractBaseAmount(x))} / Monat × ${months} Monat(e)`:`${money(contractBaseAmount(x))} / Jahr`].filter(Boolean).join(' · '),
+  a:contractCostForYear(x,y)
+ })
+});
  return r
 }
 let closingYear=yearNow();
@@ -311,7 +336,13 @@ function renderMore(){
 }
 function stayPanel(p){const rows=[...p.stays].sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival)));return `<div class="grid"><div class="card half"><h2>${yearNow()}</h2><div class="metric">${totalNights(p,yearNow())}</div><p>Übernachtungen</p></div><div class="card half"><h2>Gesamt</h2><div class="metric">${totalNights(p)}</div></div></div><div class="toolbar"><button class="btn" data-add="stay">＋ Aufenthalt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${fmt(x.arrival)} – ${fmt(x.departure)}</div><div class="rowsub">${nights(x.arrival,x.departure)} Nächte${x.people?' · '+esc(x.people):''}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="stay" data-id="${x.id}">✎</button><button class="mini danger" data-del="stay" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Aufenthalte.')}`}
 function conversationPanel(p){const rows=[...p.conversations].sort((a,b)=>(String(b.date)+' '+String(b.time)).localeCompare(String(a.date)+' '+String(a.time)));return `<div class="notice good"><b>Gesprächstagebuch:</b> für diesen Stellplatz.</div><div class="toolbar"><button class="btn" data-add="conversation">＋ Gespräch</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${fmt(x.date)} · ${esc(x.time||'–')} Uhr</div><div class="rowsub">Gesprächspartner: ${esc(x.partner||'–')}</div>${x.note?`<div class="conversation">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="conversation" data-id="${x.id}">✎</button><button class="mini danger" data-del="conversation" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Gespräche.')}`}
-function contractPanel(p){const rows=[...p.contracts].sort((a,b)=>String(a.noticeDate||a.endDate||'9999').localeCompare(String(b.noticeDate||b.endDate||'9999')));return `<div class="toolbar"><button class="btn" data-add="contract">＋ Vertrag</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div><div class="rowsub">${x.provider?esc(x.provider)+' · ':''}${x.noticeDate?'Frist '+fmt(x.noticeDate)+' · ':''}${x.endDate?'Ende '+fmt(x.endDate):''}${x.annualCost?' · '+money(x.annualCost)+'/Jahr':''}</div></div><div class="rowactions"><button class="mini" data-edit="contract" data-id="${x.id}">✎</button><button class="mini danger" data-del="contract" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Verträge.')}`}
+function contractPanel(p){
+ const rows=[...p.contracts].sort((a,b)=>String(a.noticeDate||a.endDate||'9999').localeCompare(String(b.noticeDate||b.endDate||'9999')));
+ return `<div class="toolbar"><button class="btn" data-add="contract">＋ Vertrag</button></div>${rows.length?`<div class="list">${rows.map(x=>{
+  const amount=contractBaseAmount(x),period=contractBillingPeriod(x);
+  return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div><div class="rowsub">${x.provider?esc(x.provider)+' · ':''}${x.noticeDate?'Frist '+fmt(x.noticeDate)+' · ':''}${x.endDate?'Ende '+fmt(x.endDate)+' · ':''}${amount?money(amount)+(period==='monthly'?' / Monat':' / Jahr'):''}</div></div><div class="rowactions"><button class="mini" data-edit="contract" data-id="${x.id}">✎</button><button class="mini danger" data-del="contract" data-id="${x.id}">×</button></div></div>`
+ }).join('')}</div>`:empty('Keine Verträge.')}`
+}
 function gasPanel(p){const rows=[...p.gasChecks].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="toolbar"><button class="btn" data-add="gas">＋ Gasprüfung</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Prüfung ${fmt(x.date)} · ${esc(x.result||'')}</div><div class="rowsub">Nächste: ${fmt(x.nextDue)}${x.company?' · '+esc(x.company):''}${x.cost?' · '+money(x.cost):''}</div></div><div class="rowactions"><button class="mini" data-edit="gas" data-id="${x.id}">✎</button><button class="mini danger" data-del="gas" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Gasprüfung.')}`}
 function sitePanel(p){return `<div class="grid"><div class="card half"><div style="display:flex;align-items:center;gap:10px">${avatar(p)}<div><h2>Aktiver Stellplatz</h2><p>${esc(p.site.campName)}</p></div></div><div class="metric" style="margin-top:8px">${esc(p.site.pitch||'–')}</div><div class="toolbar"><button class="btn sec" data-placeedit="${p.id}">Bearbeiten</button></div></div><div class="card full"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><h2>Meine Stellplätze</h2><p>Jeder Platz hat eigene Daten.</p></div><button class="btn" data-placeadd>＋ Platz</button></div><div class="list" style="margin-top:10px">${state.places.map(x=>`<div class="row">${avatar(x)}<div class="rowmain"><div class="rowtitle">${esc(x.site.campName)} · Platz ${esc(x.site.pitch||'–')} ${x.id===state.activePlaceId?'<span class="badge">Aktiv</span>':''}</div><div class="rowsub">${x.site.area?esc(x.site.area)+' m² · ':''}${esc(x.site.notes||'')}</div></div><div class="rowactions">${x.id===state.activePlaceId?'':`<button class="mini" data-placeswitch="${x.id}">Wechseln</button>`}<button class="mini" data-placeedit="${x.id}">✎</button>${state.places.length>1?`<button class="mini danger" data-placedel="${x.id}">×</button>`:''}</div></div>`).join('')}</div></div></div>`}
 function familyPanel(){return `<div class="notice">Familienmitglieder gelten für alle Stellplätze.</div><div class="toolbar"><button class="btn" data-add="family">＋ Person</button></div><div class="list">${state.family.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div></div><div class="rowactions"><button class="mini" data-edit="family" data-id="${x.id}">✎</button><button class="mini danger" data-del="family" data-id="${x.id}">×</button></div></div>`).join('')}</div>`}
@@ -348,7 +379,18 @@ function editor(type,x=null){
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
  if(type==='conversation'){title='Gespräch';body=field('Datum','date',e.date||today(),'date','required')+field('Uhrzeit','time',e.time||new Date().toTimeString().slice(0,5),'time','required')+field('Gesprächspartner','partner',e.partner,'text','required')+area('Notiz','note',e.note)}
- if(type==='contract'){title='Vertrag';body=field('Vertrag','name',e.name,'text','required')+field('Anbieter','provider',e.provider)+field('Vertragsbeginn','startDate',e.startDate,'date')+field('Vertragsende','endDate',e.endDate,'date')+field('Kündigungs-/Prüffrist','noticeDate',e.noticeDate,'date')+field('Kosten pro Jahr €','annualCost',e.annualCost,'number','min="0" step="0.01"')+area('Notiz','notes',e.notes)}
+ if(type==='contract'){
+  title='Vertrag';
+  const legacyAmount=e.costAmount ?? e.annualCost ?? '';
+  body=field('Vertrag','name',e.name,'text','required')
+   +field('Anbieter','provider',e.provider)
+   +field('Vertragsbeginn','startDate',e.startDate,'date')
+   +field('Vertragsende','endDate',e.endDate,'date')
+   +field('Kündigungs-/Prüffrist','noticeDate',e.noticeDate,'date')
+   +select('Abrechnung','billingPeriod',e.billingPeriod||'yearly',[['monthly','Monatlich'],['yearly','Jährlich']])
+   +field('Betrag €','costAmount',legacyAmount,'number','min="0" step="0.01"')
+   +area('Notiz','notes',e.notes)
+ }
  if(type==='gas'){title='Gasprüfung';body=field('Prüfdatum','date',e.date||today(),'date','required')+field('Nächste Prüfung','nextDue',e.nextDue,'date')+select('Ergebnis','result',e.result||'bestanden',[['bestanden','Bestanden'],['maengel','Mängel'],['offen','Offen']])+field('Prüfer/Firma','company',e.company)+field('Kosten €','cost',e.cost,'number','min="0" step="0.01"')+area('Notiz','notes',e.notes)}
  if(type==='family'){title='Person';body=field('Name','name',e.name,'text','required')}
  modal(title,`<form id="editForm" data-type="${type}" data-id="${e.id||''}"><div class="formgrid">${body}</div></form>`,actions('editForm'))
@@ -356,6 +398,10 @@ function editor(type,x=null){
 function saveEditor(form){
  const type=form.dataset.type,id=form.dataset.id||null,arr=coll(type),old=id?arr.find(x=>x.id===id):null,item={...(old||{}),...Object.fromEntries(new FormData(form).entries()),id:id||uid(),createdAt:old?.createdAt||new Date().toISOString()};
  if(type==='shopping')item.done=old?!!old.done:false;
+ if(type==='contract'){
+  item.billingPeriod=item.billingPeriod||'yearly';
+  if(item.costAmount!==undefined)delete item.annualCost;
+ }
  if(type==='stay'&&item.departure<item.arrival){toast('Abreise liegt vor der Anreise');return}
  if(type==='electricity'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Stromwert für dieses Jahr existiert bereits');return}
  if(type==='annualrent'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Jahresmiete für dieses Jahr existiert bereits');return}

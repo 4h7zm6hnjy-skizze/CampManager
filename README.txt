@@ -1,11 +1,17 @@
-CampManager v17 – Kopfzeilen-Fix
+CampManager v18 – Verträge monatlich/jährlich
 
-Geändert:
-- mobile Kopfzeile auf zwei Zeilen umgebaut
-- CampManager + Status + Einstellungen oben
-- vollständiger Campingplatzname darunter
-- Platz-Auswahl separat daneben
-- kein abgeschnittener Campingplatzname mehr
-- alle Funktionen aus v16 bleiben erhalten
+Neu bei Verträgen:
+- Abrechnung auswählen:
+  - Monatlich
+  - Jährlich
+- Betrag in Euro eingeben
+- Anzeige in der Vertragsliste als €/Monat oder €/Jahr
 
-Nach dem Update muss oben "v17" stehen.
+Jahresabschluss:
+- monatliche Verträge werden mit den aktiven Monaten des gewählten Jahres berechnet
+- Vertragsbeginn und Vertragsende werden berücksichtigt
+- jährliche Verträge werden mit dem Jahresbetrag angesetzt
+- alte Verträge mit dem bisherigen Jahreskosten-Feld bleiben kompatibel
+
+Alle Funktionen aus v17 bleiben erhalten.
+Nach dem Update muss oben v18 stehen.
