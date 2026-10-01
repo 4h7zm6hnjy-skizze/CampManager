@@ -1,18 +1,30 @@
-CampManager v29 – komplette Version
+CampManager v30 – komplette Version
 
-Behoben:
-- Jahresabschluss öffnet nicht mehr in einem separaten Pop-up-Fenster
-- dadurch kein blockierter verzögerter Druckaufruf mehr auf iPhone/PWA
-- neuer Vollbild-Jahresabschluss direkt innerhalb der App
-- sichtbarer Button „← Zurück“
-- separater Button „PDF speichern“
-- separater Button „Drucken“
-- PDF wird direkt in der App erzeugt, ohne externe Bibliothek und ohne API
-- auf iPhone/iPad wird für „PDF speichern“ nach Möglichkeit das native Teilen-Menü geöffnet;
-  dort kann „In Dateien sichern“ gewählt werden
-- Druck wird erst nach direktem Tippen ausgelöst und funktioniert dadurch zuverlässiger
-- bestehende Daten und Funktionen aus v28 werden übernommen
+Neu unter Kosten → Versicherung:
+- Versicherungsgesellschaft
+- Zahlweise: monatlich, quartalsweise oder Jahresbeitrag
+- Summe je Zahlung
+- automatische Berechnung des Jahreswerts
+- Vertragsbeginn
+- Kündigungsfrist
+- Telefonnummer mit direktem Telefon-Link
+- eigener Bereich Schäden
+- Schaden mit Datum, Bezeichnung und Beschreibung erfassen
+- pro Schaden beliebig viele Fotos direkt über Kamera oder Foto-Upload
+- eigener Bereich Versicherungsdokumente
+- Dokument direkt mit Kamera scannen
+- Bild oder PDF als Datei hinzufügen
+- Dokumente öffnen und löschen
+- Versicherungskosten werden in Kostenübersicht, Jahresvergleich und Jahresabschluss/PDF eingerechnet
+- Versicherung, Schäden, Fotos und Dokumente werden über Backup/Wiederherstellung mitgesichert
+- bei aktivem Supabase-Sync werden Versicherungsdateien wie andere Dokumente in der Cloud gesichert
+- bestehende Daten aus v29 werden automatisch übernommen
+
+Berechnung:
+Monatlich = Summe × 12
+Quartalsweise = Summe × 4
+Jahresbeitrag = Summe × 1
 
 Installation:
-Alle Dateien in das Hauptverzeichnis des GitHub-Pages-Projekts hochladen
+Alle Dateien des ZIP in das Hauptverzeichnis deines GitHub-Pages-Projekts hochladen
 und vorhandene Dateien ersetzen. Die aktive Startdatei muss index.html heißen.
