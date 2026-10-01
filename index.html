@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v24</title>
+<title>CampManager v25</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -37,7 +37,13 @@ button{cursor:pointer;touch-action:manipulation}
 main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .view{display:none}.view.active{display:block}
 .hero{background:linear-gradient(135deg,#173c29,#10261a);color:#fff;border-radius:26px;padding:18px;display:grid;grid-template-columns:1.5fr .6fr;gap:14px;align-items:center;box-shadow:var(--shadow)}
-.hero h1{margin:6px 0;font-size:28px}.hero p{margin:0;color:#dce7df}.hero img{width:100%;max-height:200px;object-fit:contain;background:#fff;border-radius:16px}
+.hero h1{margin:6px 0;font-size:28px}.hero p{margin:0;color:#dce7df}
+.hero-media{position:relative;width:100%;background:#fff;border-radius:16px;overflow:hidden;min-width:0}
+.hero-media .hero-logo{display:block;width:100%;height:auto;max-height:200px;object-fit:contain;background:#fff;border-radius:16px}
+.weatherbox{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;color:var(--ink);background:rgba(246,248,245,.95);border:1px solid rgba(23,60,41,.15);border-radius:11px;padding:5px 7px 4px;box-shadow:0 3px 10px rgba(15,40,27,.08);backdrop-filter:blur(7px)}
+.weatherbox.loading{display:flex;align-items:center;justify-content:center;min-height:39px;font-size:10px;color:var(--muted)}
+.weather-top{display:grid;grid-template-columns:auto 1fr auto;gap:5px;align-items:center;line-height:1.05}.weather-place{font-size:10px;font-weight:900;color:var(--green)}.weather-current{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.weather-current b{font-size:15px;margin-right:2px}.weather-refresh{width:23px;height:23px;border:0;background:#fff;border-radius:8px;color:var(--green);font-weight:900;padding:0}
+.weather-days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:3px}.weather-day{display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;font-size:8.5px;font-weight:800;white-space:nowrap}.weather-day span:first-child{color:var(--muted)}.weather-day .rain{color:#45697d}.weather-credit{margin-top:2px;text-align:right;font-size:6.8px;line-height:1;color:#788079}.weather-credit a{color:inherit;text-decoration:none}
 .badge{display:inline-flex;border-radius:999px;padding:4px 8px;background:#edf3ef;color:#2b5c3f;font-size:12px;font-weight:800}.hero .badge{background:rgba(255,255,255,.13);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
 .card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
@@ -92,7 +98,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
 
- .hero{grid-template-columns:1fr}.hero img{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
+ .hero{grid-template-columns:1fr}.hero-media .hero-logo{max-height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 
@@ -116,7 +122,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v24</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v25</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -158,10 +164,12 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=24;
-const KEY='campmanager_complete_v24';
-const OLD=['campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=25;
+const KEY='campmanager_complete_v25';
+const OLD=['campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
+const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
+const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=4';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
 const esc=(v='')=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -177,7 +185,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:24,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:25,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -203,10 +211,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:24,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:25,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:24,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:25,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -219,7 +227,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=24;state.updatedAt=new Date().toISOString();
+ state.version=25;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -309,6 +317,49 @@ function upcomingDeadlines(p,limit=5){const all=allDeadlines(p),future=all.filte
 function nextDeadline(p){return upcomingDeadlines(p,1)[0]||null}
 function deadlineText(x){const d=daysUntil(x.d);return d==null?'':d<0?`${Math.abs(d)} Tag(e) überfällig`:d===0?'heute':`in ${d} Tag(en)`}
 
+function weatherInfo(code){
+ const c=Number(code);
+ if(c===0)return ['☀️','Klar'];
+ if(c===1)return ['🌤️','Meist klar'];
+ if(c===2)return ['⛅','Bewölkt'];
+ if(c===3)return ['☁️','Bedeckt'];
+ if(c===45||c===48)return ['🌫️','Nebel'];
+ if([51,53,55,56,57].includes(c))return ['🌦️','Nieselregen'];
+ if([61,63,65,66,67].includes(c))return ['🌧️','Regen'];
+ if([71,73,75,77].includes(c))return ['🌨️','Schnee'];
+ if([80,81,82].includes(c))return ['🌦️','Schauer'];
+ if([85,86].includes(c))return ['🌨️','Schneeschauer'];
+ if([95,96,99].includes(c))return ['⛈️','Gewitter'];
+ return ['🌡️','Wetter'];
+}
+function weatherDayLabel(v,i){if(i===0)return 'Heute';if(i===1)return 'Morgen';try{return new Date(v+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short'}).replace('.','')}catch{return 'Tag '+(i+1)}}
+function weatherCacheRead(){try{return JSON.parse(localStorage.getItem(WEATHER_CACHE)||'null')}catch{return null}}
+function renderWeather(payload,isCached=false){
+ const el=$('#weatherBox');if(!el||!payload?.current||!payload?.daily)return;
+ const c=payload.current,d=payload.daily,wi=weatherInfo(c.weather_code);
+ const days=(d.time||[]).slice(0,3).map((date,i)=>{
+  const di=weatherInfo(d.weather_code?.[i]);
+  const hi=Math.round(Number(d.temperature_2m_max?.[i]??0)),lo=Math.round(Number(d.temperature_2m_min?.[i]??0)),rain=Math.round(Number(d.precipitation_probability_max?.[i]??0));
+  return `<div class="weather-day"><span>${esc(weatherDayLabel(date,i))}</span><b>${di[0]} ${hi}/${lo}°</b><span class="rain">${rain}%</span></div>`
+ }).join('');
+ el.className='weatherbox';
+ el.innerHTML=`<div class="weather-top"><span class="weather-place">Hörstel</span><span class="weather-current"><b>${wi[0]} ${Math.round(Number(c.temperature_2m||0))}°</b>${esc(wi[1])} · Wind ${Math.round(Number(c.wind_speed_10m||0))} km/h${isCached?' · zuletzt gespeichert':''}</span><button class="weather-refresh" type="button" data-weather-refresh aria-label="Wetter aktualisieren">↻</button></div><div class="weather-days">${days}</div><div class="weather-credit">Wetterdaten: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · CC BY 4.0</div>`
+}
+async function loadWeather(force=false){
+ const el=$('#weatherBox');if(!el)return;
+ const cached=weatherCacheRead();
+ if(cached?.data)renderWeather(cached.data,true);
+ if(!force&&cached?.savedAt&&(Date.now()-Number(cached.savedAt)<WEATHER_MAX_AGE))return;
+ try{
+  const res=await fetch(WEATHER_URL,{cache:'no-store'});if(!res.ok)throw new Error('Wetter HTTP '+res.status);
+  const data=await res.json();
+  localStorage.setItem(WEATHER_CACHE,JSON.stringify({savedAt:Date.now(),data}));
+  renderWeather(data,false)
+ }catch(e){
+  console.warn('Wetter konnte nicht geladen werden',e);
+  if(!cached?.data){el.className='weatherbox loading';el.textContent='Wetter für Hörstel derzeit nicht verfügbar'}
+ }
+}
 function renderTop(){
  const p=place();
  $('#topName').textContent=p.site.campName||'Campingplatz';
@@ -317,7 +368,7 @@ function renderTop(){
 }
 function renderDashboard(){
  const p=place(),y=yearNow(),c=costData(p,y),total=Object.values(c).reduce((a,b)=>a+b,0),ar=annualRentFor(p,y),ns=ar?rentNightInfo(p,ar):null,el=p.electricity.find(x=>Number(x.year)===y),ec=el?electricityCalc(el):null,dead=upcomingDeadlines(p,3),lastLawn=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
- $('#v-dashboard').innerHTML=`<div class="hero"><div><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div><img src="logo.jpg" alt="Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}"></div>
+ $('#v-dashboard').innerHTML=`<div class="hero"><div><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div><div class="hero-media"><img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}"><div id="weatherBox" class="weatherbox loading">Wetter für Hörstel wird geladen …</div></div></div>
  <div class="grid">
   <button class="card cardaction" data-go="costs" data-jump="overview"><h3>Jahreskosten ${y}</h3><div class="metric">${money(total)}</div><p>alle erfassten Kosten</p></button>
   <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${ns?`${ns.used} / ${ns.included}`:totalNights(p,y)}</div><p>${ns?(ns.remaining?`noch ${ns.remaining} inklusive`:`${ns.over} über inklusive`):'Jahresmiete noch nicht angelegt'}</p>${ns?`<div class="progress"><i style="width:${ns.percent}%"></i></div>`:''}</button>
@@ -447,7 +498,7 @@ function docLabel(k){return DOCCAT.find(x=>x[0]===k)?.[1]||'Sonstiges'}
 function documentPanel(p){const rows=[...p.documents].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="notice good"><b>Dokumentenscanner:</b> Rechnung fotografieren oder Bild/PDF auswählen. Bei angemeldeter Cloud werden Dateien automatisch in Supabase Storage gesichert.</div><div class="toolbar"><button class="btn" data-docscan>📷 Scannen</button><button class="btn sec" data-docupload>📁 Datei/PDF</button>${cloudReady()&&session?.access_token?'<button class="btn sec" id="syncDocsBtn">☁ Dokumente synchronisieren</button>':''}</div><input id="camInput" type="file" accept="image/*" capture="environment" hidden><input id="fileInput" type="file" accept="image/*,application/pdf" hidden>${rows.length?`<div class="docgrid">${rows.map(x=>`<div class="doc"><div class="docthumb" data-docopen="${x.id}">${x.mime?.startsWith('image/')?'🧾':'📄'}</div><div class="rowtitle" style="margin-top:8px">${esc(x.title||docLabel(x.category))}${x.cloudPath?'<span class="cloudtag">Cloud</span>':'<span class="cloudtag">lokal</span>'}</div><div class="rowsub">${docLabel(x.category)} · ${fmt(x.date)}${x.amount?' · '+money(x.amount):''}</div><div class="toolbar"><button class="mini" data-docopen="${x.id}">Öffnen</button><button class="mini" data-docedit="${x.id}">✎</button><button class="mini danger" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Dokumente.')}`}
 
 
-function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view)}
+function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view);if(view==='dashboard')setTimeout(()=>loadWeather(false),0)}
 function show(v){view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===v));scrollTo(0,0)}
 
 function modal(title,body,actions){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalActions').innerHTML=actions||'';$('#modal').classList.remove('hidden');document.body.style.overflow='hidden'}
@@ -721,6 +772,7 @@ document.addEventListener('click',e=>{
  const bd=e.target.closest('[data-backupdownload]');if(bd){getCloudBackup(bd.dataset.backupdownload).then(x=>x?.data&&downloadBackup(x.data,'campmanager-cloud-backup-'+bd.dataset.backupdownload+'.json')).catch(()=>toast('Download fehlgeschlagen'));return}
  if(e.target.id==='syncDocsBtn'){syncPendingDocuments().then(n=>toast(n+' Dokument(e) hochgeladen')).catch(()=>toast('Synchronisierung fehlgeschlagen'));return}
  if(e.target.id==='updateBtn'){applyUpdate();return}
+ const wr=e.target.closest('[data-weather-refresh]');if(wr){loadWeather(true);return}
  if(e.target.id==='pdfBtn'){openPdf();return}
 });
 document.addEventListener('change',e=>{
@@ -744,7 +796,7 @@ async function registerPWA(){
  try{swReg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});if(swReg.waiting)showUpdate();swReg.addEventListener('updatefound',()=>{const w=swReg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)showUpdate()})});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(updateReloading)return;updateReloading=true;location.reload()})}catch(e){console.warn('Service Worker',e)}
 }
 async function applyUpdate(){try{if(swReg)await swReg.update();if(swReg?.waiting){swReg.waiting.postMessage({type:'SKIP_WAITING'});return}location.replace(location.pathname+'?v='+Date.now())}catch{location.reload()}}
-(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800)})();
+(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800);setInterval(()=>{if(view==='dashboard')loadWeather(true)},WEATHER_MAX_AGE)})();
 })();
 </script>
 </body>
