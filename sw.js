@@ -1,45 +1,64 @@
-const CACHE='platz161-v3';
-const ASSETS=[
+const VERSION = 'v21';
+const CACHE = `campmanager-${VERSION}`;
+const CORE = [
   './',
-  'index.html',
-  'styles.css',
-  'app.js',
-  'config.js',
-  'manifest.webmanifest',
-  'logo.jpg',
-  'icon-192.png',
-  'icon-512.png',
-  'apple-touch-icon.png'
+  './index.html',
+  './manifest.webmanifest',
+  './version.json',
+  './logo-fallback.jpg',
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
-self.addEventListener('install',e=>{
-  e.waitUntil(
-    caches.open(CACHE)
-      .then(c=>c.addAll(ASSETS))
-      .then(()=>self.skipWaiting())
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE).catch(() => {})));
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('campmanager-') && k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('activate',e=>{
-  e.waitUntil(
-    caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
-  );
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET') return;
-  const url=new URL(e.request.url);
-  if(url.origin!==location.origin) return;
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE);
+  try {
+    const fresh = await fetch(new Request(request, {cache: 'no-store'}));
+    if (fresh && fresh.ok) cache.put(request, fresh.clone());
+    return fresh;
+  } catch (e) {
+    return (await cache.match(request)) || (await cache.match('./index.html'));
+  }
+}
 
-  e.respondWith(
-    fetch(e.request)
-      .then(r=>{
-        const copy=r.clone();
-        caches.open(CACHE).then(c=>c.put(e.request,copy));
-        return r;
-      })
-      .catch(()=>caches.match(e.request).then(r=>r||caches.match('./')))
-  );
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(request);
+  const update = fetch(request).then(r => {
+    if (r && r.ok) cache.put(request, r.clone());
+    return r;
+  }).catch(() => null);
+  return cached || (await update) || Response.error();
+}
+
+self.addEventListener('fetch', event => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname.endsWith('/version.json')) {
+    event.respondWith(fetch(new Request(req, {cache:'no-store'})).catch(() => caches.match('./version.json')));
+    return;
+  }
+  if (req.mode === 'navigate' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/')) {
+    event.respondWith(networkFirst(req));
+    return;
+  }
+  event.respondWith(staleWhileRevalidate(req));
 });
