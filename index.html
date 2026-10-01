@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v23</title>
+<title>CampManager v24</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -27,7 +27,7 @@ button{cursor:pointer;touch-action:manipulation}
 .top{position:sticky;top:0;z-index:40;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.toprow,.subrow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}.subrow{min-width:0}.topname{font-size:13px;color:var(--muted);font-weight:700;min-width:0;flex:1;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
 .brand{display:flex;align-items:center;gap:9px;border:0;background:transparent;padding:0;color:inherit;text-align:left;min-width:0}
 .logo{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px;border:1px solid var(--line)}
-.brandcopy{min-width:0}.brandcopy b{font-size:16px;white-space:nowrap}
+.brandcopy{min-width:0;display:flex;flex-direction:column;line-height:1.08}.brandcopy b{font-size:16px;white-space:nowrap}.copyright{font-size:9px;color:var(--muted);font-weight:650;margin-top:3px;white-space:nowrap}
 .ver{font-size:10px;background:var(--green);color:#fff;padding:2px 6px;border-radius:999px;vertical-align:2px}
 .topright{display:flex;align-items:center;gap:6px}
 .placebtn,.status{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-weight:800;font-size:12px;color:var(--ink)}
@@ -116,7 +116,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v23</span></b></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v24</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -158,9 +158,9 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=23;
-const KEY='campmanager_complete_v23';
-const OLD=['campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=24;
+const KEY='campmanager_complete_v24';
+const OLD=['campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -173,11 +173,11 @@ const dparse=v=>v?new Date(v+'T12:00:00'):null;
 const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
- return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],petroleum:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:23,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:24,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -187,6 +187,7 @@ function normPlace(p={}){
   costs:Array.isArray(p.costs)?p.costs:[],
   annualRent:Array.isArray(p.annualRent)?p.annualRent:[],
   petroleum:Array.isArray(p.petroleum)?p.petroleum:[],
+  gasBottles:Array.isArray(p.gasBottles)?p.gasBottles:[],
   electricity:Array.isArray(p.electricity)?p.electricity:[],
   stays:Array.isArray(p.stays)?p.stays:[],
   lawn:Array.isArray(p.lawn)?p.lawn:[],
@@ -202,10 +203,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:23,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:24,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:23,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:24,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -218,7 +219,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=23;state.updatedAt=new Date().toISOString();
+ state.version=24;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -234,6 +235,11 @@ function petroleumStock(p=place()){
  let s=0;[...p.petroleum].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||''))).forEach(x=>{
   const l=Number(x.liters||0); if(x.kind==='stock')s=l;else if(x.kind==='purchase')s+=l;else s-=l
  });return s
+}
+function gasBottleStock(p=place()){
+ let s=0;[...p.gasBottles].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||''))).forEach(x=>{
+  const n=Number(x.bottles||0);if(x.kind==='stock')s=n;else if(x.kind==='purchase')s+=n;else s-=n
+ });return Math.max(0,s)
 }
 function totalNights(p=place(),y=null){return p.stays.reduce((sum,x)=>sum+((!y||Number((x.arrival||'').slice(0,4))===Number(y))?nights(x.arrival,x.departure):0),0)}
 function rentAuto(x){return x?.autoExtra?x.autoExtra==='yes':!(Number(x?.extraAdultNights||0)||Number(x?.extraChildNights||0))}
@@ -280,11 +286,12 @@ function electricityCalc(x){
  return {consumption,cost,meterRent,total:cost+meterRent}
 }
 function costData(p,y){
- const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gas:0,contracts:0};
+ const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gasBottles:0,gas:0,contracts:0};
  const r=annualRentFor(p,y);if(r)d.annual+=annualRentTotal(r,p);
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const k=x.category||'other';d[k]=(d[k]||0)+Number(x.amount||0)});
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>d.electricity+=electricityCalc(x).total);
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.petroleum+=Number(x.price||0));
+ p.gasBottles.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.gasBottles+=Number(x.price||0));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))).forEach(x=>d.gas+=Number(x.cost||0));
  p.contracts.filter(x=>contractActive(x,y)).forEach(x=>d.contracts+=contractCostForYear(x,y));
  return d
@@ -315,11 +322,12 @@ function renderDashboard(){
   <button class="card cardaction" data-go="costs" data-jump="overview"><h3>Jahreskosten ${y}</h3><div class="metric">${money(total)}</div><p>alle erfassten Kosten</p></button>
   <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${ns?`${ns.used} / ${ns.included}`:totalNights(p,y)}</div><p>${ns?(ns.remaining?`noch ${ns.remaining} inklusive`:`${ns.over} über inklusive`):'Jahresmiete noch nicht angelegt'}</p>${ns?`<div class="progress"><i style="width:${ns.percent}%"></i></div>`:''}</button>
   <button class="card cardaction" data-go="costs" data-jump="petroleum"><h3>Petroleum</h3><div class="metric">${num(petroleumStock(p),1)} <small>L</small></div><p>aktueller Bestand</p></button>
+  <button class="card cardaction" data-go="costs" data-jump="gasbottles"><h3>Gas</h3><div class="metric">${num(gasBottleStock(p))} <small>Flaschen</small></div><p>aktueller Bestand</p></button>
   <button class="card cardaction" data-go="costs" data-jump="electricity"><h3>Strom ${y}</h3><div class="metric">${ec?num(ec.consumption,1):'–'} <small>kWh</small></div><p>${ec?money(ec.total):'noch kein Jahreswert'}</p></button>
   <button class="card cardaction" data-go="costs" data-jump="annualRent"><h3>Jahresmiete</h3><div class="metric">${ar?money(annualRentTotal(ar,p)):'–'}</div><p>inkl. Personen, Fahrzeuge & Extras</p></button>
   <button class="card cardaction" data-go="care"><h3>Letzter Rasenschnitt</h3><div class="metric" style="font-size:20px">${lastLawn?fmt(lastLawn.date):'–'}</div><p>${lastLawn?'eingetragen':'noch kein Eintrag'}</p></button>
   <div class="card full"><h2>Schnellzugriff</h2><div class="quick">
-   <button data-add="shopping"><b>＋</b><small>Einkauf</small></button><button data-add="stay"><b>☾</b><small>Aufenthalt</small></button><button data-add="conversation"><b>✎</b><small>Gespräch</small></button><button data-add="petroleum"><b>⛽</b><small>Petroleum</small></button>
+   <button data-add="shopping"><b>＋</b><small>Einkauf</small></button><button data-add="stay"><b>☾</b><small>Aufenthalt</small></button><button data-add="conversation"><b>✎</b><small>Gespräch</small></button><button data-add="petroleum"><b>⛽</b><small>Petroleum</small></button><button data-add="gasbottle"><b>🔥</b><small>Gas</small></button>
   </div></div>
   <div class="card full"><h2>Nächste Fristen</h2>${dead.length?`<div class="list">${dead.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)}</div><div class="rowsub ${daysUntil(x.d)<0?'deadline-overdue':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div></div>`).join('')}</div>`:empty('Keine Frist eingetragen.')}</div>
  </div>`
@@ -335,16 +343,16 @@ function renderCosts(){
   <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, Personen, Autos & Anhänger</p></button>
   <button class="card half cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
  </div>
- ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['electricity','Strom'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum']])}
- ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):petroleumRows(p)}`
+ ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['electricity','Strom'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['gasbottles','Gas']])}
+ ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
 }
 function costOverview(p){
- const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'};
+ const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
  return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung</h2>${Object.entries(d).map(([k,v])=>`<div class="costline"><span>${lab[k]}</span><div class="bar"><i style="width:${tot?Math.min(100,v/tot*100):0}%"></i></div><b class="right">${money(v)}</b></div>`).join('')}</div></div>`
 }
 function comparisonPanel(p){
  const years=yearsFor(p).slice(0,6),rows=years.map(y=>{const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);return {y,d,total}});
- return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Strom</th><th>Petroleum</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
+ return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Strom</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
 }
 function annualRentPanel(p){
  const rows=[...p.annualRent].sort((a,b)=>Number(b.year)-Number(a.year));
@@ -358,17 +366,22 @@ function petroleumRows(p){
  const rows=[...p.petroleum].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  return `<div class="grid"><div class="card half"><h2>Bestand</h2><div class="metric">${num(petroleumStock(p),1)} L</div></div></div><div class="notice"><b>Bestand setzen</b> überschreibt den tatsächlichen Literstand an diesem Datum.</div><div class="toolbar"><button class="btn" data-add="petroleum">＋ Petroleum buchen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.kind==='purchase'?'Einkauf':x.kind==='stock'?'Bestand gesetzt':'Verbrauch'} · ${num(x.liters,1)} L</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div>${x.kind==='purchase'&&x.price?`<b>${money(x.price)}</b>`:''}<div class="rowactions"><button class="mini" data-edit="petroleum" data-id="${x.id}">✎</button><button class="mini danger" data-del="petroleum" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Petroleum-Buchungen.')}`
 }
+function gasBottlePanel(p){
+ const rows=[...p.gasBottles].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
+ return `<div class="grid"><div class="card half"><h2>Gasbestand</h2><div class="metric">${num(gasBottleStock(p))} <small>Flaschen</small></div><p>aktuell verfügbar</p></div><div class="card half"><h2>Letzter Kauf</h2><div class="metric" style="font-size:20px">${(()=>{const x=rows.find(r=>r.kind==='purchase');return x?fmt(x.date):'–'})()}</div><p>${(()=>{const x=rows.find(r=>r.kind==='purchase');return x&&x.location?esc(x.location):'noch kein Kauf'})()}</p></div></div><div class="notice good"><b>Gas:</b> Käufe erhöhen den Flaschenbestand, Verbrauch vermindert ihn. Mit „Bestand setzen“ kannst du den tatsächlichen Bestand jederzeit korrigieren.</div><div class="toolbar"><button class="btn" data-add="gasbottle">＋ Gas buchen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.kind==='purchase'?'Kauf':x.kind==='stock'?'Bestand gesetzt':'Verbrauch'} · ${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}</div><div class="rowsub">${x.kind==='purchase'?'Kaufdatum ':'Datum '}${fmt(x.date)}${x.location?' · '+esc(x.location):''}${x.note?' · '+esc(x.note):''}</div></div>${x.kind==='purchase'&&x.price?`<b>${money(x.price)}</b>`:''}<div class="rowactions"><button class="mini" data-edit="gasbottle" data-id="${x.id}">✎</button><button class="mini danger" data-del="gasbottle" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Gasflaschen eingetragen.')}`
+}
 function electricityRows(p){
  const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
  return `<div class="notice good"><b>Strom:</b> Mit Anfangs-/Endzählerstand und Preis pro kWh werden Verbrauch und Stromkosten automatisch berechnet.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Jahreswert</button></div>${rows.length?`<div class="list">${rows.map((x,i)=>{const c=electricityCalc(x),prev=rows.find(z=>Number(z.year)===Number(x.year)-1),pc=prev?electricityCalc(prev):null,delta=pc&&pc.consumption?((c.consumption-pc.consumption)/pc.consumption*100):null;return `<div class="row"><div class="rowmain"><div class="rowtitle">${x.year} · ${num(c.consumption,1)} kWh</div><div class="rowsub">${x.meterStart!==''&&x.meterStart!=null?`Zähler ${num(x.meterStart,1)} → ${num(x.meterEnd,1)} · `:''}${x.pricePerKwh!==''&&x.pricePerKwh!=null?`${money(x.pricePerKwh)} / kWh · `:''}Strom ${money(c.cost)} · Zählermiete ${money(c.meterRent)}${delta==null?'':` · ggü. Vorjahr ${delta>0?'+':''}${num(delta,1)} %`}</div></div><b>${money(c.total)}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Keine Stromwerte.')}`
 }
-function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
+function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
 function closingRows(p,y){
  const r=[],ar=annualRentFor(p,y);
  if(ar){const pn=rentPersonNights(p,ar),ns=rentNightInfo(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Grundbetrag ${money(ar.baseAmount)}, ${ns.used}/${ns.included} Übernachtungen, ${num(pn.adult)} Erw. x ${money(ar.adultPrice)}, ${num(pn.child)} Kinder x ${money(ar.childPrice)}, ${num(ar.carCount)} Auto(s) x ${money(ar.carAnnualPrice)}, ${num(ar.trailerCount)} Anhänger x ${money(ar.trailerAnnualPrice)}, Extras ${money(rentExtraTotal(ar))}`,a:annualRentTotal(ar,p)})}
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const e=electricityCalc(x);r.push({d:String(y),c:'Strom',t:`${num(e.consumption,1)} kWh, Strom ${money(e.cost)}, Zählermiete ${money(e.meterRent)}`,a:e.total})});
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
+ p.gasBottles.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Gasflaschen',t:`${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}${x.location?' · '+x.location:''}${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>r.push({d:fmt(x.date),c:'Gasprüfung',t:[x.company,x.result,x.notes].filter(Boolean).join(' · '),a:Number(x.cost||0)}));
  p.contracts.filter(x=>contractActive(x,y)&&contractBaseAmount(x)>0).forEach(x=>{
  const months=contractMonthsInYear(x,y),period=contractBillingPeriod(x);
@@ -388,7 +401,7 @@ function closingPanel(p){
  return `<div class="notice good"><b>Jahresabschluss:</b> Jahr wählen, alle Kosten prüfen und anschließend als PDF sichern.</div><div class="formgrid"><div class="field"><label>Jahr</label><select id="closeYear">${years.map(v=>`<option ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div></div><div class="toolbar"><button class="btn" id="pdfBtn">📄 Jahresabschluss als PDF</button></div><div class="notice"><b>Belege:</b> ${docs} Dokument(e) für ${y}</div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.c)} · ${esc(x.d)}</div><div class="rowsub">${esc(x.t)}</div></div><b>${money(x.a)}</b></div>`).join('')}</div>`:empty('Keine Kosten für dieses Jahr.')}`
 }
 function reportHtml(p,y){
- const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gas:'Gasprüfung',contracts:'Verträge'},pn=ar?rentPersonNights(p,ar):null,ns=ar?rentNightInfo(p,ar):null,extras=ar&&Array.isArray(ar.extras)?ar.extras:[];
+ const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'},pn=ar?rentPersonNights(p,ar):null,ns=ar?rentNightInfo(p,ar):null,extras=ar&&Array.isArray(ar.extras)?ar.extras:[];
  return `<!doctype html><html><head><meta charset="utf-8"><title>Jahresabschluss ${y}</title><style>body{font-family:Arial,sans-serif;color:#172019;margin:0}main{max-width:900px;margin:auto;padding:28px}h1{margin:0 0 5px}h2{font-size:18px;margin-top:24px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}.r{text-align:right;white-space:nowrap}.total td{font-weight:bold;border-top:2px solid #173c29}.btn{background:#173c29;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}.np{margin-bottom:18px}@media print{.np{display:none}@page{size:A4;margin:14mm}main{padding:0}}</style></head><body><main><div class="np"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div><h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${ar?`<h2>Jahresmiete</h2><table><tr><td>Grundbetrag</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Inklusive / genutzt</td><td class="r">${ns.used} / ${ns.included}</td></tr><tr><td>Berechnung Zusatznächte</td><td class="r">${rentAuto(ar)?'automatisch':'manuell'}</td></tr><tr><td>Erwachsenen-Übernachtungen danach</td><td class="r">${num(pn.adult)} × ${money(ar.adultPrice)}</td></tr><tr><td>Kinder-Übernachtungen danach</td><td class="r">${num(pn.child)} × ${money(ar.childPrice)}</td></tr><tr><td>Autos</td><td class="r">${num(ar.carCount)} × ${money(ar.carAnnualPrice)} = ${money(Number(ar.carCount||0)*Number(ar.carAnnualPrice||0))}</td></tr><tr><td>Anhänger</td><td class="r">${num(ar.trailerCount)} × ${money(ar.trailerAnnualPrice)} = ${money(Number(ar.trailerCount||0)*Number(ar.trailerAnnualPrice||0))}</td></tr>${extras.map(e=>`<tr><td>${esc(e.label||'Extra')}</td><td class="r">${num(e.qty||0)} × ${money(e.price)} = ${money(Number(e.qty||0)*Number(e.price||0))}</td></tr>`).join('')}<tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar,p))}</td></tr></table>`:''}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table></main></body></html>`
 }
 function openPdf(){const w=window.open('','_blank');if(!w){toast('Pop-up blockiert');return}w.document.write(reportHtml(place(),closingYear));w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch{}},400)}
@@ -429,7 +442,7 @@ async function dbPut(k,b){const db=await openDB();return new Promise((res,rej)=>
 async function dbGet(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readonly'),q=t.objectStore(STORE).get(k);q.onsuccess=()=>{db.close();res(q.result||null)};q.onerror=()=>rej(q.error)})}
 async function dbDel(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(k);t.oncomplete=()=>{db.close();res()};t.onerror=()=>rej(t.error)})}
 async function compress(file,max=1800,q=.82){if(!file.type.startsWith('image/'))return file;const bmp=await createImageBitmap(file);let w=bmp.width,h=bmp.height,s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close();return await new Promise(r=>c.toBlob(r,'image/jpeg',q))||file}
-const DOCCAT=[['electricity','Strom / Jahresrechnung'],['annual','Stellplatz / Jahresrechnung'],['petroleum','Petroleum'],['repair','Reparatur'],['purchase','Neuanschaffung'],['gas','Gasprüfung'],['contract','Vertrag'],['other','Sonstiges']];
+const DOCCAT=[['electricity','Strom / Jahresrechnung'],['annual','Stellplatz / Jahresrechnung'],['petroleum','Petroleum'],['gasbottle','Gasflaschen'],['repair','Reparatur'],['purchase','Neuanschaffung'],['gas','Gasprüfung'],['contract','Vertrag'],['other','Sonstiges']];
 function docLabel(k){return DOCCAT.find(x=>x[0]===k)?.[1]||'Sonstiges'}
 function documentPanel(p){const rows=[...p.documents].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="notice good"><b>Dokumentenscanner:</b> Rechnung fotografieren oder Bild/PDF auswählen. Bei angemeldeter Cloud werden Dateien automatisch in Supabase Storage gesichert.</div><div class="toolbar"><button class="btn" data-docscan>📷 Scannen</button><button class="btn sec" data-docupload>📁 Datei/PDF</button>${cloudReady()&&session?.access_token?'<button class="btn sec" id="syncDocsBtn">☁ Dokumente synchronisieren</button>':''}</div><input id="camInput" type="file" accept="image/*" capture="environment" hidden><input id="fileInput" type="file" accept="image/*,application/pdf" hidden>${rows.length?`<div class="docgrid">${rows.map(x=>`<div class="doc"><div class="docthumb" data-docopen="${x.id}">${x.mime?.startsWith('image/')?'🧾':'📄'}</div><div class="rowtitle" style="margin-top:8px">${esc(x.title||docLabel(x.category))}${x.cloudPath?'<span class="cloudtag">Cloud</span>':'<span class="cloudtag">lokal</span>'}</div><div class="rowsub">${docLabel(x.category)} · ${fmt(x.date)}${x.amount?' · '+money(x.amount):''}</div><div class="toolbar"><button class="mini" data-docopen="${x.id}">Öffnen</button><button class="mini" data-docedit="${x.id}">✎</button><button class="mini danger" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Dokumente.')}`}
 
@@ -443,7 +456,7 @@ const field=(l,n,v='',t='text',ex='')=>`<div class="field"><label>${esc(l)}</lab
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
 const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(a)===String(v)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
 const actions=id=>`<button class="btn sec" type="button" data-close>Abbrechen</button><button class="btn" type="submit" form="${id}">Speichern</button>`;
-function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,electricity:p.electricity,lawn:p.lawn,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
+function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,gasbottle:p.gasBottles,electricity:p.electricity,lawn:p.lawn,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
 
 function rentExtraRow(e={}){return `<div class="rentextra" data-rentextra><div class="field"><label>Bezeichnung</label><input data-extra-label value="${esc(e.label||'')}"></div><div class="field"><label>Anzahl</label><input data-extra-qty type="number" min="0" step="0.01" value="${esc(e.qty??1)}"></div><div class="field"><label>Preis €</label><input data-extra-price type="number" min="0" step="0.01" value="${esc(e.price??0)}"></div><button class="mini danger" type="button" data-rentextra-del>×</button></div>`}
 function editor(type,x=null){
@@ -452,6 +465,7 @@ function editor(type,x=null){
  if(type==='cost'){title='Kosten';body=select('Kategorie','category',e.category||'other',[['annual','Jahresgebühr manuell'],['repairs','Reparatur'],['purchases','Neuanschaffung'],['other','Sonstiges']])+field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Betrag €','amount',e.amount,'number','required min="0" step="0.01"')+area('Notiz','note',e.note)}
  if(type==='annualrent'){title='Jahresmiete';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Grundbetrag €','baseAmount',e.baseAmount,'number','required min="0" step="0.01"')+field('Inklusive Übernachtungen','includedNights',e.includedNights||90,'number','required min="0"')+field('Fällig am','dueDate',e.dueDate,'date')+select('Zusatznächte berechnen','autoExtra',e.autoExtra||(rentAuto(e)?'yes':'no'),[['yes','Automatisch aus Aufenthalten'],['no','Manuell']])+field('Erwachsene im Vertrag','adultCount',e.adultCount||0,'number','required min="0" step="1"')+field('Kinder im Vertrag','childCount',e.childCount||0,'number','required min="0" step="1"')+field('Erwachsene € je Übernachtung danach','adultPrice',e.adultPrice,'number','required min="0" step="0.01"')+field('Kinder € je Übernachtung danach','childPrice',e.childPrice,'number','required min="0" step="0.01"')+field('Manuell: Erwachsenen-Übernachtungen','extraAdultNights',e.extraAdultNights||0,'number','min="0"')+field('Manuell: Kinder-Übernachtungen','extraChildNights',e.extraChildNights||0,'number','min="0"')+field('Anzahl Autos','carCount',e.carCount||0,'number','required min="0" step="1"')+field('Jahrespreis pro Auto €','carAnnualPrice',e.carAnnualPrice||0,'number','required min="0" step="0.01"')+field('Anzahl Anhänger','trailerCount',e.trailerCount||0,'number','required min="0" step="1"')+field('Jahrespreis pro Anhänger €','trailerAnnualPrice',e.trailerAnnualPrice||0,'number','required min="0" step="0.01"')+`<div class="rentextras"><b>Weitere Positionen</b><div class="rowsub">Beliebige Jahreskosten hinzufügen, z. B. Schlüssel, Zweitfahrzeug oder Zusatzgebühr.</div><div id="rentExtras">${(Array.isArray(e.extras)?e.extras:[]).map(rentExtraRow).join('')}</div><button type="button" class="btn sec" id="addRentExtra" style="margin-top:8px">＋ Position</button></div>`+area('Notiz','note',e.note)}
  if(type==='petroleum'){title='Petroleum';body=select('Art','kind',e.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Liter','liters',e.liters,'number','required min="0" step="0.1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+area('Notiz','note',e.note)}
+ if(type==='gasbottle'){title='Gas';body=select('Art','kind',e.kind||'purchase',[['purchase','Kauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Anzahl Flaschen','bottles',e.bottles,'number','required min="0" step="1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+field('Kaufort','location',e.location)+area('Notiz','note',e.note)}
  if(type==='electricity'){title='Strom Jahreswert';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Zählerstand Anfang','meterStart',e.meterStart,'number','min="0" step="0.1"')+field('Zählerstand Ende','meterEnd',e.meterEnd,'number','min="0" step="0.1"')+field('Preis pro kWh €','pricePerKwh',e.pricePerKwh,'number','min="0" step="0.0001"')+field('Zählermiete €','meterRent',e.meterRent,'number','min="0" step="0.01"')+field('Verbrauch kWh (alternativ manuell)','consumption',e.consumption,'number','min="0" step="0.1"')+field('Stromkosten € (alternativ manuell)','cost',e.cost,'number','min="0" step="0.01"')}
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
@@ -485,6 +499,7 @@ function saveEditor(form){
   if(item.costAmount!==undefined)delete item.annualCost;
  }
  if(type==='stay'&&item.departure<item.arrival){toast('Abreise liegt vor der Anreise');return}
+ if(type==='gasbottle'&&Number(item.bottles||0)<0){toast('Anzahl Flaschen darf nicht negativ sein');return}
  if(type==='electricity'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Stromwert für dieses Jahr existiert bereits');return}
  if(type==='annualrent'&&!id&&arr.some(x=>String(x.year)===String(item.year))){toast('Jahresmiete für dieses Jahr existiert bereits');return}
  if(type==='hedge'&&!id){const y=item.date.slice(0,4);if(arr.filter(x=>(x.date||'').startsWith(y)).length>=2){toast('Maximal 2 Heckenschnitte pro Jahr');return}}

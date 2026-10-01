@@ -1,7 +1,7 @@
 {
-  "name": "CampManager – Campingplatzverwaltung",
+  "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung für Kosten, Übernachtungen, Dokumente, Fristen, Backups und Jahresabschluss.",
+  "description": "Campingplatzverwaltung mit Kosten, Verbrauch, Dokumenten, Backups und Gasbestand.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
