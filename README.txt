@@ -1,16 +1,18 @@
-CampManager v25 – komplette Version
+CampManager v26 – komplette Version
 
-Neu in v25:
-- Wetterbericht für Hörstel direkt im freien weißen Bereich des CampManager-Logos auf dem Startbildschirm
-- Aktuelle Temperatur, Wetterlage und Wind
-- Kompakter 3-Tage-Ausblick mit Höchst-/Tiefsttemperatur und Regenwahrscheinlichkeit
-- Automatische Aktualisierung alle 30 Minuten und manueller Aktualisieren-Knopf
-- Letzter Wetterstand wird lokal zwischengespeichert und bei Verbindungsproblemen weiter angezeigt
-- Wetterdaten über Open-Meteo: ohne API-Key; für private/nicht-kommerzielle Nutzung kostenfrei, Daten unter CC BY 4.0 mit Attribution
-- Alle Funktionen aus v24 bleiben erhalten
+Änderung gegenüber v25:
+- Wetter für Hörstel deutlich robuster
+- feste Koordinaten, keine Standortfreigabe erforderlich
+- kleinere Open-Meteo-Abfrage
+- maximal 4 Sekunden Wartezeit
+- bei Nichterreichbarkeit erscheint sofort ein Neu-laden-Knopf statt einer endlosen Ladeanzeige
+- letzter erfolgreicher Wetterstand bleibt lokal gespeichert und wird sofort angezeigt
+- PWA-Cache auf v26 erhöht, damit iPhone/GitHub Pages die alte Version nicht festhält
+- alle Funktionen und Daten aus v25 bleiben erhalten
 
 Installation:
-Alle Dateien aus diesem Ordner in das Hauptverzeichnis des GitHub-Pages-Projekts hochladen und vorhandene Dateien ersetzen.
+Alle Dateien des ZIP in das Hauptverzeichnis deines GitHub-Pages-Projekts hochladen
+und vorhandene Dateien ersetzen.
 
-Hinweis:
-Bestehende v24-Daten werden automatisch übernommen.
+Falls die Home-Screen-App trotzdem noch v25 zeigt:
+App einmal vollständig schließen, Safari-Seite neu laden und die Home-Screen-App erneut öffnen.

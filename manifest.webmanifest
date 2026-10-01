@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung mit Kosten, Verbrauch, Dokumenten, Backups, Gasbestand und Wetter für Hörstel.",
+  "description": "Campingplatzverwaltung mit Kosten, Verbrauch, Backups, Gasbestand und schnellem Wetter für Hörstel.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
