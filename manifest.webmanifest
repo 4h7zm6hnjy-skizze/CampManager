@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung mit Kosten, Backups, Gas, Wetter und Planverwaltung.",
+  "description": "Campingplatzverwaltung mit Jahresmiete, einmaliger Kaution, Backups, Plänen, Gas und Wetter.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

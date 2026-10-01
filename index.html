@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v27</title>
+<title>CampManager v28</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -123,7 +123,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v27</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v28</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -165,9 +165,9 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=27;
-const KEY='campmanager_complete_v27';
-const OLD=['campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=28;
+const KEY='campmanager_complete_v28';
+const OLD=['campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -183,11 +183,11 @@ const dparse=v=>v?new Date(v+'T12:00:00'):null;
 const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
- return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:27,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:28,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -196,6 +196,7 @@ function normPlace(p={}){
   shopping:Array.isArray(p.shopping)?p.shopping:[],
   costs:Array.isArray(p.costs)?p.costs:[],
   annualRent:Array.isArray(p.annualRent)?p.annualRent:[],
+  deposit:p.deposit&&typeof p.deposit==='object'?{date:p.deposit.date||'',amount:p.deposit.amount??''}:{date:'',amount:''},
   petroleum:Array.isArray(p.petroleum)?p.petroleum:[],
   gasBottles:Array.isArray(p.gasBottles)?p.gasBottles:[],
   electricity:Array.isArray(p.electricity)?p.electricity:[],
@@ -213,10 +214,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:27,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:28,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:27,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:28,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -229,7 +230,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=27;state.updatedAt=new Date().toISOString();
+ state.version=28;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -296,8 +297,9 @@ function electricityCalc(x){
  return {consumption,cost,meterRent,total:cost+meterRent}
 }
 function costData(p,y){
- const d={annual:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gasBottles:0,gas:0,contracts:0};
+ const d={annual:0,deposit:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gasBottles:0,gas:0,contracts:0};
  const r=annualRentFor(p,y);if(r)d.annual+=annualRentTotal(r,p);
+ if(p.deposit?.date&&String(p.deposit.date).startsWith(String(y)))d.deposit+=Number(p.deposit.amount||0);
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const k=x.category||'other';d[k]=(d[k]||0)+Number(x.amount||0)});
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>d.electricity+=electricityCalc(x).total);
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.petroleum+=Number(x.price||0));
@@ -408,23 +410,39 @@ function renderCosts(){
  $('#v-costs').innerHTML=`<div class="head"><div><h1>Kosten & Verbrauch</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>
  <div class="grid" style="margin-top:0">
   <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, Personen, Autos & Anhänger</p></button>
-  <button class="card half cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
+  <button class="card half cardaction" data-costjump="deposit"><h2>🔐 Kaution</h2><p>Einmalig gezahlt · Datum & Summe</p></button>
+  <button class="card full cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
  </div>
- ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['electricity','Strom'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['gasbottles','Gas']])}
- ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
+ ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['deposit','Kaution'],['electricity','Strom'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['gasbottles','Gas']])}
+ ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='deposit'?depositPanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
 }
 function costOverview(p){
- const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
+ const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
  return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung</h2>${Object.entries(d).map(([k,v])=>`<div class="costline"><span>${lab[k]}</span><div class="bar"><i style="width:${tot?Math.min(100,v/tot*100):0}%"></i></div><b class="right">${money(v)}</b></div>`).join('')}</div></div>`
 }
 function comparisonPanel(p){
  const years=yearsFor(p).slice(0,6),rows=years.map(y=>{const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);return {y,d,total}});
- return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Strom</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
+ return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Kaution</th><th>Strom</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.deposit)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
 }
 function annualRentPanel(p){
  const rows=[...p.annualRent].sort((a,b)=>Number(b.year)-Number(a.year));
  return `<div class="notice good"><b>Jahresmiete:</b> Die Übernachtungen werden aus den Aufenthalten automatisch gezählt. Nach dem Inklusiv-Kontingent können Erwachsenen-/Kinderpreise automatisch berechnet werden.</div><div class="toolbar"><button class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>${rows.length?`<div class="list">${rows.map(x=>{const ns=rentNightInfo(p,x),pn=rentPersonNights(p,x),extras=Array.isArray(x.extras)?x.extras:[];return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(annualRentTotal(x,p))}</div><div class="rowsub">Grundbetrag ${money(x.baseAmount)} · ${ns.used} von ${ns.included} Übernachtungen genutzt${ns.remaining?` · noch ${ns.remaining} inklusive`:` · ${ns.over} darüber`}</div><div class="progress"><i style="width:${ns.percent}%"></i></div><div class="rowsub">${rentAuto(x)?'Automatisch':'Manuell'}: ${num(pn.adult)} Erwachsenen- / ${num(pn.child)} Kinder-Übernachtungen × ${money(x.adultPrice)} / ${money(x.childPrice)}</div><div class="rowsub">Autos: ${num(x.carCount)} × ${money(x.carAnnualPrice)} · Anhänger: ${num(x.trailerCount)} × ${money(x.trailerAnnualPrice)}</div>${extras.length?`<div class="rowsub">Extras: ${extras.map(e=>`${esc(e.label||'Position')} ${num(e.qty||0)} × ${money(e.price)}`).join(' · ')}</div>`:''}${x.dueDate?`<div class="rowsub">Fällig: ${fmt(x.dueDate)}</div>`:''}${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Noch keine Jahresmiete angelegt.')}`
 }
+
+function depositPanel(p){
+ const d=p.deposit||{date:'',amount:''},has=!!(d.date||Number(d.amount||0));
+ return `<div class="notice good"><b>Kaution:</b> Diese Position ist einmalig und gehört nicht zur wiederkehrenden Jahresmiete. Pro Stellplatz gibt es genau eine feste Kautionsposition.</div>${has?`<div class="grid"><div class="card half"><h2>Zahlungsdatum</h2><div class="metric" style="font-size:22px">${fmt(d.date)}</div></div><div class="card half"><h2>Kautionssumme</h2><div class="metric">${money(d.amount)}</div></div></div><div class="toolbar"><button class="btn sec" data-depositedit>✎ Kaution bearbeiten</button></div>`:`<div class="card full"><h2>🔐 Kaution</h2><p>Noch keine einmalige Kaution hinterlegt.</p><div class="toolbar"><button class="btn" data-depositedit>＋ Kaution eintragen</button></div></div>`}`
+}
+function depositEditor(){
+ const d=place().deposit||{date:'',amount:''};
+ modal('Einmalige Kaution',`<div class="notice"><b>Feststehende Position:</b> Zahlungsdatum und einmalig gezahlte Summe.</div><form id="depositForm"><div class="formgrid">${field('Zahlungsdatum','date',d.date,'date','required')}${field('Summe €','amount',d.amount,'number','required min="0" step="0.01"')}</div></form>`,actions('depositForm'))
+}
+function saveDeposit(form){
+ const data=Object.fromEntries(new FormData(form).entries());
+ place().deposit={date:data.date||'',amount:data.amount||''};
+ closeModal();save();toast('Kaution gespeichert')
+}
+
 function costRows(p){
  const lab={annual:'Jahresgebühr (manuell)',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'},rows=[...p.costs].sort((a,b)=>Number(b.year)-Number(a.year));
  return `<div class="toolbar"><button class="btn" data-add="cost">＋ Kosten</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(lab[x.category]||x.category)} · ${esc(x.year)}</div><div class="rowsub">${esc(x.note||'')}</div></div><b>${money(x.amount)}</b><div class="rowactions"><button class="mini" data-edit="cost" data-id="${x.id}">✎</button><button class="mini danger" data-del="cost" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Kosten.')}`
@@ -441,9 +459,10 @@ function electricityRows(p){
  const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
  return `<div class="notice good"><b>Strom:</b> Mit Anfangs-/Endzählerstand und Preis pro kWh werden Verbrauch und Stromkosten automatisch berechnet.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Jahreswert</button></div>${rows.length?`<div class="list">${rows.map((x,i)=>{const c=electricityCalc(x),prev=rows.find(z=>Number(z.year)===Number(x.year)-1),pc=prev?electricityCalc(prev):null,delta=pc&&pc.consumption?((c.consumption-pc.consumption)/pc.consumption*100):null;return `<div class="row"><div class="rowmain"><div class="rowtitle">${x.year} · ${num(c.consumption,1)} kWh</div><div class="rowsub">${x.meterStart!==''&&x.meterStart!=null?`Zähler ${num(x.meterStart,1)} → ${num(x.meterEnd,1)} · `:''}${x.pricePerKwh!==''&&x.pricePerKwh!=null?`${money(x.pricePerKwh)} / kWh · `:''}Strom ${money(c.cost)} · Zählermiete ${money(c.meterRent)}${delta==null?'':` · ggü. Vorjahr ${delta>0?'+':''}${num(delta,1)} %`}</div></div><b>${money(c.total)}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Keine Stromwerte.')}`
 }
-function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
+function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2]);p.annualRent.forEach(x=>s.add(Number(x.year)));if(p.deposit?.date)s.add(Number(p.deposit.date.slice(0,4)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
 function closingRows(p,y){
  const r=[],ar=annualRentFor(p,y);
+ if(p.deposit?.date&&String(p.deposit.date).startsWith(String(y)))r.push({d:fmt(p.deposit.date),c:'Kaution',t:'Einmalig gezahlte Kaution',a:Number(p.deposit.amount||0)});
  if(ar){const pn=rentPersonNights(p,ar),ns=rentNightInfo(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Grundbetrag ${money(ar.baseAmount)}, ${ns.used}/${ns.included} Übernachtungen, ${num(pn.adult)} Erw. x ${money(ar.adultPrice)}, ${num(pn.child)} Kinder x ${money(ar.childPrice)}, ${num(ar.carCount)} Auto(s) x ${money(ar.carAnnualPrice)}, ${num(ar.trailerCount)} Anhänger x ${money(ar.trailerAnnualPrice)}, Extras ${money(rentExtraTotal(ar))}`,a:annualRentTotal(ar,p)})}
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const e=electricityCalc(x);r.push({d:String(y),c:'Strom',t:`${num(e.consumption,1)} kWh, Strom ${money(e.cost)}, Zählermiete ${money(e.meterRent)}`,a:e.total})});
@@ -468,7 +487,7 @@ function closingPanel(p){
  return `<div class="notice good"><b>Jahresabschluss:</b> Jahr wählen, alle Kosten prüfen und anschließend als PDF sichern.</div><div class="formgrid"><div class="field"><label>Jahr</label><select id="closeYear">${years.map(v=>`<option ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div></div><div class="toolbar"><button class="btn" id="pdfBtn">📄 Jahresabschluss als PDF</button></div><div class="notice"><b>Belege:</b> ${docs} Dokument(e) für ${y}</div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.c)} · ${esc(x.d)}</div><div class="rowsub">${esc(x.t)}</div></div><b>${money(x.a)}</b></div>`).join('')}</div>`:empty('Keine Kosten für dieses Jahr.')}`
 }
 function reportHtml(p,y){
- const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'},pn=ar?rentPersonNights(p,ar):null,ns=ar?rentNightInfo(p,ar):null,extras=ar&&Array.isArray(ar.extras)?ar.extras:[];
+ const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'},pn=ar?rentPersonNights(p,ar):null,ns=ar?rentNightInfo(p,ar):null,extras=ar&&Array.isArray(ar.extras)?ar.extras:[];
  return `<!doctype html><html><head><meta charset="utf-8"><title>Jahresabschluss ${y}</title><style>body{font-family:Arial,sans-serif;color:#172019;margin:0}main{max-width:900px;margin:auto;padding:28px}h1{margin:0 0 5px}h2{font-size:18px;margin-top:24px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}.r{text-align:right;white-space:nowrap}.total td{font-weight:bold;border-top:2px solid #173c29}.btn{background:#173c29;color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:bold}.np{margin-bottom:18px}@media print{.np{display:none}@page{size:A4;margin:14mm}main{padding:0}}</style></head><body><main><div class="np"><button class="btn" onclick="window.print()">Drucken / als PDF sichern</button></div><h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${ar?`<h2>Jahresmiete</h2><table><tr><td>Grundbetrag</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Inklusive / genutzt</td><td class="r">${ns.used} / ${ns.included}</td></tr><tr><td>Berechnung Zusatznächte</td><td class="r">${rentAuto(ar)?'automatisch':'manuell'}</td></tr><tr><td>Erwachsenen-Übernachtungen danach</td><td class="r">${num(pn.adult)} × ${money(ar.adultPrice)}</td></tr><tr><td>Kinder-Übernachtungen danach</td><td class="r">${num(pn.child)} × ${money(ar.childPrice)}</td></tr><tr><td>Autos</td><td class="r">${num(ar.carCount)} × ${money(ar.carAnnualPrice)} = ${money(Number(ar.carCount||0)*Number(ar.carAnnualPrice||0))}</td></tr><tr><td>Anhänger</td><td class="r">${num(ar.trailerCount)} × ${money(ar.trailerAnnualPrice)} = ${money(Number(ar.trailerCount||0)*Number(ar.trailerAnnualPrice||0))}</td></tr>${extras.map(e=>`<tr><td>${esc(e.label||'Extra')}</td><td class="r">${num(e.qty||0)} × ${money(e.price)} = ${money(Number(e.qty||0)*Number(e.price||0))}</td></tr>`).join('')}<tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar,p))}</td></tr></table>`:''}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table></main></body></html>`
 }
 function openPdf(){const w=window.open('','_blank');if(!w){toast('Pop-up blockiert');return}w.document.write(reportHtml(place(),closingYear));w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch{}},400)}
@@ -795,6 +814,7 @@ function downloadBackup(data,name){const b=new Blob([JSON.stringify(data,null,2)
 document.addEventListener('submit',e=>{
  const f=e.target;if(!(f instanceof HTMLFormElement))return;e.preventDefault();if(!f.reportValidity())return;
  if(f.id==='editForm'){saveEditor(f);return}
+ if(f.id==='depositForm'){saveDeposit(f);return}
  if(f.id==='placeForm'){savePlace(f);return}
  if(f.id==='docForm'){const d=Object.fromEntries(new FormData(f).entries()),id=f.dataset.id;let x=place().documents.find(x=>x.id===id);if(!x){x={...(pendingDocs.get(id)||{}),id,createdAt:new Date().toISOString()};place().documents.push(x)}Object.assign(x,d);pendingDocs.delete(id);closeModal();save();toast('Dokument gespeichert');return}
 });
@@ -804,6 +824,7 @@ document.addEventListener('click',e=>{
  const g=e.target.closest('[data-go]');if(g){const v=g.dataset.go;if(g.dataset.jump)tab[v]=g.dataset.jump;render();show(v);return}
  const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;render();show(tj.dataset.tabsec);return}
  const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
+ if(e.target.closest('[data-depositedit]')){depositEditor();return}
  const planAdd=e.target.closest('[data-planadd]');if(planAdd){planAddDialog(planAdd.dataset.planadd);return}
  const planSrc=e.target.closest('[data-plan-source]');if(planSrc){pickPlanFile(planSrc.dataset.planCategory,planSrc.dataset.planSource==='camera');return}
  const a=e.target.closest('[data-add]');if(a){editor(a.dataset.add);return}
