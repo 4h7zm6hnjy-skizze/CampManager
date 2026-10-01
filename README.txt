@@ -1,30 +1,23 @@
-CampManager v30 – komplette Version
+CampManager v31 – komplette Version
 
-Neu unter Kosten → Versicherung:
-- Versicherungsgesellschaft
-- Zahlweise: monatlich, quartalsweise oder Jahresbeitrag
-- Summe je Zahlung
-- automatische Berechnung des Jahreswerts
-- Vertragsbeginn
-- Kündigungsfrist
-- Telefonnummer mit direktem Telefon-Link
-- eigener Bereich Schäden
-- Schaden mit Datum, Bezeichnung und Beschreibung erfassen
-- pro Schaden beliebig viele Fotos direkt über Kamera oder Foto-Upload
-- eigener Bereich Versicherungsdokumente
-- Dokument direkt mit Kamera scannen
-- Bild oder PDF als Datei hinzufügen
-- Dokumente öffnen und löschen
-- Versicherungskosten werden in Kostenübersicht, Jahresvergleich und Jahresabschluss/PDF eingerechnet
-- Versicherung, Schäden, Fotos und Dokumente werden über Backup/Wiederherstellung mitgesichert
-- bei aktivem Supabase-Sync werden Versicherungsdateien wie andere Dokumente in der Cloud gesichert
-- bestehende Daten aus v29 werden automatisch übernommen
+Behoben:
+- Bereich „Mehr“ war in v30 leer.
+- Ursache: renderCare() fehlte; dadurch brach der komplette Seitenaufbau vor „Mehr“ ab.
+- renderCare() ist wieder vollständig eingebaut.
 
-Berechnung:
-Monatlich = Summe × 12
-Quartalsweise = Summe × 4
-Jahresbeitrag = Summe × 1
+Neu unter Pflege:
+- Rasen
+- Caravan waschen
+- Hecke
+- „Caravan waschen“ steht bewusst in der Mitte
+- pro Wäsche: Datum und Notiz
+- Liste aller gespeicherten Wäschen
+- letzter Wasch-Termin auf einen Blick
+- Einträge bearbeiten und löschen
+- Daten werden automatisch in Monatsbackup und Wiederherstellung übernommen
+
+Alle Funktionen und Daten aus v30 bleiben erhalten.
 
 Installation:
-Alle Dateien des ZIP in das Hauptverzeichnis deines GitHub-Pages-Projekts hochladen
+Alle Dateien aus dem ZIP in das Hauptverzeichnis des GitHub-Pages-Projekts hochladen
 und vorhandene Dateien ersetzen. Die aktive Startdatei muss index.html heißen.

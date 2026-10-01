@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung mit Versicherung, Schäden, Dokumenten, Jahresabschluss, Backups, Plänen, Gas und Wetter.",
+  "description": "Campingplatzverwaltung mit Pflege, Caravan-Wäsche, Versicherung, Jahresabschluss, Backups, Plänen, Gas und Wetter.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

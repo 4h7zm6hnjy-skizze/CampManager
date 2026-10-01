@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v30</title>
+<title>CampManager v31</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -161,7 +161,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v30</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v31</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -212,9 +212,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=30;
-const KEY='campmanager_complete_v30';
-const OLD=['campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=31;
+const KEY='campmanager_complete_v31';
+const OLD=['campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -230,11 +230,11 @@ const dparse=v=>v?new Date(v+'T12:00:00'):null;
 const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
- return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],caravanWash:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:30,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:31,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -251,6 +251,7 @@ function normPlace(p={}){
   electricity:Array.isArray(p.electricity)?p.electricity:[],
   stays:Array.isArray(p.stays)?p.stays:[],
   lawn:Array.isArray(p.lawn)?p.lawn:[],
+  caravanWash:Array.isArray(p.caravanWash)?p.caravanWash:[],
   hedge:Array.isArray(p.hedge)?p.hedge:[],
   contracts:Array.isArray(p.contracts)?p.contracts:[],
   gasChecks:Array.isArray(p.gasChecks)?p.gasChecks:[],
@@ -263,10 +264,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:30,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:31,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:30,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:31,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -279,7 +280,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=30;state.updatedAt=new Date().toISOString();
+ state.version=31;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -760,6 +761,16 @@ async function saveAnnualPdf(){
   toast('PDF erstellt')
  }catch(e){console.warn(e);toast('PDF konnte nicht erstellt werden')}
 }
+function renderCare(){
+ const p=place(),t=tab.care;
+ $('#v-care').innerHTML=`<div class="head"><div><h1>Pflege</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>${tabs('care',[['lawn','Rasen'],['wash','Caravan waschen'],['hedge','Hecke']])}${t==='lawn'?lawnPanel(p):t==='wash'?caravanWashPanel(p):hedgePanel(p)}`
+}
+function caravanWashPanel(p){
+ const rows=[...(p.caravanWash||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ const last=rows[0]||null;
+ return `<div class="grid"><div class="card half"><h2>Caravan waschen</h2><div class="metric">${rows.length}</div><p>Wäschen gespeichert</p></div><div class="card half"><h2>Zuletzt</h2><div class="metric" style="font-size:22px">${last?fmt(last.date):'–'}</div><p>${last?.note?esc(last.note):'noch kein Eintrag'}</p></div></div><div class="toolbar"><button class="btn" data-add="wash">＋ Caravan waschen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">🚐 Caravan gewaschen</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="wash" data-id="${x.id}">✎</button><button class="mini danger" data-del="wash" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Caravan-Wäsche eingetragen.')}`
+}
+
 function lawnPanel(p){const rows=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="toolbar"><button class="btn" data-add="lawn">＋ Rasenschnitt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Rasen gemäht</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="lawn" data-id="${x.id}">✎</button><button class="mini danger" data-del="lawn" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Rasenschnitt.')}`}
 function hedgePanel(p){const y=yearNow(),count=p.hedge.filter(x=>(x.date||'').startsWith(String(y))).length,rows=[...p.hedge].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="grid"><div class="card half"><h2>Heckenschnitt ${y}</h2><div class="metric">${count} / 2</div></div></div><div class="toolbar"><button class="btn" data-add="hedge" ${count>=2?'disabled':''}>＋ Heckenschnitt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Hecke geschnitten</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="hedge" data-id="${x.id}">✎</button><button class="mini danger" data-del="hedge" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Heckenschnitt.')}`}
 
@@ -834,7 +845,7 @@ const field=(l,n,v='',t='text',ex='')=>`<div class="field"><label>${esc(l)}</lab
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
 const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(a)===String(v)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
 const actions=id=>`<button class="btn sec" type="button" data-close>Abbrechen</button><button class="btn" type="submit" form="${id}">Speichern</button>`;
-function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,gasbottle:p.gasBottles,electricity:p.electricity,lawn:p.lawn,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
+function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,gasbottle:p.gasBottles,electricity:p.electricity,lawn:p.lawn,wash:p.caravanWash,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
 
 function rentExtraRow(e={}){return `<div class="rentextra" data-rentextra><div class="field"><label>Bezeichnung</label><input data-extra-label value="${esc(e.label||'')}"></div><div class="field"><label>Anzahl</label><input data-extra-qty type="number" min="0" step="0.01" value="${esc(e.qty??1)}"></div><div class="field"><label>Preis €</label><input data-extra-price type="number" min="0" step="0.01" value="${esc(e.price??0)}"></div><button class="mini danger" type="button" data-rentextra-del>×</button></div>`}
 function editor(type,x=null){
@@ -846,6 +857,7 @@ function editor(type,x=null){
  if(type==='gasbottle'){title='Gas';body=select('Art','kind',e.kind||'purchase',[['purchase','Kauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Anzahl Flaschen','bottles',e.bottles,'number','required min="0" step="1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+field('Kaufort','location',e.location)+area('Notiz','note',e.note)}
  if(type==='electricity'){title='Strom Jahreswert';body=field('Jahr','year',e.year||yearNow(),'number','required min="2000"')+field('Zählerstand Anfang','meterStart',e.meterStart,'number','min="0" step="0.1"')+field('Zählerstand Ende','meterEnd',e.meterEnd,'number','min="0" step="0.1"')+field('Preis pro kWh €','pricePerKwh',e.pricePerKwh,'number','min="0" step="0.0001"')+field('Zählermiete €','meterRent',e.meterRent,'number','min="0" step="0.01"')+field('Verbrauch kWh (alternativ manuell)','consumption',e.consumption,'number','min="0" step="0.1"')+field('Stromkosten € (alternativ manuell)','cost',e.cost,'number','min="0" step="0.01"')}
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
+ if(type==='wash'){title='Caravan waschen';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
  if(type==='conversation'){title='Gespräch';body=field('Datum','date',e.date||today(),'date','required')+field('Uhrzeit','time',e.time||new Date().toTimeString().slice(0,5),'time','required')+field('Gesprächspartner','partner',e.partner,'text','required')+area('Notiz','note',e.note)}
  if(type==='contract'){
