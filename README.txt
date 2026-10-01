@@ -1,15 +1,17 @@
-CampManager v28 – komplette Version
+CampManager v29 – komplette Version
 
-Neu:
-- eigene feste Rubrik „Kaution“ unter Kosten
-- pro Stellplatz genau eine einmalige Kautionsposition
-- Felder: Zahlungsdatum und Summe
-- nach dem Eintragen bleibt die Position fest bestehen und kann nur bearbeitet werden
-- die Kaution ist getrennt von der laufenden Jahresmiete
-- im Jahresabschluss wird sie nur im tatsächlichen Zahlungsjahr berücksichtigt
-- im Jahresvergleich gibt es eine eigene Kautionsspalte
-- Kaution wird automatisch in Monatsbackup, Wiederherstellung und Cloud-Daten übernommen
-- alle Daten und Funktionen aus v27 bleiben erhalten
+Behoben:
+- Jahresabschluss öffnet nicht mehr in einem separaten Pop-up-Fenster
+- dadurch kein blockierter verzögerter Druckaufruf mehr auf iPhone/PWA
+- neuer Vollbild-Jahresabschluss direkt innerhalb der App
+- sichtbarer Button „← Zurück“
+- separater Button „PDF speichern“
+- separater Button „Drucken“
+- PDF wird direkt in der App erzeugt, ohne externe Bibliothek und ohne API
+- auf iPhone/iPad wird für „PDF speichern“ nach Möglichkeit das native Teilen-Menü geöffnet;
+  dort kann „In Dateien sichern“ gewählt werden
+- Druck wird erst nach direktem Tippen ausgelöst und funktioniert dadurch zuverlässiger
+- bestehende Daten und Funktionen aus v28 werden übernommen
 
 Installation:
 Alle Dateien in das Hauptverzeichnis des GitHub-Pages-Projekts hochladen
