@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v21</title>
+<title>CampManager v22</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -111,7 +111,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v21</span></b></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v22</span></b></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -153,10 +153,10 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=21;
-const KEY='campmanager_complete_v21';
-const OLD=['campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
-const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v21';
+const APP_VERSION=22;
+const KEY='campmanager_complete_v22';
+const OLD=['campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v22', MONTH_BACKUP='campmanager_month_backup_v22', MONTH_SNOOZE='campmanager_month_backup_snooze_v22';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
 const esc=(v='')=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -172,7 +172,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:21,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:22,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -197,10 +197,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:21,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:22,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:21,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:22,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -213,7 +213,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=21;state.updatedAt=new Date().toISOString();
+ state.version=22;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -592,8 +592,70 @@ drop policy if exists "camp_docs_delete_own" on storage.objects;
 create policy "camp_docs_delete_own" on storage.objects for delete using (bucket_id='campmanager-documents' and (storage.foldername(name))[1]=auth.uid()::text);`;
 
 
+function localMonthKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+function monthLabel(k){const [y,m]=String(k||'').split('-').map(Number);return y&&m?new Date(y,m-1,1).toLocaleDateString('de-DE',{month:'long',year:'numeric'}):String(k||'')}
+function lastDayOfMonth(d=new Date()){return new Date(d.getFullYear(),d.getMonth()+1,0).getDate()}
+function monthlyBackupDue(){
+ const n=new Date(),key=localMonthKey(n),last=localStorage.getItem(MONTH_BACKUP)||'';
+ if(last===key)return null;
+ const snooze=localStorage.getItem(MONTH_SNOOZE)||'';
+ if(snooze===today())return null;
+ return n.getDate()>=Math.max(28,lastDayOfMonth(n)-2)?key:null
+}
+function blobToBase64(blob){return blob.arrayBuffer().then(buf=>{const u=new Uint8Array(buf);let out='';const chunk=0x8000;for(let i=0;i<u.length;i+=chunk)out+=String.fromCharCode(...u.subarray(i,i+chunk));return btoa(out)})}
+function base64ToBlob(base64,mime='application/octet-stream'){const bin=atob(base64),chunk=0x8000,parts=[];for(let i=0;i<bin.length;i+=chunk){const end=Math.min(i+chunk,bin.length),u=new Uint8Array(end-i);for(let j=i;j<end;j++)u[j-i]=bin.charCodeAt(j);parts.push(u)}return new Blob(parts,{type:mime})}
+async function buildFullBackup(targetMonth=''){
+ const files=[],missing=[];
+ for(const p of state.places){
+  for(const d of p.documents){
+   let b=await dbGet(d.id).catch(()=>null);
+   if(!b&&d.cloudPath&&cloudReady()&&session?.access_token){try{b=await downloadDocumentCloud(d.cloudPath);if(b)await dbPut(d.id,b)}catch(e){console.warn('Dokument für Backup nicht ladbar',d.id,e)}}
+   if(!b){missing.push({id:d.id,title:d.title||d.filename||'Dokument'});continue}
+   try{files.push({id:d.id,mime:b.type||d.mime||'application/octet-stream',filename:d.filename||'',base64:await blobToBase64(b)})}catch(e){console.warn('Dokument für Backup nicht lesbar',d.id,e);missing.push({id:d.id,title:d.title||d.filename||'Dokument'})}
+  }
+ }
+ return {format:'CampManagerBackup',formatVersion:1,appVersion:APP_VERSION,createdAt:new Date().toISOString(),month:targetMonth||localMonthKey(),state:JSON.parse(JSON.stringify(state)),files,missingDocuments:missing}
+}
+async function saveBackupFile(pkg,name){
+ const text=JSON.stringify(pkg,null,2),blob=new Blob([text],{type:'application/json'}),file=new File([blob],name,{type:'application/json'});
+ if(navigator.share&&navigator.canShare?.({files:[file]})){
+  try{await navigator.share({files:[file],title:'CampManager Backup',text:'CampManager Sicherungsdatei'});return true}catch(e){if(e?.name!=='AbortError')console.warn(e);if(e?.name==='AbortError')return false}
+ }
+ const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);return true
+}
+async function exportFullBackup(targetMonth=localMonthKey(),monthly=false){
+ try{
+  toast('Backup wird erstellt …');
+  const pkg=await buildFullBackup(targetMonth),name=`CampManager-Backup-${targetMonth}-${today()}.campbackup.json`;
+  const started=await saveBackupFile(pkg,name);if(!started)return false;
+  if(monthly){localStorage.setItem(MONTH_BACKUP,targetMonth);localStorage.removeItem(MONTH_SNOOZE)}
+  const miss=pkg.missingDocuments?.length||0;
+  toast(miss?`Backup erstellt · ${miss} Dokument(e) nicht verfügbar`:'Backup vollständig erstellt');
+  return true
+ }catch(e){console.error(e);toast('Backup konnte nicht erstellt werden');return false}
+}
+async function restoreFullBackupObject(raw){
+ const pkg=raw?.format==='CampManagerBackup'&&raw?.state?raw:null;
+ const newState=normalize(pkg?pkg.state:raw);
+ if(pkg?.files?.length){for(const f of pkg.files){if(!f?.id||!f?.base64)continue;await dbPut(f.id,base64ToBlob(f.base64,f.mime||'application/octet-stream'))}}
+ state=newState;persist();render();schedulePush();if(cloudReady()&&session?.access_token)pushCloud().catch(console.warn);
+ return {files:pkg?.files?.length||0,missing:pkg?.missingDocuments?.length||0}
+}
+async function restoreBackupFile(file){
+ const raw=JSON.parse(await file.text());
+ if(!raw||typeof raw!=='object')throw new Error('invalid');
+ if(!confirm('Dieses Backup wiederherstellen? Die aktuellen App-Daten werden durch den Sicherungsstand ersetzt.'))return false;
+ const r=await restoreFullBackupObject(raw);closeModal();toast(r.missing?`Backup wiederhergestellt · ${r.missing} Dokument(e) fehlten bereits im Backup`:'Backup vollständig wiederhergestellt');return true
+}
+function monthlyBackupPrompt(){
+ const key=monthlyBackupDue();if(!key)return;
+ modal(`Monatsbackup · ${monthLabel(key)}`,`<div class="notice good"><b>Monatsende:</b> Möchtest du jetzt eine Sicherungsdatei erstellen?</div><p>Die Datei enthält deine CampManager-Daten und die verfügbaren gescannten Dokumente. Auf iPhone/iPad kannst du sie über das Teilen-Menü direkt in der <b>Dateien-App</b> sichern.</p><p class="rowsub">Beim späteren Einspielen werden Stellplätze, Kosten, Jahresmieten, Übernachtungen, Strom, Petroleum, Fristen, Verträge, Gespräche und Dokumente wieder an ihren ursprünglichen Stellen hergestellt.</p>`,`<button class="btn sec" type="button" id="monthBackupLater">Später</button><button class="btn" type="button" id="monthBackupNow">Backup erstellen</button>`)
+ $('#monthBackupLater').onclick=()=>{localStorage.setItem(MONTH_SNOOZE,today());closeModal()};
+ $('#monthBackupNow').onclick=async()=>{const ok=await exportFullBackup(key,true);if(ok)closeModal()}
+}
+
 function settings(){
- modal('Einstellungen',`<h3>Cloud-Sync</h3><form id="cfgForm"><div class="formgrid">${field('Supabase Project URL','url',cfg.url||'','url')}${field('Publishable / Anon Key','key',cfg.key||'')}</div></form><div class="toolbar"><button class="btn sec" id="saveCfg">Cloud-Daten speichern</button><button class="btn sec" id="showSql">SQL anzeigen</button></div>${cloudReady()&&!session?.access_token?`<form id="authForm"><div class="formgrid">${field('Familien-E-Mail','email','','email','required')}${field('Passwort','password','','password','required minlength="6"')}</div></form><div class="toolbar"><button class="btn" id="login">Anmelden</button><button class="btn sec" id="signup">Konto erstellen</button></div>`:''}${session?.access_token?`<div class="notice good">Cloud angemeldet · Daten und Dokumente können zwischen Geräten synchronisiert werden.</div><div class="toolbar"><button class="btn" id="pull">Cloud laden</button><button class="btn" id="push">Cloud speichern</button><button class="btn sec" id="syncDocs">Dokumente synchronisieren</button><button class="btn sec" id="logout">Abmelden</button></div><h3>Automatische Sicherung</h3><div class="toolbar"><button class="btn sec" id="backupNow">Cloud-Backup jetzt</button><button class="btn sec" id="backupCloudList">Cloud-Backups</button></div><div class="notice">Bei aktiver Cloud wird höchstens einmal pro Tag automatisch eine Datensicherung angelegt.</div>`:''}<div class="divider"></div><h3>Lokales Backup</h3><div class="toolbar"><button class="btn sec" id="backupOut">Backup herunterladen</button><label class="btn sec">Backup importieren<input id="backupIn" type="file" accept="application/json" hidden></label></div><div class="divider"></div><h3>Installation</h3><div class="notice">Als App auf dem Startbildschirm nutzbar. Auf iPhone/iPad: in Safari „Teilen“ → „Zum Home-Bildschirm“.</div><div class="toolbar">${installPrompt?'<button class="btn" id="installApp">App installieren</button>':''}</div><h3>App-Version</h3><div class="notice">CampManager v${APP_VERSION} · PWA-Updateprüfung aktiv</div><div class="toolbar"><button class="btn sec" id="checkUpdate">Jetzt nach Update suchen</button></div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
+ modal('Einstellungen',`<h3>Cloud-Sync</h3><form id="cfgForm"><div class="formgrid">${field('Supabase Project URL','url',cfg.url||'','url')}${field('Publishable / Anon Key','key',cfg.key||'')}</div></form><div class="toolbar"><button class="btn sec" id="saveCfg">Cloud-Daten speichern</button><button class="btn sec" id="showSql">SQL anzeigen</button></div>${cloudReady()&&!session?.access_token?`<form id="authForm"><div class="formgrid">${field('Familien-E-Mail','email','','email','required')}${field('Passwort','password','','password','required minlength="6"')}</div></form><div class="toolbar"><button class="btn" id="login">Anmelden</button><button class="btn sec" id="signup">Konto erstellen</button></div>`:''}${session?.access_token?`<div class="notice good">Cloud angemeldet · Daten und Dokumente können zwischen Geräten synchronisiert werden.</div><div class="toolbar"><button class="btn" id="pull">Cloud laden</button><button class="btn" id="push">Cloud speichern</button><button class="btn sec" id="syncDocs">Dokumente synchronisieren</button><button class="btn sec" id="logout">Abmelden</button></div><h3>Automatische Sicherung</h3><div class="toolbar"><button class="btn sec" id="backupNow">Cloud-Backup jetzt</button><button class="btn sec" id="backupCloudList">Cloud-Backups</button></div><div class="notice">Bei aktiver Cloud wird höchstens einmal pro Tag automatisch eine Datensicherung angelegt.</div>`:''}<div class="divider"></div><h3>Monatsbackup als Datei</h3><div class="toolbar"><button class="btn sec" id="backupOut">Backup-Datei erstellen</button><label class="btn sec">Backup wiederherstellen<input id="backupIn" type="file" accept=".json,.campbackup,application/json" hidden></label></div><div class="notice">Die Sicherungsdatei enthält alle CampManager-Daten und – soweit verfügbar – auch die gescannten Dokumentdateien. Am Monatsende fragt die App automatisch nach einem Monatsbackup.</div><div class="rowsub">Letztes Monatsbackup: ${localStorage.getItem(MONTH_BACKUP)?esc(monthLabel(localStorage.getItem(MONTH_BACKUP))):'noch keines'}</div><div class="divider"></div><h3>Installation</h3><div class="notice">Als App auf dem Startbildschirm nutzbar. Auf iPhone/iPad: in Safari „Teilen“ → „Zum Home-Bildschirm“.</div><div class="toolbar">${installPrompt?'<button class="btn" id="installApp">App installieren</button>':''}</div><h3>App-Version</h3><div class="notice">CampManager v${APP_VERSION} · PWA-Updateprüfung aktiv</div><div class="toolbar"><button class="btn sec" id="checkUpdate">Jetzt nach Update suchen</button></div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
  $('#saveCfg').onclick=()=>{const d=Object.fromEntries(new FormData($('#cfgForm')).entries());cfg={url:String(d.url||'').trim().replace(/\/+$/,''),key:String(d.key||'').trim()};localStorage.setItem(CFG,JSON.stringify(cfg));toast('Cloud-Daten gespeichert');closeModal();settings()};
  $('#showSql').onclick=()=>modal('Supabase SQL',`<pre style="white-space:pre-wrap;background:#132019;color:#e8efe9;padding:10px;border-radius:12px;font-size:11px">${esc(SQL)}</pre>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
  if($('#login'))$('#login').onclick=async()=>{const d=Object.fromEntries(new FormData($('#authForm')).entries());try{await login(d.email,d.password);await pullCloud();await dailyCloudBackup(false).catch(()=>{});await syncPendingDocuments().catch(()=>{});closeModal();toast('Angemeldet')}catch(e){console.warn(e);toast('Anmeldung fehlgeschlagen')}};
@@ -604,8 +666,8 @@ function settings(){
  if($('#installApp'))$('#installApp').onclick=()=>installApp();
  if($('#checkUpdate'))$('#checkUpdate').onclick=async()=>{const newer=await checkForUpdate(true);toast(newer?'Update verfügbar':'App ist aktuell')};
  if($('#logout'))$('#logout').onclick=()=>{session=null;localStorage.removeItem(SES);closeModal();render();toast('Abgemeldet')};
- $('#backupOut').onclick=()=>downloadBackup(state,'campmanager-backup-'+today()+'.json');
- $('#backupIn').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{state=normalize(JSON.parse(await f.text()));save();closeModal();toast('Backup importiert')}catch{toast('Ungültiges Backup')}}
+ $('#backupOut').onclick=()=>exportFullBackup(localMonthKey(),false);
+ $('#backupIn').onchange=async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;try{await restoreBackupFile(f)}catch(e){console.warn(e);toast('Ungültige oder beschädigte Backup-Datei')}}
 }
 function downloadBackup(data,name){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 
@@ -662,7 +724,7 @@ async function registerPWA(){
  try{swReg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});if(swReg.waiting)showUpdate();swReg.addEventListener('updatefound',()=>{const w=swReg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)showUpdate()})});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(updateReloading)return;updateReloading=true;location.reload()})}catch(e){console.warn('Service Worker',e)}
 }
 async function applyUpdate(){try{if(swReg)await swReg.update();if(swReg?.waiting){swReg.waiting.postMessage({type:'SKIP_WAITING'});return}location.replace(location.pathname+'?v='+Date.now())}catch{location.reload()}}
-(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}})();
+(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800)})();
 })();
 </script>
 </body>
