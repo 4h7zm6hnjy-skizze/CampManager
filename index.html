@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v42</title>
+<title>CampManager v43</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -128,7 +128,7 @@ body.report-open{overflow:hidden}
 .progress{height:10px;background:#e9e5dc;border-radius:999px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--green2),var(--gold));border-radius:999px}
 .kpirow{display:flex;justify-content:space-between;gap:10px;align-items:center}.kpirow strong{font-size:20px}
 .comparetable{width:100%;border-collapse:collapse;font-size:13px}.comparetable th,.comparetable td{padding:9px 7px;border-bottom:1px solid var(--line);text-align:right}.comparetable th:first-child,.comparetable td:first-child{text-align:left}.delta.up{color:var(--danger)}.delta.down{color:var(--green2)}
-.deadline-overdue{color:var(--danger);font-weight:800}.cloudtag{display:inline-flex;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--soft);color:var(--green2);margin-left:5px}
+.deadline-overdue{color:var(--danger);font-weight:800}.deadline-done{color:var(--green2);font-weight:800}.deadline-cancelled{color:var(--muted);font-weight:800}.deadline-status{display:inline-flex;align-items:center;font-size:10px;font-weight:900;padding:3px 7px;border-radius:999px;margin-left:5px}.deadline-status.paid{background:#e7f4eb;color:#23643d}.deadline-status.cancelled{background:#eeeae4;color:#6d665d}.cloudtag{display:inline-flex;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--soft);color:var(--green2);margin-left:5px}
 .rentextras{grid-column:1/-1;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px}.rentextra{display:grid;grid-template-columns:2fr .7fr 1fr auto;gap:7px;align-items:end;margin-top:8px}.rentextra .field{margin:0}
 .renttiers{grid-column:1/-1;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px}.renttiers h3{margin:0 0 7px;font-size:15px}.tiergrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tierbox{border:1px solid var(--line);border-radius:12px;padding:9px;background:#faf9f5}.tierbox b{display:block;font-size:12px;margin-bottom:5px}.tierbox .field{margin:0}.tierline{display:grid;grid-template-columns:1fr auto;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}.tierline:last-child{border-bottom:0}.agebadge{display:inline-flex;padding:3px 7px;border-radius:999px;background:var(--soft);font-size:11px;font-weight:800}.agewarn{color:#9a5b00;font-weight:800}
 @media(max-width:600px){.rentextra{grid-template-columns:1fr 1fr}.rentextra .field:first-child{grid-column:1/-1}.rentextra button{align-self:end}.tiergrid{grid-template-columns:1fr}.updatebanner{top:78px;margin-left:8px;margin-right:8px}}
@@ -163,7 +163,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="icon-512.png" alt="CampManager App-Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v42</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v43</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -214,9 +214,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=42;
-const KEY='campmanager_complete_v42';
-const OLD=['campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=43;
+const KEY='campmanager_complete_v43';
+const OLD=['campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -235,11 +235,11 @@ const dparse=v=>v?new Date(v+'T12:00:00'):null;
 const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
- return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],caravanWash:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],documents:[],conversations:[]}
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],caravanWash:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],deadlineStates:{},documents:[],conversations:[]}
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:40,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:43,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -265,6 +265,7 @@ function normPlace(p={}){
   contracts:Array.isArray(p.contracts)?p.contracts:[],
   gasChecks:Array.isArray(p.gasChecks)?p.gasChecks:[],
   deadlines:Array.isArray(p.deadlines)?p.deadlines:[],
+  deadlineStates:p.deadlineStates&&typeof p.deadlineStates==='object'&&!Array.isArray(p.deadlineStates)?{...p.deadlineStates}:{},
   documents:Array.isArray(p.documents)?p.documents:[],
   conversations:Array.isArray(p.conversations)?p.conversations:[]
  }
@@ -273,10 +274,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:40,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:43,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:40,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:43,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -289,7 +290,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=34;state.updatedAt=new Date().toISOString();
+ state.version=43;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -452,17 +453,26 @@ function costData(p,y){
  return d
 }
 function daysUntil(date){const a=dparse(today()),b=dparse(date);return a&&b?Math.round((b-a)/86400000):null}
+function deadlineStatus(p,id){return String(p?.deadlineStates?.[id]||'open')}
+function deadlineClosed(status){return status==='paid'||status==='cancelled'}
+function deadlineStatusLabel(status){return status==='paid'?'Bezahlt':status==='cancelled'?'Gekündigt':'Offen'}
+function deadlineStatusClass(status){return status==='paid'?'paid':status==='cancelled'?'cancelled':''}
+function setDeadlineStatus(id,status){
+ const p=place();p.deadlineStates=p.deadlineStates||{};
+ if(status==='open')delete p.deadlineStates[id];else p.deadlineStates[id]=status;
+ save();toast(status==='paid'?'Frist als bezahlt markiert':status==='cancelled'?'Frist als gekündigt markiert':'Frist wieder geöffnet')
+}
 function allDeadlines(p){
- const r=[];
- p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;if(d)r.push({id:'contract-'+x.id,d,t:'Vertrag: '+(x.name||'ohne Namen'),kind:'Vertrag'})});
- p.gasChecks.forEach(x=>{if(x.nextDue)r.push({id:'gas-'+x.id,d:x.nextDue,t:'Gasprüfung',kind:'Gasprüfung'})});
- p.annualRent.forEach(x=>{if(x.dueDate)r.push({id:'rent-'+x.id,d:x.dueDate,t:'Jahresmiete '+x.year,kind:'Jahresmiete'})});
- (p.deadlines||[]).forEach(x=>{if(x.date)r.push({id:x.id,d:x.date,t:x.title||x.category||'Frist',kind:x.category||'Frist',custom:true})});
+ const r=[],add=(id,d,t,kind,custom=false)=>{if(d)r.push({id,d,t,kind,custom,status:deadlineStatus(p,id)})};
+ p.contracts.forEach(x=>{const d=x.noticeDate||x.endDate;add('contract-'+x.id,d,'Vertrag: '+(x.name||'ohne Namen'),'Vertrag')});
+ p.gasChecks.forEach(x=>add('gas-'+x.id,x.nextDue,'Gasprüfung','Gasprüfung'));
+ p.annualRent.forEach(x=>add('rent-'+x.id,x.dueDate,'Jahresmiete '+x.year,'Jahresmiete'));
+ (p.deadlines||[]).forEach(x=>add(x.id,x.date,x.title||x.category||'Frist',x.category||'Frist',true));
  return r.sort((a,b)=>String(a.d).localeCompare(String(b.d)))
 }
-function upcomingDeadlines(p,limit=5){const all=allDeadlines(p),future=all.filter(x=>daysUntil(x.d)>=0),past=all.filter(x=>daysUntil(x.d)<0).sort((a,b)=>String(b.d).localeCompare(String(a.d)));return [...past.slice(0,2),...future].slice(0,limit)}
+function upcomingDeadlines(p,limit=5){const all=allDeadlines(p).filter(x=>!deadlineClosed(x.status)),future=all.filter(x=>daysUntil(x.d)>=0),past=all.filter(x=>daysUntil(x.d)<0).sort((a,b)=>String(b.d).localeCompare(String(a.d)));return [...past.slice(0,2),...future].slice(0,limit)}
 function nextDeadline(p){return upcomingDeadlines(p,1)[0]||null}
-function deadlineText(x){const d=daysUntil(x.d);return d==null?'':d<0?`${Math.abs(d)} Tag(e) überfällig`:d===0?'heute':`in ${d} Tag(en)`}
+function deadlineText(x){if(x?.status==='paid')return 'bezahlt';if(x?.status==='cancelled')return 'gekündigt';const d=daysUntil(x.d);return d==null?'':d<0?`${Math.abs(d)} Tag(e) überfällig`:d===0?'heute':`in ${d} Tag(en)`}
 
 function weatherInfo(code){
  const c=Number(code);
@@ -541,7 +551,7 @@ function renderDashboard(){
   <div class="card full"><h2>Schnellzugriff</h2><div class="quick">
    <button data-add="shopping"><b>＋</b><small>Einkauf</small></button><button data-add="stay"><b>☾</b><small>Aufenthalt</small></button><button data-add="conversation"><b>✎</b><small>Gespräch</small></button><button data-add="petroleum"><b>⛽</b><small>Petroleum</small></button><button data-add="gasbottle"><b>🔥</b><small>Gas</small></button><button data-planadd="plan_building"><b>📐</b><small>Bebauungsplan</small></button><button data-planadd="plan_tent"><b>⛺</b><small>Zeltplan</small></button><button data-planadd="plan_sunshade"><b>☀</b><small>Sonnensegelplan</small></button><button data-planadd="plan_other"><b>🗺</b><small>Sonstige Pläne</small></button>
   </div></div>
-  <div class="card full"><h2>Nächste Fristen</h2>${dead.length?`<div class="list">${dead.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)}</div><div class="rowsub ${daysUntil(x.d)<0?'deadline-overdue':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div></div>`).join('')}</div>`:empty('Keine Frist eingetragen.')}</div>
+  <div class="card full"><h2>Nächste Fristen</h2>${dead.length?`<div class="list">${dead.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)}</div><div class="rowsub ${!deadlineClosed(x.status)&&daysUntil(x.d)<0?'deadline-overdue':x.status==='paid'?'deadline-done':x.status==='cancelled'?'deadline-cancelled':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div></div>`).join('')}</div>`:empty('Keine Frist eingetragen.')}</div>
  </div>`
 }
 function renderShopping(){
@@ -878,8 +888,8 @@ function familyPanel(){
 }
 
 function deadlinePanel(p){
- const rows=allDeadlines(p);
- return `<div class="notice good"><b>Fristen:</b> Vertrags- und Gasprüfungsfristen erscheinen automatisch. Weitere Termine wie Jahresmiete oder Anhänger-TÜV kannst du selbst hinzufügen.</div><div class="toolbar"><button class="btn" data-add="deadline">＋ Frist</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)} ${x.custom?'':'<span class="cloudtag">automatisch</span>'}</div><div class="rowsub ${daysUntil(x.d)<0?'deadline-overdue':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div>${x.custom?`<div class="rowactions"><button class="mini" data-edit="deadline" data-id="${x.id}">✎</button><button class="mini danger" data-del="deadline" data-id="${x.id}">×</button></div>`:''}</div>`).join('')}</div>`:empty('Keine Fristen.')}`
+ const rows=allDeadlines(p).sort((a,b)=>{const ac=deadlineClosed(a.status),bc=deadlineClosed(b.status);if(ac!==bc)return ac?1:-1;return String(a.d).localeCompare(String(b.d))});
+ return `<div class="notice good"><b>Fristen:</b> Offene Fristen können als <b>bezahlt</b> oder <b>gekündigt</b> markiert werden. Erledigte Einträge werden nicht mehr rot dargestellt und erscheinen nicht mehr unter „Nächste Fristen“ auf der Startseite.</div><div class="toolbar"><button class="btn" data-add="deadline">＋ Frist</button></div>${rows.length?`<div class="list">${rows.map(x=>{const closed=deadlineClosed(x.status),badge=closed?`<span class="deadline-status ${deadlineStatusClass(x.status)}">${esc(deadlineStatusLabel(x.status))}</span>`:'';return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)} ${x.custom?'':'<span class="cloudtag">automatisch</span>'}${badge}</div><div class="rowsub ${!closed&&daysUntil(x.d)<0?'deadline-overdue':x.status==='paid'?'deadline-done':x.status==='cancelled'?'deadline-cancelled':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div><div class="rowactions">${closed?`<button class="mini" data-deadline-status="open" data-deadline-id="${x.id}">↩ Offen</button>`:`<button class="mini" data-deadline-status="paid" data-deadline-id="${x.id}">✓ Bezahlt</button><button class="mini" data-deadline-status="cancelled" data-deadline-id="${x.id}">Gekündigt</button>`}${x.custom?`<button class="mini" data-edit="deadline" data-id="${x.id}">✎</button><button class="mini danger" data-del="deadline" data-id="${x.id}">×</button>`:''}</div></div>`}).join('')}</div>`:empty('Keine Fristen.')}`
 }
 function conversationPanel(p){const rows=[...p.conversations].sort((a,b)=>(String(b.date)+' '+String(b.time)).localeCompare(String(a.date)+' '+String(a.time)));return `<div class="notice good"><b>Gesprächstagebuch:</b> für diesen Stellplatz.</div><div class="toolbar"><button class="btn" data-add="conversation">＋ Gespräch</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${fmt(x.date)} · ${esc(x.time||'–')} Uhr</div><div class="rowsub">Gesprächspartner: ${esc(x.partner||'–')}</div>${x.note?`<div class="conversation">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="conversation" data-id="${x.id}">✎</button><button class="mini danger" data-del="conversation" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Gespräche.')}`}
 function contractPanel(p){
@@ -1149,7 +1159,7 @@ function docEditor(x,isNew=false){
 async function openDoc(id){const meta=place().documents.find(x=>x.id===id);let b=await dbGet(id).catch(()=>null);if(!b&&meta?.cloudPath){try{b=await downloadDocumentCloud(meta.cloudPath);await dbPut(id,b)}catch(e){console.warn(e)}}if(!b){toast('Datei nicht gefunden');return}const u=URL.createObjectURL(b);if(String(b.type||meta?.mime||'').startsWith('image/')){modal(meta?.title||'Dokument',`<img src="${u}" alt="Dokument" style="display:block;max-width:100%;max-height:70vh;margin:auto;border-radius:12px">`,`<button class="btn sec" type="button" data-close>Schließen</button><a class="btn" href="${u}" target="_blank" rel="noopener">Extern öffnen</a>`);setTimeout(()=>URL.revokeObjectURL(u),120000);return}const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.download=meta?.filename||'';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000)}
 async function delDoc(id){const found=place().documents.find(x=>x.id===id);if(!confirm(isPlanDoc(found)?'Plan wirklich löschen?':'Dokument wirklich löschen?'))return;const meta=place().documents.find(x=>x.id===id);place().documents=place().documents.filter(x=>x.id!==id);await dbDel(id).catch(()=>{});if(meta?.cloudPath)deleteDocumentCloud(meta.cloudPath).catch(console.warn);save();toast('Dokument gelöscht')}
 
-function deleteItem(type,id){if(!confirm('Eintrag wirklich löschen?'))return;const a=coll(type),i=a.findIndex(x=>x.id===id);if(i>=0){a.splice(i,1);save()}}
+function deleteItem(type,id){if(!confirm('Eintrag wirklich löschen?'))return;const a=coll(type),i=a.findIndex(x=>x.id===id);if(i>=0){a.splice(i,1);if(type==='deadline'&&place().deadlineStates)delete place().deadlineStates[id];save()}}
 function editItem(type,id){const x=coll(type).find(x=>x.id===id);if(x)editor(type,x)}
 function deletePlace(id){if(state.places.length<=1){toast('Mindestens ein Platz muss bleiben');return}if(!confirm('Stellplatz wirklich löschen?'))return;state.places=state.places.filter(x=>x.id!==id);if(state.activePlaceId===id)state.activePlaceId=state.places[0].id;save()}
 function switchPlace(id){state.activePlaceId=id;closeModal();save();toast('Stellplatz gewechselt')}
@@ -1324,6 +1334,7 @@ document.addEventListener('click',e=>{
  const planAdd=e.target.closest('[data-planadd]');if(planAdd){planAddDialog(planAdd.dataset.planadd);return}
  const planSrc=e.target.closest('[data-plan-source]');if(planSrc){pickPlanFile(planSrc.dataset.planCategory,planSrc.dataset.planSource==='camera');return}
  const mobile=e.target.closest('[data-mobilecontract]');if(mobile){editor('contract',{contractType:'mobile',billingPeriod:'monthly',name:'Handyvertrag'});return}
+ const ds=e.target.closest('[data-deadline-status]');if(ds){setDeadlineStatus(ds.dataset.deadlineId,ds.dataset.deadlineStatus);return}
  const a=e.target.closest('[data-add]');if(a){editor(a.dataset.add);return}
  const ed=e.target.closest('[data-edit]');if(ed){editItem(ed.dataset.edit,ed.dataset.id);return}
  const de=e.target.closest('[data-del]');if(de){deleteItem(de.dataset.del,de.dataset.id);return}

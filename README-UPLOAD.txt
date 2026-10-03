@@ -1,12 +1,10 @@
-CampManager v42 – Komplettversion
+CampManager v43 – Komplettversion
 
 Neu:
-- Stromabrechnung wieder nach Kalenderjahr 01.01.–31.12.
-- Zählerstand Anfang und Ende bleiben erhalten.
-- kWh-Preis und monatliche Zählermiete bleiben erhalten.
-- Handyvertrag als eigene Vertragsart.
-- Handyvertrag mit Mobilfunknummer und monatlicher Zahlung.
-- Monatszahlungen werden für den Jahresabschluss nach aktiven Monaten automatisch berechnet.
-- Alle Daten werden im normalen CampManager-Backup gespeichert.
+- Fristen können als Bezahlt oder Gekündigt markiert werden.
+- Erledigte Fristen werden nicht mehr rot dargestellt.
+- Erledigte Fristen verschwinden von der Startseite unter „Nächste Fristen“, bleiben aber im Fristen-Bereich sichtbar.
+- Erledigte Fristen können mit „Offen“ wieder aktiviert werden.
+- Status wird lokal, im Cloud-Sync und im Backup gespeichert.
 
-Für GitHub alle Dateien dieser Version hochladen und vorhandene Dateien ersetzen.
+Alle Dateien dieser ZIP vollständig hochladen und gleichnamige Dateien ersetzen.
