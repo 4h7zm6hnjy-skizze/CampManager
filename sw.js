@@ -1,10 +1,11 @@
-const VERSION = 'v35';
+const VERSION = 'v36';
 const CACHE = `campmanager-${VERSION}`;
 const CORE = [
   './',
   './index.html',
   './manifest.webmanifest',
   './version.json',
+  './logo.jpg',
   './logo-fallback.jpg',
   './icon-192.png',
   './icon-512.png',
