@@ -1,10 +1,10 @@
-CampManager v40 – Komplettversion
+CampManager v41 – Komplettversion
 
-Neu:
-- Strom-Zählermiete wird als Monatsbetrag eingetragen.
-- Automatische Berechnung: Monatsmiete × 12 Monate pro Stromjahr.
-- Stromjahr bleibt 01.09. bis 31.08. des Folgejahres.
-- Alte Datensätze mit bisheriger Jahres-Zählermiete werden kompatibel umgerechnet.
-- Monats- und Jahresbetrag erscheinen in Stromübersicht und Jahresabschluss.
-
-Für ein Update alle Dateien dieser Komplettversion hochladen und gleichnamige Dateien ersetzen.
+Änderungen:
+- Übernachtungstarife 0–90 / 91–180 / 181–365 sind jetzt einmalige Staffelbeträge, nicht Preise pro Nacht.
+- Tatsächlich erfasste Übernachtungen bestimmen nur die Tarifstufe.
+- Erwachsene, Kinder und Auto werden mit dem jeweiligen Staffelbetrag einmal berechnet.
+- Zählerstand Anfang und Ende bleiben erhalten.
+- Strom: Preis/kWh und monatliche Zählermiete bleiben erhalten.
+- Startseite zeigt den aktuellen Stromdatensatz; wenn dieser fehlt, automatisch den zuletzt gespeicherten Stromdatensatz.
+- Datenmigration aus v40 und älteren Versionen bleibt erhalten.
