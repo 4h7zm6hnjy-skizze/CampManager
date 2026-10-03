@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung mit Jahresmiete, Staffelpreisen, Kosten, Backups und Dokumenten.",
+  "description": "Campingplatzverwaltung mit Kosten, Übernachtungen, Dokumenten, Verträgen und Statistiken.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

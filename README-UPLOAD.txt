@@ -1,8 +1,10 @@
-CampManager v46
+CampManager v47
 
 Neu:
-- Hin- und Rückfahrkosten unter Kosten.
-- Datum, Abfahrtszeit, Ankunftsort, Fahrzeit, Kilometer, Verbrauch und Literpreis.
-- Automatische Liter- und Kraftstoffkostenberechnung.
-- Monats- und Jahresstatistik für Fahrten.
-- Fahrkosten in Jahreskosten und Jahresabschluss.
+- Beim Aufenthalt werden Familienmitglieder per Checkbox ausgewählt.
+- Nur ausgewählte Personen werden für den jeweiligen Aufenthalt berechnet.
+- Das Geburtsdatum wird am tatsächlichen Übernachtungsdatum ausgewertet.
+- 0–3 Jahre kostenfrei, 4–15 Kindertarif, ab 16 Erwachsenentarif.
+- Alte Aufenthalte ohne Personenauswahl werden markiert und können nachträglich korrigiert werden.
+
+Für GitHub alle Dateien aus diesem Ordner hochladen und vorhandene gleichnamige Dateien ersetzen.
