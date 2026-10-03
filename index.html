@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v39</title>
+<title>CampManager v40</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -163,7 +163,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="icon-512.png" alt="CampManager App-Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v39</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v40</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -214,9 +214,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=39;
-const KEY='campmanager_complete_v39';
-const OLD=['campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=40;
+const KEY='campmanager_complete_v40';
+const OLD=['campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -239,7 +239,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:38,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:40,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -273,10 +273,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:38,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:40,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:38,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:40,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -411,8 +411,11 @@ function electricityCalc(x){
  if(hasStart&&hasEnd&&Number(x.meterEnd)>=Number(x.meterStart))consumption=Number(x.meterEnd)-Number(x.meterStart);
  const price=x?.pricePerKwh!==''&&x?.pricePerKwh!=null?Number(x.pricePerKwh):null;
  const cost=price!==null?consumption*price:Number(x?.cost||0);
- const meterRent=Number(x?.meterRent||0);
- return {consumption,cost,meterRent,total:cost+meterRent}
+ // Ab v40 wird die Zählermiete als Monatsbetrag gespeichert. Alte Datensätze enthielten einen Jahresbetrag.
+ const hasMonthly=x?.meterRentMonthly!==''&&x?.meterRentMonthly!=null;
+ const meterRentMonthly=hasMonthly?Number(x.meterRentMonthly||0):Number(x?.meterRent||0)/12;
+ const meterRentAnnual=meterRentMonthly*12;
+ return {consumption,cost,meterRentMonthly,meterRentAnnual,meterRent:meterRentAnnual,total:cost+meterRentAnnual}
 }
 
 function insurancePeriodLabel(v){return v==='monthly'?'Monatlich':v==='quarterly'?'Quartalsweise':'Jährlich'}
@@ -657,7 +660,7 @@ function gasBottlePanel(p){
 }
 function electricityRows(p){
  const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
- return `<div class="notice good"><b>Strom:</b> Das Stromjahr läuft vom <b>01.09. bis 31.08.</b> des Folgejahres. Mit Anfangs-/Endzählerstand und Preis pro kWh werden Verbrauch und Stromkosten automatisch berechnet.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Stromjahr</button></div>${rows.length?`<div class="list">${rows.map((x,i)=>{const c=electricityCalc(x),prev=rows.find(z=>Number(z.year)===Number(x.year)-1),pc=prev?electricityCalc(prev):null,delta=pc&&pc.consumption?((c.consumption-pc.consumption)/pc.consumption*100):null;return `<div class="row"><div class="rowmain"><div class="rowtitle">${electricityLabel(x.year)} · ${num(c.consumption,1)} kWh</div><div class="rowsub">${electricityRangeText(x.year)} · ${x.meterStart!==''&&x.meterStart!=null?`Zähler ${num(x.meterStart,1)} → ${num(x.meterEnd,1)} · `:''}${x.pricePerKwh!==''&&x.pricePerKwh!=null?`${money(x.pricePerKwh)} / kWh · `:''}Strom ${money(c.cost)} · Zählermiete ${money(c.meterRent)}${delta==null?'':` · ggü. Vorjahr ${delta>0?'+':''}${num(delta,1)} %`}</div></div><b>${money(c.total)}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Keine Stromwerte.')}`
+ return `<div class="notice good"><b>Strom:</b> Das Stromjahr läuft vom <b>01.09. bis 31.08.</b> des Folgejahres. Die <b>Zählermiete wird monatlich</b> eingetragen und automatisch für 12 Monate berechnet.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Stromjahr</button></div>${rows.length?`<div class="list">${rows.map((x,i)=>{const c=electricityCalc(x),prev=rows.find(z=>Number(z.year)===Number(x.year)-1),pc=prev?electricityCalc(prev):null,delta=pc&&pc.consumption?((c.consumption-pc.consumption)/pc.consumption*100):null;return `<div class="row"><div class="rowmain"><div class="rowtitle">${electricityLabel(x.year)} · ${num(c.consumption,1)} kWh</div><div class="rowsub">${electricityRangeText(x.year)} · ${x.meterStart!==''&&x.meterStart!=null?`Zähler ${num(x.meterStart,1)} → ${num(x.meterEnd,1)} · `:''}${x.pricePerKwh!==''&&x.pricePerKwh!=null?`${money(x.pricePerKwh)} / kWh · `:''}Strom ${money(c.cost)} · Zählermiete ${money(c.meterRentMonthly)}/Monat × 12 = ${money(c.meterRentAnnual)}${delta==null?'':` · ggü. Vorjahr ${delta>0?'+':''}${num(delta,1)} %`}</div></div><b>${money(c.total)}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Keine Stromwerte.')}`
 }
 function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2,electricityYearNow(),electricityYearNow()-1]);p.annualRent.forEach(x=>s.add(Number(x.year)));if(p.deposit?.date)s.add(Number(p.deposit.date.slice(0,4)));if(p.insurance?.startDate)s.add(Number(p.insurance.startDate.slice(0,4)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
 function closingRows(p,y){
@@ -669,7 +672,7 @@ function closingRows(p,y){
   else{const pn=legacyRentPersonNights(p,ar),ns=legacyRentNightInfo(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Altes Preismodell: Grundbetrag ${money(ar.baseAmount)}, ${ns.used}/${ns.included} Übernachtungen, ${num(pn.adult)} Erw. x ${money(ar.adultPrice)}, ${num(pn.child)} Kinder x ${money(ar.childPrice)}`,a:annualRentTotal(ar,p)})}
  }
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
- p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const e=electricityCalc(x);r.push({d:electricityLabel(x.year),c:'Strom',t:`Stromjahr ${electricityRangeText(x.year)} · ${num(e.consumption,1)} kWh × ${x.pricePerKwh!==''&&x.pricePerKwh!=null?money(x.pricePerKwh):'manueller Preis'} / kWh, Strom ${money(e.cost)}, Zählermiete ${money(e.meterRent)}`,a:e.total})});
+ p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const e=electricityCalc(x);r.push({d:electricityLabel(x.year),c:'Strom',t:`Stromjahr ${electricityRangeText(x.year)} · ${num(e.consumption,1)} kWh × ${x.pricePerKwh!==''&&x.pricePerKwh!=null?money(x.pricePerKwh):'manueller Preis'} / kWh, Strom ${money(e.cost)}, Zählermiete ${money(e.meterRentMonthly)}/Monat × 12 = ${money(e.meterRentAnnual)}`,a:e.total})});
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasBottles.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Gasflaschen',t:`${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}${x.location?' · '+x.location:''}${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>r.push({d:fmt(x.date),c:'Gasprüfung',t:[x.company,x.result,x.notes].filter(Boolean).join(' · '),a:Number(x.cost||0)}));
@@ -968,7 +971,7 @@ function editor(type,x=null){
  }
  if(type==='petroleum'){title='Petroleum';body=select('Art','kind',e.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Liter','liters',e.liters,'number','required min="0" step="0.1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+area('Notiz','note',e.note)}
  if(type==='gasbottle'){title='Gas';body=select('Art','kind',e.kind||'purchase',[['purchase','Kauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Anzahl Flaschen','bottles',e.bottles,'number','required min="0" step="1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+field('Kaufort','location',e.location)+area('Notiz','note',e.note)}
- if(type==='electricity'){title='Stromjahr';body=`<div class="notice good"><b>Zeitraum:</b> 01.09. bis 31.08. des Folgejahres.</div>`+field('Stromjahr (Startjahr)','year',e.year||electricityYearNow(),'number','required min="2000"')+field('Zählerstand Anfang','meterStart',e.meterStart,'number','min="0" step="0.1"')+field('Zählerstand Ende','meterEnd',e.meterEnd,'number','min="0" step="0.1"')+field('Preis pro kWh €','pricePerKwh',e.pricePerKwh,'number','min="0" step="0.0001"')+field('Zählermiete €','meterRent',e.meterRent,'number','min="0" step="0.01"')+field('Verbrauch kWh (alternativ manuell)','consumption',e.consumption,'number','min="0" step="0.1"')+field('Stromkosten € (alternativ manuell)','cost',e.cost,'number','min="0" step="0.01"')}
+ if(type==='electricity'){const oldMonthly=e.meterRentMonthly!==undefined&&e.meterRentMonthly!==null&&e.meterRentMonthly!==''?e.meterRentMonthly:(e.meterRent!==undefined&&e.meterRent!==null&&e.meterRent!==''?Number(e.meterRent)/12:'');title='Stromjahr';body=`<div class="notice good"><b>Zeitraum:</b> 01.09. bis 31.08. des Folgejahres.<br><b>Zählermiete:</b> Monatsbetrag eingeben; die App rechnet automatisch × 12 Monate.</div>`+field('Stromjahr (Startjahr)','year',e.year||electricityYearNow(),'number','required min="2000"')+field('Zählerstand Anfang','meterStart',e.meterStart,'number','min="0" step="0.1"')+field('Zählerstand Ende','meterEnd',e.meterEnd,'number','min="0" step="0.1"')+field('Preis pro kWh €','pricePerKwh',e.pricePerKwh,'number','min="0" step="0.0001"')+field('Zählermiete pro Monat €','meterRentMonthly',oldMonthly,'number','min="0" step="0.01"')+field('Verbrauch kWh (alternativ manuell)','consumption',e.consumption,'number','min="0" step="0.1"')+field('Stromkosten € (alternativ manuell)','cost',e.cost,'number','min="0" step="0.01"')}
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='wash'){title='Caravan waschen';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
@@ -996,7 +999,7 @@ function saveEditor(form){
  if(type==='shopping')item.done=old?!!old.done:false;
  if(type==='annualrent'){item.pricingModel='tiered-v34';item.extras=[...form.querySelectorAll('[data-rentextra]')].map(r=>({id:uid(),label:r.querySelector('[data-extra-label]')?.value||'',qty:r.querySelector('[data-extra-qty]')?.value||0,price:r.querySelector('[data-extra-price]')?.value||0})).filter(e=>e.label||Number(e.qty)||Number(e.price))}
  if(type==='electricity'&&item.meterStart!==''&&item.meterEnd!==''&&Number(item.meterEnd)<Number(item.meterStart)){toast('Endzählerstand ist kleiner als der Anfangszählerstand');return}
- if(type==='electricity'){const e=electricityCalc(item);item.consumption=e.consumption;item.cost=e.cost}
+ if(type==='electricity'){const e=electricityCalc(item);item.consumption=e.consumption;item.cost=e.cost;item.meterRentMonthly=e.meterRentMonthly;delete item.meterRent}
  if(type==='contract'){
   item.billingPeriod=item.billingPeriod||'yearly';
   if(item.costAmount!==undefined)delete item.annualCost;
@@ -1256,7 +1259,7 @@ async function restoreBackupFile(file){
 }
 function monthlyBackupPrompt(){
  const key=monthlyBackupDue();if(!key)return;
- modal(`Monatsbackup · ${monthLabel(key)}`,`<div class="notice good"><b>Monatsende:</b> Möchtest du jetzt eine Sicherungsdatei erstellen?</div><p>Die Datei enthält deine CampManager-Daten und die verfügbaren gescannten Dokumente. Auf iPhone/iPad kannst du sie über das Teilen-Menü direkt in der <b>Dateien-App</b> sichern.</p><p class="rowsub">Beim späteren Einspielen werden Stellplätze, Kosten, Jahresmieten mit Preisstaffeln, Geburtsdaten, Übernachtungen, Strom inkl. kWh-Preis, Petroleum, Fristen, Verträge, Gespräche und Dokumente wieder an ihren ursprünglichen Stellen hergestellt.</p>`,`<button class="btn sec" type="button" id="monthBackupLater">Später</button><button class="btn" type="button" id="monthBackupNow">Backup erstellen</button>`)
+ modal(`Monatsbackup · ${monthLabel(key)}`,`<div class="notice good"><b>Monatsende:</b> Möchtest du jetzt eine Sicherungsdatei erstellen?</div><p>Die Datei enthält deine CampManager-Daten und die verfügbaren gescannten Dokumente. Auf iPhone/iPad kannst du sie über das Teilen-Menü direkt in der <b>Dateien-App</b> sichern.</p><p class="rowsub">Beim späteren Einspielen werden Stellplätze, Kosten, Jahresmieten mit Preisstaffeln, Geburtsdaten, Übernachtungen, Strom inkl. kWh-Preis und monatlicher Zählermiete, Petroleum, Fristen, Verträge, Gespräche und Dokumente wieder an ihren ursprünglichen Stellen hergestellt.</p>`,`<button class="btn sec" type="button" id="monthBackupLater">Später</button><button class="btn" type="button" id="monthBackupNow">Backup erstellen</button>`)
  $('#monthBackupLater').onclick=()=>{localStorage.setItem(MONTH_SNOOZE,today());closeModal()};
  $('#monthBackupNow').onclick=async()=>{const ok=await exportFullBackup(key,true);if(ok)closeModal()}
 }

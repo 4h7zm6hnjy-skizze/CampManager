@@ -1,9 +1,10 @@
-CampManager v39
+CampManager v40 – Komplettversion
 
-Neu in dieser Version:
-- Startseite auf Handy sauberer dargestellt.
-- Großes Logo/Titelbild jetzt ganz oben im grünen Kopfbereich.
-- Großes Standardlogo besser skaliert und auf Mobilgeräten optimiert.
-- Sichtbare App-Version aktualisiert.
+Neu:
+- Strom-Zählermiete wird als Monatsbetrag eingetragen.
+- Automatische Berechnung: Monatsmiete × 12 Monate pro Stromjahr.
+- Stromjahr bleibt 01.09. bis 31.08. des Folgejahres.
+- Alte Datensätze mit bisheriger Jahres-Zählermiete werden kompatibel umgerechnet.
+- Monats- und Jahresbetrag erscheinen in Stromübersicht und Jahresabschluss.
 
-Dateien komplett hochladen/ersetzen: index.html, sw.js, version.json, manifest.webmanifest sowie die Bilddateien.
+Für ein Update alle Dateien dieser Komplettversion hochladen und gleichnamige Dateien ersetzen.
