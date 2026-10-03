@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v32</title>
+<title>CampManager v33</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -161,7 +161,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="logo.jpg" alt="Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v32</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v33</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -212,9 +212,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=32;
-const KEY='campmanager_complete_v32';
-const OLD=['campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=33;
+const KEY='campmanager_complete_v33';
+const OLD=['campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -234,7 +234,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:32,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
+ return {version:33,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel'},{id:uid(),name:'Denise'},{id:uid(),name:'Leon'},{id:uid(),name:'Luca'}],places:[p]}
 }
 function normPlace(p={}){
  return {
@@ -264,10 +264,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:32,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
+  return {version:33,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:Array.isArray(raw.family)?raw.family:d.family,places}
  }
  const p=normPlace(raw);
- return {version:32,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
+ return {version:33,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:Array.isArray(raw.family)?raw.family:d.family,places:[p]}
 }
 function load(){
  try{
@@ -280,7 +280,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=32;state.updatedAt=new Date().toISOString();
+ state.version=33;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -794,25 +794,51 @@ function contractPanel(p){
  }).join('')}</div>`:empty('Keine Verträge.')}`
 }
 function gasPanel(p){const rows=[...p.gasChecks].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="toolbar"><button class="btn" data-add="gas">＋ Gasprüfung</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Prüfung ${fmt(x.date)} · ${esc(x.result||'')}</div><div class="rowsub">Nächste: ${fmt(x.nextDue)}${x.company?' · '+esc(x.company):''}${x.cost?' · '+money(x.cost):''}</div></div><div class="rowactions"><button class="mini" data-edit="gas" data-id="${x.id}">✎</button><button class="mini danger" data-del="gas" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Keine Gasprüfung.')}`}
-function sitePanel(p){return `<div class="grid"><div class="card half"><div style="display:flex;align-items:center;gap:10px">${avatar(p)}<div><h2>Aktiver Stellplatz</h2><p>${esc(p.site.campName)}</p></div></div><div class="metric" style="margin-top:8px">${esc(p.site.pitch||'–')}</div><div class="toolbar"><button class="btn sec" data-placeedit="${p.id}">Bearbeiten</button></div></div><div class="card full"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><h2>Meine Stellplätze</h2><p>Jeder Platz hat eigene Daten.</p></div><button class="btn" data-placeadd>＋ Platz</button></div><div class="list" style="margin-top:10px">${state.places.map(x=>`<div class="row">${avatar(x)}<div class="rowmain"><div class="rowtitle">${esc(x.site.campName)} · Platz ${esc(x.site.pitch||'–')} ${x.id===state.activePlaceId?'<span class="badge">Aktiv</span>':''}</div><div class="rowsub">${x.site.area?esc(x.site.area)+' m² · ':''}${esc(x.site.notes||'')}</div></div><div class="rowactions">${x.id===state.activePlaceId?'':`<button class="mini" data-placeswitch="${x.id}">Wechseln</button>`}<button class="mini" data-placeedit="${x.id}">✎</button>${state.places.length>1?`<button class="mini danger" data-placedel="${x.id}">×</button>`:''}</div></div>`).join('')}</div></div></div>`}
-function familyPanel(){return `<div class="notice">Familienmitglieder gelten für alle Stellplätze.</div><div class="toolbar"><button class="btn" data-add="family">＋ Person</button></div><div class="list">${state.family.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.name)}</div></div><div class="rowactions"><button class="mini" data-edit="family" data-id="${x.id}">✎</button><button class="mini danger" data-del="family" data-id="${x.id}">×</button></div></div>`).join('')}</div>`}
+function sitePanel(p){
+ return `<div class="grid"><div class="card full"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">${avatar(p,'photoPreview')}<div class="rowmain"><h2 style="margin:0">${esc(p.site.campName||'Campingplatz')}</h2><p>Platz ${esc(p.site.pitch||'–')}${p.site.area?' · '+esc(p.site.area)+' m²':''}</p>${p.site.notes?`<p>${esc(p.site.notes)}</p>`:''}</div></div><div class="toolbar"><button class="btn" data-place-titleimage="${p.id}">🖼️ Titelbild ändern</button><button class="btn sec" data-placeedit="${p.id}">✎ Stellplatz bearbeiten</button></div></div></div>`
+}
+function titleImageEditor(placeId){
+ const p=state.places.find(x=>x.id===placeId);if(!p)return;
+ const e=p.site||{};
+ modal('Titelbild ändern',`<div class="formgrid"><div class="field full"><label>Aktuelles Titelbild</label><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${e.photoData?`<img id="titlePhotoPrev" class="photoPreview" src="${e.photoData}" alt="Titelbild">`:`<span id="titlePhotoEmpty" class="photoPreview" style="display:grid;place-items:center;font-size:30px">⛺</span>`}<div style="display:flex;gap:7px;flex-wrap:wrap"><label class="btn sec">📷 Foto aufnehmen<input id="titlePhotoCamera" type="file" accept="image/*" capture="environment" hidden></label><label class="btn sec">🖼️ Aus Mediathek<input id="titlePhotoLibrary" type="file" accept="image/*" hidden></label>${e.photoData?`<button class="btn sec" type="button" id="titlePhotoRemove">Bild entfernen</button>`:''}</div></div><div class="rowsub" style="margin-top:6px">Das neue Bild ersetzt sofort das bisherige Titelbild dieses Stellplatzes.</div></div></div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
 
-/* Dokumente lokal in IndexedDB */
-const DB='campmanager_documents_v1', STORE='files';
-function openDB(){return new Promise((res,rej)=>{const q=indexedDB.open(DB,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(STORE))q.result.createObjectStore(STORE)};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
-async function dbPut(k,b){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(b,k);t.oncomplete=()=>{db.close();res()};t.onerror=()=>rej(t.error)})}
-async function dbGet(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readonly'),q=t.objectStore(STORE).get(k);q.onsuccess=()=>{db.close();res(q.result||null)};q.onerror=()=>rej(q.error)})}
-async function dbDel(k){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(k);t.oncomplete=()=>{db.close();res()};t.onerror=()=>rej(t.error)})}
-async function compress(file,max=1800,q=.82){if(!file.type.startsWith('image/'))return file;const bmp=await createImageBitmap(file);let w=bmp.width,h=bmp.height,s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);bmp.close();return await new Promise(r=>c.toBlob(r,'image/jpeg',q))||file}
-const DOCCAT=[['electricity','Strom / Jahresrechnung'],['annual','Stellplatz / Jahresrechnung'],['insurance','Versicherung'],['insurance_claim','Schadenfoto'],['petroleum','Petroleum'],['gasbottle','Gasflaschen'],['repair','Reparatur'],['purchase','Neuanschaffung'],['gas','Gasprüfung'],['contract','Vertrag'],['other','Sonstiges']];
-const PLAN_CATS=[['plan_building','Bebauungsplan'],['plan_tent','Zeltplan'],['plan_sunshade','Sonnensegelplan'],['plan_other','Sonstige']];
-function isPlanCategory(k){return PLAN_CATS.some(x=>x[0]===k)}
-function isPlanDoc(x){return !!x&&isPlanCategory(x.category)}
-function docLabel(k){return [...DOCCAT,...PLAN_CATS].find(x=>x[0]===k)?.[1]||'Sonstiges'}
-function planIcon(k){return k==='plan_building'?'📐':k==='plan_tent'?'⛺':k==='plan_sunshade'?'☀':'🗺'}
-function documentPanel(p){
- const rows=[...p.documents].filter(x=>!isPlanDoc(x)&&x.category!=='insurance'&&x.category!=='insurance_claim').sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- return `<div class="notice good"><b>Dokumentenscanner:</b> Rechnung fotografieren oder Bild/PDF auswählen. Pläne findest du in der eigenen Rubrik „Pläne“. Bei angemeldeter Cloud werden Dateien automatisch in Supabase Storage gesichert.</div><div class="toolbar"><button class="btn" data-docscan>📷 Scannen</button><button class="btn sec" data-docupload>📁 Datei/PDF</button>${cloudReady()&&session?.access_token?'<button class="btn sec" id="syncDocsBtn">☁ Dokumente synchronisieren</button>':''}</div><input id="camInput" type="file" accept="image/*" capture="environment" hidden><input id="fileInput" type="file" accept="image/*,application/pdf" hidden>${rows.length?`<div class="docgrid">${rows.map(x=>`<div class="doc"><div class="docthumb" data-docopen="${x.id}">${x.mime?.startsWith('image/')?'🧾':'📄'}</div><div class="rowtitle" style="margin-top:8px">${esc(x.title||docLabel(x.category))}${x.cloudPath?'<span class="cloudtag">Cloud</span>':'<span class="cloudtag">lokal</span>'}</div><div class="rowsub">${docLabel(x.category)} · ${fmt(x.date)}${x.amount?' · '+money(x.amount):''}</div><div class="toolbar"><button class="mini" data-docopen="${x.id}">Öffnen</button><button class="mini" data-docedit="${x.id}">✎</button><button class="mini danger" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Dokumente.')}`
+ async function setTitleImage(input){
+  const f=input?.files?.[0];if(!f)return;
+  try{
+   const data=await imgData(f);
+   p.site.photoData=data;
+   save();
+   const old=$('#titlePhotoPrev')||$('#titlePhotoEmpty');
+   const img=document.createElement('img');
+   img.id='titlePhotoPrev';img.className='photoPreview';img.src=data;img.alt='Titelbild';
+   old?.replaceWith(img);
+   if(!$('#titlePhotoRemove')){
+    const b=document.createElement('button');
+    b.className='btn sec';b.type='button';b.id='titlePhotoRemove';b.textContent='Bild entfernen';
+    $('#titlePhotoLibrary')?.closest('label')?.parentElement?.appendChild(b);
+    b.onclick=removeTitleImage
+   }
+   toast('Titelbild geändert')
+  }catch(err){console.warn(err);toast('Bild konnte nicht geladen werden')}
+  finally{if(input)input.value=''}
+ }
+ function removeTitleImage(){
+  p.site.photoData='';
+  save();
+  const old=$('#titlePhotoPrev');
+  if(old){
+   const empty=document.createElement('span');
+   empty.id='titlePhotoEmpty';empty.className='photoPreview';
+   empty.style.cssText='display:grid;place-items:center;font-size:30px';
+   empty.textContent='⛺';old.replaceWith(empty)
+  }
+  $('#titlePhotoRemove')?.remove();
+  toast('Titelbild entfernt')
+ }
+
+ $('#titlePhotoCamera').onchange=()=>setTitleImage($('#titlePhotoCamera'));
+ $('#titlePhotoLibrary').onchange=()=>setTitleImage($('#titlePhotoLibrary'));
+ if($('#titlePhotoRemove'))$('#titlePhotoRemove').onclick=removeTitleImage
 }
 function planPanel(p){
  const rows=[...p.documents].filter(isPlanDoc).sort((a,b)=>String(b.date||b.createdAt||'').localeCompare(String(a.date||a.createdAt||'')));
@@ -1144,6 +1170,7 @@ document.addEventListener('click',e=>{
  const ed=e.target.closest('[data-edit]');if(ed){editItem(ed.dataset.edit,ed.dataset.id);return}
  const de=e.target.closest('[data-del]');if(de){deleteItem(de.dataset.del,de.dataset.id);return}
  const ps=e.target.closest('[data-placeswitch]');if(ps){switchPlace(ps.dataset.placeswitch);return}
+ const pti=e.target.closest('[data-place-titleimage]');if(pti){titleImageEditor(pti.dataset.placeTitleimage);return}
  const pe=e.target.closest('[data-placeedit]');if(pe){closeModal();placeEditor(pe.dataset.placeedit);return}
  if(e.target.closest('[data-placeadd]')){closeModal();placeEditor();return}
  const pd=e.target.closest('[data-placedel]');if(pd){deletePlace(pd.dataset.placedel);return}

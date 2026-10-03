@@ -1,16 +1,17 @@
-CampManager v32 – komplette Version
+CampManager v33 – komplette Version
 
-Neu beim Hinzufügen und Bearbeiten eines Stellplatzes:
-- Titelbild kann direkt mit der Kamera aufgenommen werden
-- Titelbild kann alternativ aus der Foto-Mediathek ausgewählt werden
-- zwei getrennte Schaltflächen:
+Neu:
+- bestehendes Titelbild eines Stellplatzes kann jederzeit nachträglich geändert werden
+- eigener Button „🖼️ Titelbild ändern“ unter Mehr → Stellplatz
+- neues Titelbild wahlweise:
   📷 Foto aufnehmen
   🖼️ Aus Mediathek
-- gewähltes Bild wird sofort als Vorschau angezeigt
-- Titelbild kann wieder entfernt oder ersetzt werden
-- funktioniert sowohl bei einem neuen Stellplatz als auch beim späteren Bearbeiten
-- bestehende Stellplatzbilder und alle Daten aus v31 bleiben erhalten
+- vorhandenes Titelbild wird direkt ersetzt
+- Titelbild kann auch komplett entfernt werden
+- Änderung wird sofort gespeichert
+- weiterhin kann das Titelbild zusätzlich über „Stellplatz bearbeiten“ geändert werden
+- alle Daten aus v32 bleiben erhalten
 
 Installation:
-Alle Dateien aus dem ZIP in das Hauptverzeichnis des GitHub-Pages-Projekts hochladen
+Alle Dateien aus dem ZIP in das Hauptverzeichnis deines GitHub-Pages-Projekts hochladen
 und vorhandene Dateien ersetzen. Die aktive Startdatei muss index.html heißen.
