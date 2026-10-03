@@ -1,5 +1,6 @@
-CampManager v48
+CampManager v49
 
-Neu:
-- Großes Startbild/Logo nach ganz oben über den grünen Bereich verschoben.
-- Kleines Logo links oben entfernt.
+Fehlerbehebung:
+- Startseite rendert wieder vollständig.
+- Verwaisten logoImg-JavaScript-Verweis entfernt.
+- Großes Logo bleibt oben, kleines Logo links bleibt entfernt.
