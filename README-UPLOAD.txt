@@ -1,31 +1,17 @@
-CampManager v34 – GitHub Update
+CampManager v35
 
-Enthalten:
-- index.html (neue vollständige App-Version)
-- version.json (v34)
-- sw.js (Cache/Update auf v34)
+Neu in dieser Version:
+- Großes Titelbild auf der Startseite: zeigt das selbst hochgeladene Stellplatz-Titelbild.
+- Falls kein Titelbild vorhanden ist, bleibt automatisch das bisherige Logo sichtbar.
+- Stromjahr umgestellt auf 01.09. bis 31.08. des Folgejahres.
+- Stromanzeige zeigt jetzt z. B. 2026/27 statt nur 2026.
+- Stromformular nutzt das Startjahr des Stromjahres.
+
+Zum Hochladen auf GitHub/Hosting:
+- index.html
 - manifest.webmanifest
+- sw.js
+- version.json
 
 Wichtig:
-Die bereits im GitHub-Repository vorhandenen Bilddateien bitte NICHT löschen:
-- logo.jpg
-- logo-fallback.jpg
-- icon-192.png
-- icon-512.png
-- apple-touch-icon.png
-
-Neue Funktionen v34:
-- Platzgrundmiete als eigener Euro-Betrag
-- Erwachsene: Preise 0–90 / 91–180 / 181–365 Übernachtungen
-- Kinder: Preise 0–90 / 91–180 / 181–365 Übernachtungen
-- Kinder 4–15 Jahre, ab 16 automatisch Erwachsenentarif, 0–3 kostenfrei
-- Geburtsdatum unter Verwaltung > Familie
-- Geburtstag wird tagesgenau berücksichtigt
-- Auto: Preise 0–90 / 91–180 / 181–365 Übernachtungen
-- Strom: Preis pro kWh und automatische Berechnung
-- Jahresstatistik/Jahresabschluss verwenden die neue Berechnung
-- Backup speichert Staffelpreise, Geburtsdaten und kWh-Preis mit
-- Familie-Ansicht repariert
-- Speichern/PDF/Drucken/Backup-Schaltflächen statisch geprüft
-
-Vorhandene v33-Daten werden beim ersten Start automatisch übernommen.
+Logo- und Icon-Dateien aus deiner bestehenden Installation bitte unverändert beibehalten.
