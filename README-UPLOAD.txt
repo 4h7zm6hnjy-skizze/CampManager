@@ -1,7 +1,6 @@
-CampManager v53
+CampManager v54
 
 Neu:
-- Ärzte in der Notfall-/Umkreissuche nach Fachrichtung gruppiert.
-- Innerhalb jeder Fachrichtung nach Entfernung sortiert.
-- Apotheken eigener Abschnitt.
-- Zahnarzt-Suche ergänzt.
+- Kfz-Tarife sind an die tatsächliche Personen-Anwesenheit gekoppelt.
+- Ein Auto zählt nur an Aufenthaltstagen mit mindestens einem ausgewählten Familienmitglied.
+- Kfz-Anwesenheitsnächte werden in Jahresmiete und Jahresabschluss angezeigt.
