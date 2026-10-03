@@ -1,9 +1,7 @@
-CampManager v52
+CampManager v53
 
 Neu:
-- Auffälliger roter Schnellzugriff „ÄRZTE & APOTHEKEN – NOTFALL“.
-- 112 und 116117 direkt anwählbar.
-- Offizielle Links für Bereitschaftspraxis und Apotheken-Notdienst.
-- Ärzte/Apotheken im Umkreis mit Ort/PLZ oder aktuellem GPS-Standort.
-- Radius 5/10/25/50 km.
-- Gespeicherte Standortsuche wird beim App-Start automatisch aktualisiert.
+- Ärzte in der Notfall-/Umkreissuche nach Fachrichtung gruppiert.
+- Innerhalb jeder Fachrichtung nach Entfernung sortiert.
+- Apotheken eigener Abschnitt.
+- Zahnarzt-Suche ergänzt.
