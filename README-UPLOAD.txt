@@ -1,10 +1,12 @@
-CampManager v41 – Komplettversion
+CampManager v42 – Komplettversion
 
-Änderungen:
-- Übernachtungstarife 0–90 / 91–180 / 181–365 sind jetzt einmalige Staffelbeträge, nicht Preise pro Nacht.
-- Tatsächlich erfasste Übernachtungen bestimmen nur die Tarifstufe.
-- Erwachsene, Kinder und Auto werden mit dem jeweiligen Staffelbetrag einmal berechnet.
+Neu:
+- Stromabrechnung wieder nach Kalenderjahr 01.01.–31.12.
 - Zählerstand Anfang und Ende bleiben erhalten.
-- Strom: Preis/kWh und monatliche Zählermiete bleiben erhalten.
-- Startseite zeigt den aktuellen Stromdatensatz; wenn dieser fehlt, automatisch den zuletzt gespeicherten Stromdatensatz.
-- Datenmigration aus v40 und älteren Versionen bleibt erhalten.
+- kWh-Preis und monatliche Zählermiete bleiben erhalten.
+- Handyvertrag als eigene Vertragsart.
+- Handyvertrag mit Mobilfunknummer und monatlicher Zahlung.
+- Monatszahlungen werden für den Jahresabschluss nach aktiven Monaten automatisch berechnet.
+- Alle Daten werden im normalen CampManager-Backup gespeichert.
+
+Für GitHub alle Dateien dieser Version hochladen und vorhandene Dateien ersetzen.
