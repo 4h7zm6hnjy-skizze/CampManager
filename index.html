@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v38</title>
+<title>CampManager v39</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -38,9 +38,9 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .view{display:none}.view.active{display:block}
 .hero{background:linear-gradient(135deg,#173c29,#10261a);color:#fff;border-radius:26px;padding:18px;display:grid;grid-template-columns:1.5fr .6fr;gap:14px;align-items:center;box-shadow:var(--shadow)}
 .hero h1{margin:6px 0;font-size:28px}.hero p{margin:0;color:#dce7df}
-.hero-media{position:relative;width:100%;background:#fff;border-radius:16px;overflow:hidden;min-width:0}
-.hero-media .hero-logo{display:block;width:100%;height:auto;max-height:200px;object-fit:contain;background:#fff;border-radius:16px}
-.hero-media .hero-title{display:block;width:100%;height:200px;object-fit:cover;background:#fff;border-radius:16px}
+.hero-media{position:relative;width:100%;background:#fff;border-radius:18px;overflow:hidden;min-width:0;order:-1}
+.hero-media .hero-logo{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;background:#fff;border-radius:18px;padding:6px 4px 0}
+.hero-media .hero-title{display:block;width:100%;height:320px;object-fit:cover;background:#fff;border-radius:18px}
 .weatherbox{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;color:var(--ink);background:rgba(246,248,245,.95);border:1px solid rgba(23,60,41,.15);border-radius:11px;padding:5px 7px 4px;box-shadow:0 3px 10px rgba(15,40,27,.08);backdrop-filter:blur(7px)}
 .weatherbox.loading{display:flex;align-items:center;justify-content:center;min-height:39px;font-size:10px;color:var(--muted)}
 .weatherbox.error{display:flex;align-items:center;justify-content:space-between;gap:7px;min-height:39px;font-size:9.5px;color:var(--muted)}.weatherbox.error button{flex:0 0 auto}
@@ -139,7 +139,7 @@ body.report-open{overflow:hidden}
  .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
 
- .hero{grid-template-columns:1fr}.hero-media .hero-logo{max-height:240px}.hero-media .hero-title{height:240px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
+ .hero{grid-template-columns:1fr}.hero-media .hero-logo{max-height:220px}.hero-media .hero-title{height:220px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 
@@ -163,7 +163,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="icon-512.png" alt="CampManager App-Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v34</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v39</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -214,9 +214,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=38;
-const KEY='campmanager_complete_v38';
-const OLD=['campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=39;
+const KEY='campmanager_complete_v39';
+const OLD=['campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -517,7 +517,7 @@ function renderTop(){
 }
 function renderDashboard(){
  const p=place(),y=yearNow(),ey=electricityYearNow(),c=costData(p,y),total=Object.values(c).reduce((a,b)=>a+b,0),ar=annualRentFor(p,y),ns=ar?rentNightInfo(p,ar):null,el=p.electricity.find(x=>Number(x.year)===ey),ec=el?electricityCalc(el):null,dead=upcomingDeadlines(p,3),lastLawn=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
- $('#v-dashboard').innerHTML=`<div class="hero"><div><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div><div class="hero-media">${p.site.photoData?`<img class="hero-title" src="${p.site.photoData}" alt="Titelbild Stellplatz" onerror="this.onerror=null;this.src='logo.jpg';this.className='hero-logo';this.alt='CampManager Logo'">`:`<img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}">`}<div id="weatherBox" class="weatherbox loading">Wetter Hörstel wird geladen …</div></div></div>
+ $('#v-dashboard').innerHTML=`<div class="hero"><div class="hero-media">${p.site.photoData?`<img class="hero-title" src="${p.site.photoData}" alt="Titelbild Stellplatz" onerror="this.onerror=null;this.src='logo.jpg';this.className='hero-logo';this.alt='CampManager Logo'">`:`<img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}">`}<div id="weatherBox" class="weatherbox loading">Wetter Hörstel wird geladen …</div></div><div class="hero-head"><div class="hero-meta"><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span></div><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div></div>
  <div class="grid">
   <button class="card cardaction" data-go="costs" data-jump="overview"><h3>Jahreskosten ${y}</h3><div class="metric">${money(total)}</div><p>alle erfassten Kosten</p></button>
   <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${ns?`${ns.used} / ${ar&&isTieredRent(ar)?365:ns.included}`:totalNights(p,y)}</div><p>${ar&&isTieredRent(ar)?`Tarifstufe ${ns.used<=90?'0–90':ns.used<=180?'91–180':'181–365'}`:ns?(ns.remaining?`noch ${ns.remaining} inklusive`:`${ns.over} über inklusive`):'Jahresmiete noch nicht angelegt'}</p>${ns?`<div class="progress"><i style="width:${ns.percent}%"></i></div>`:''}</button>
