@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v45</title>
+<title>CampManager v46</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -158,7 +158,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="icon-512.png" alt="CampManager App-Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v45</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v46</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -209,9 +209,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=45;
-const KEY='campmanager_complete_v45';
-const OLD=['campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=46;
+const KEY='campmanager_complete_v46';
+const OLD=['campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
@@ -227,11 +227,11 @@ const dparse=v=>v?new Date(v+'T12:00:00'):null;
 const nights=(a,b)=>a&&b?Math.max(0,Math.round((dparse(b)-dparse(a))/86400000)):0;
 
 function blankPlace(name='Campingplatz',pitch='161'){
- return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],stays:[],lawn:[],caravanWash:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],deadlineStates:{},documents:[],conversations:[]}
+ return {id:uid(),site:{campName:name,pitch,area:'',notes:'',photoData:''},shopping:[],costs:[],annualRent:[],deposit:{date:'',amount:''},insurance:{company:'',billingPeriod:'yearly',amount:'',startDate:'',noticePeriod:'',phone:''},insuranceClaims:[],petroleum:[],gasBottles:[],electricity:[],travelCosts:[],stays:[],lawn:[],caravanWash:[],hedge:[],contracts:[],gasChecks:[],deadlines:[],deadlineStates:{},documents:[],conversations:[]}
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:43,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:46,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -250,6 +250,7 @@ function normPlace(p={}){
   petroleum:Array.isArray(p.petroleum)?p.petroleum:[],
   gasBottles:Array.isArray(p.gasBottles)?p.gasBottles:[],
   electricity:Array.isArray(p.electricity)?p.electricity:[],
+  travelCosts:Array.isArray(p.travelCosts)?p.travelCosts:[],
   stays:Array.isArray(p.stays)?p.stays:[],
   lawn:Array.isArray(p.lawn)?p.lawn:[],
   caravanWash:Array.isArray(p.caravanWash)?p.caravanWash:[],
@@ -266,10 +267,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:43,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:46,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:43,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:46,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -282,7 +283,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=43;state.updatedAt=new Date().toISOString();
+ state.version=46;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -420,6 +421,17 @@ function electricityCalc(x){
  return {consumption,cost,meterRentMonthly,meterRentAnnual,meterRent:meterRentAnnual,total:cost+meterRentAnnual}
 }
 
+function travelCalc(x){
+ const km=Math.max(0,Number(x?.km||0)),consumption=Math.max(0,Number(x?.consumption||0)),literPrice=Math.max(0,Number(x?.literPrice||0));
+ const liters=km*consumption/100,cost=liters*literPrice,durationMinutes=Math.max(0,Number(x?.durationMinutes||0));
+ return {km,consumption,literPrice,liters,cost,durationMinutes}
+}
+function durationText(minutes){const m=Math.max(0,Math.round(Number(minutes)||0)),h=Math.floor(m/60),r=m%60;return h?`${h} Std.${r?` ${r} Min.`:''}`:`${r} Min.`}
+function travelMonthName(m){return new Date(2026,Number(m)-1,1).toLocaleDateString('de-DE',{month:'long'})}
+function travelStats(p,y,month=null){
+ const rows=(p.travelCosts||[]).filter(x=>x.date&&Number(x.date.slice(0,4))===Number(y)&&(!month||Number(x.date.slice(5,7))===Number(month)));
+ return rows.reduce((a,x)=>{const c=travelCalc(x);a.trips++;a.km+=c.km;a.liters+=c.liters;a.cost+=c.cost;a.minutes+=c.durationMinutes;return a},{trips:0,km:0,liters:0,cost:0,minutes:0})
+}
 function insurancePeriodLabel(v){return v==='monthly'?'Monatlich':v==='quarterly'?'Quartalsweise':'Jährlich'}
 function insurancePaymentsPerYear(v){return v==='monthly'?12:v==='quarterly'?4:1}
 function insuranceAnnualCost(p,y){
@@ -432,12 +444,13 @@ function insuranceDocs(p){return (p.documents||[]).filter(x=>x.category==='insur
 function insuranceClaimPhotos(p,claimId){return (p.documents||[]).filter(x=>x.category==='insurance_claim'&&x.claimId===claimId)}
 
 function costData(p,y){
- const d={annual:0,deposit:0,insurance:0,repairs:0,purchases:0,other:0,electricity:0,petroleum:0,gasBottles:0,gas:0,contracts:0};
+ const d={annual:0,deposit:0,insurance:0,repairs:0,purchases:0,other:0,electricity:0,travel:0,petroleum:0,gasBottles:0,gas:0,contracts:0};
  const r=annualRentFor(p,y);if(r)d.annual+=annualRentTotal(r,p);
  if(p.deposit?.date&&String(p.deposit.date).startsWith(String(y)))d.deposit+=Number(p.deposit.amount||0);
  d.insurance+=insuranceAnnualCost(p,y);
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const k=x.category||'other';d[k]=(d[k]||0)+Number(x.amount||0)});
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>d.electricity+=electricityCalc(x).total);
+ (p.travelCosts||[]).filter(x=>x.date&&(x.date||'').startsWith(String(y))).forEach(x=>d.travel+=travelCalc(x).cost);
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.petroleum+=Number(x.price||0));
  p.gasBottles.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>d.gasBottles+=Number(x.price||0));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))).forEach(x=>d.gas+=Number(x.cost||0));
@@ -500,10 +513,11 @@ function renderCosts(){
   <button class="card half cardaction" data-costjump="annualRent"><h2>🏕️ Jahresmiete</h2><p>Grundbetrag, Personen, Autos & Anhänger</p></button>
   <button class="card half cardaction" data-costjump="deposit"><h2>🔐 Kaution</h2><p>Einmalig gezahlt · Datum & Summe</p></button>
   <button class="card half cardaction" data-costjump="insurance"><h2>🛡️ Versicherung</h2><p>Vertrag, Beiträge, Schäden & Dokumente</p></button>
+  <button class="card half cardaction" data-costjump="travel"><h2>🚗 Hin- & Rückfahrten</h2><p>Kilometer, Zeit, Verbrauch & Kraftstoffkosten</p></button>
   <button class="card half cardaction" data-costjump="closing"><h2>📄 Jahresabschluss</h2><p>Komplette Jahresübersicht als PDF</p></button>
  </div>
- ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['deposit','Kaution'],['insurance','Versicherung'],['electricity','Strom'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['gasbottles','Gas']])}
- ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='deposit'?depositPanel(p):t==='insurance'?insurancePanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
+ ${tabs('costs',[['overview','Übersicht'],['comparison','Jahresvergleich'],['annualRent','Jahresmiete'],['deposit','Kaution'],['insurance','Versicherung'],['electricity','Strom'],['travel','Fahrten'],['closing','Jahresabschluss'],['costs','Kosten'],['petroleum','Petroleum'],['gasbottles','Gas']])}
+ ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='deposit'?depositPanel(p):t==='insurance'?insurancePanel(p):t==='electricity'?electricityRows(p):t==='travel'?travelPanel(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
 }
 function costOverview(p){
  const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0);
@@ -515,6 +529,7 @@ function costOverview(p){
   {k:'purchases',label:'Neuanschaffungen',hint:'Neu gekaufte Geräte, Möbel oder Zubehör',count:(p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category==='purchases').length},
   {k:'other',label:'Sonstiges',hint:'Weitere manuell erfasste Kosten',count:(p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category==='other').length},
   {k:'electricity',label:'Strom + Zählermiete',hint:'Stromkosten, kWh-Preis und monatliche Zählermiete',count:(p.electricity||[]).filter(x=>Number(x.year)===Number(y)).length},
+  {k:'travel',label:'Hin- & Rückfahrkosten',hint:'Kraftstoffkosten aus Kilometer, Verbrauch und Literpreis',count:(p.travelCosts||[]).filter(x=>x.date&&(x.date||'').startsWith(String(y))).length},
   {k:'petroleum',label:'Petroleum',hint:'Petroleum-Einkäufe und Verbrauch',count:(p.petroleum||[]).filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).length},
   {k:'gasBottles',label:'Gasflaschen',hint:'Gasflaschenkäufe',count:(p.gasBottles||[]).filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).length},
   {k:'gas',label:'Gasprüfung',hint:'Kosten für Gasprüfung',count:(p.gasChecks||[]).filter(x=>(x.date||'').startsWith(String(y))).length},
@@ -525,7 +540,7 @@ function costOverview(p){
 
 function comparisonPanel(p){
  const years=yearsFor(p).slice(0,6),rows=years.map(y=>{const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);return {y,d,total}});
- return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Kaution</th><th>Versicherung</th><th>Strom</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.deposit)}</td><td>${money(r.d.insurance)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
+ return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Kaution</th><th>Versicherung</th><th>Strom</th><th>Fahrten</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.deposit)}</td><td>${money(r.d.insurance)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.travel)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
 }
 function annualRentPanel(p){
  const rows=[...p.annualRent].sort((a,b)=>Number(b.year)-Number(a.year)),familyMissing=(state.family||[]).filter(x=>!x.birthDate);
@@ -626,11 +641,24 @@ function gasBottlePanel(p){
  const rows=[...p.gasBottles].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.createdAt||'').localeCompare(String(a.createdAt||'')));
  return `<div class="grid"><div class="card half"><h2>Gasbestand</h2><div class="metric">${num(gasBottleStock(p))} <small>Flaschen</small></div><p>aktuell verfügbar</p></div><div class="card half"><h2>Letzter Kauf</h2><div class="metric" style="font-size:20px">${(()=>{const x=rows.find(r=>r.kind==='purchase');return x?fmt(x.date):'–'})()}</div><p>${(()=>{const x=rows.find(r=>r.kind==='purchase');return x&&x.location?esc(x.location):'noch kein Kauf'})()}</p></div></div><div class="notice good"><b>Gas:</b> Käufe erhöhen den Flaschenbestand, Verbrauch vermindert ihn. Mit „Bestand setzen“ kannst du den tatsächlichen Bestand jederzeit korrigieren.</div><div class="toolbar"><button class="btn" data-add="gasbottle">＋ Gas buchen</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.kind==='purchase'?'Kauf':x.kind==='stock'?'Bestand gesetzt':'Verbrauch'} · ${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}</div><div class="rowsub">${x.kind==='purchase'?'Kaufdatum ':'Datum '}${fmt(x.date)}${x.location?' · '+esc(x.location):''}${x.note?' · '+esc(x.note):''}</div></div>${x.kind==='purchase'&&x.price?`<b>${money(x.price)}</b>`:''}<div class="rowactions"><button class="mini" data-edit="gasbottle" data-id="${x.id}">✎</button><button class="mini danger" data-del="gasbottle" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Gasflaschen eingetragen.')}`
 }
+let travelStatsYear=yearNow();
+function travelPanel(p){
+ const years=[...new Set([yearNow(),...(p.travelCosts||[]).filter(x=>x.date).map(x=>Number(x.date.slice(0,4)))])].filter(Boolean).sort((a,b)=>b-a);
+ if(!years.includes(travelStatsYear))travelStatsYear=years[0]||yearNow();
+ const y=travelStatsYear,annual=travelStats(p,y),rows=[...(p.travelCosts||[])].filter(x=>x.date&&Number(x.date.slice(0,4))===Number(y)).sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.departureTime||'').localeCompare(String(a.departureTime||'')));
+ const months=Array.from({length:12},(_,i)=>i+1).map(m=>({m,...travelStats(p,y,m)}));
+ return `<div class="notice good"><b>Hin- & Rückfahrkosten:</b> Kraftstoffkosten werden automatisch berechnet: Kilometer ÷ 100 × Verbrauch × Literpreis.</div>
+ <div class="toolbar"><button class="btn" data-add="travel">＋ Fahrt eintragen</button></div>
+ <div class="formgrid"><div class="field"><label>Statistikjahr</label><select id="travelYear">${years.map(v=>`<option ${v===y?'selected':''}>${v}</option>`).join('')}</select></div></div>
+ <div class="grid"><div class="card"><h3>Fahrten ${y}</h3><div class="metric">${annual.trips}</div></div><div class="card"><h3>Kilometer</h3><div class="metric">${num(annual.km,1)} <small>km</small></div></div><div class="card"><h3>Fahrzeit</h3><div class="metric" style="font-size:22px">${durationText(annual.minutes)}</div></div><div class="card"><h3>Verbrauch</h3><div class="metric">${num(annual.liters,1)} <small>L</small></div></div><div class="card"><h3>Fahrtkosten</h3><div class="metric">${money(annual.cost)}</div></div></div>
+ <div class="card full" style="margin-top:12px"><h2>Monatsstatistik ${y}</h2><div class="list">${months.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${travelMonthName(x.m)}</div><div class="rowsub">${x.trips} Fahrt(en) · ${num(x.km,1)} km · ${durationText(x.minutes)} · ${num(x.liters,1)} L</div></div><b>${money(x.cost)}</b></div>`).join('')}</div></div>
+ <div class="card full" style="margin-top:12px"><h2>Einzelfahrten ${y}</h2>${rows.length?`<div class="list">${rows.map(x=>{const c=travelCalc(x);return `<div class="row"><div class="rowmain"><div class="rowtitle">${x.direction==='return'?'↩ Rückfahrt':'→ Hinfahrt'} · ${fmt(x.date)}${x.departureTime?' · '+esc(x.departureTime)+' Uhr':''}</div><div class="rowsub">Ankunftsort: ${esc(x.arrivalLocation||'–')} · ${num(c.km,1)} km · ${durationText(c.durationMinutes)}</div><div class="rowsub">${num(c.consumption,1)} L/100 km · ${money(c.literPrice)}/L · berechnet ${num(c.liters,2)} L</div>${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div><b>${money(c.cost)}</b><div class="rowactions"><button class="mini" data-edit="travel" data-id="${x.id}">✎</button><button class="mini danger" data-del="travel" data-id="${x.id}">×</button></div></div></div>`}).join('')}</div>`:empty('Noch keine Fahrten in diesem Jahr.')}</div>`
+}
 function electricityRows(p){
  const rows=[...p.electricity].sort((a,b)=>Number(b.year)-Number(a.year));
  return `<div class="notice good"><b>Strom:</b> Die Stromabrechnung läuft nach <b>Kalenderjahr 01.01. bis 31.12.</b>. Die <b>Zählermiete wird monatlich</b> eingetragen und automatisch für 12 Monate berechnet.</div><div class="toolbar"><button class="btn" data-add="electricity">＋ Stromjahr</button></div>${rows.length?`<div class="list">${rows.map((x,i)=>{const c=electricityCalc(x),prev=rows.find(z=>Number(z.year)===Number(x.year)-1),pc=prev?electricityCalc(prev):null,delta=pc&&pc.consumption?((c.consumption-pc.consumption)/pc.consumption*100):null;return `<div class="row"><div class="rowmain"><div class="rowtitle">${electricityLabel(x.year)} · ${num(c.consumption,1)} kWh</div><div class="rowsub">${electricityRangeText(x.year)} · ${x.meterStart!==''&&x.meterStart!=null?`Zähler ${num(x.meterStart,1)} → ${num(x.meterEnd,1)} · `:''}${x.pricePerKwh!==''&&x.pricePerKwh!=null?`${money(x.pricePerKwh)} / kWh · `:''}Strom ${money(c.cost)} · Zählermiete ${money(c.meterRentMonthly)}/Monat × 12 = ${money(c.meterRentAnnual)}${delta==null?'':` · ggü. Vorjahr ${delta>0?'+':''}${num(delta,1)} %`}</div></div><b>${money(c.total)}</b><div class="rowactions"><button class="mini" data-edit="electricity" data-id="${x.id}">✎</button><button class="mini danger" data-del="electricity" data-id="${x.id}">×</button></div></div>`}).join('')}</div>`:empty('Keine Stromwerte.')}`
 }
-function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2,electricityYearNow(),electricityYearNow()-1]);p.annualRent.forEach(x=>s.add(Number(x.year)));if(p.deposit?.date)s.add(Number(p.deposit.date.slice(0,4)));if(p.insurance?.startDate)s.add(Number(p.insurance.startDate.slice(0,4)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
+function yearsFor(p){const s=new Set([yearNow(),yearNow()-1,yearNow()-2,electricityYearNow(),electricityYearNow()-1]);p.annualRent.forEach(x=>s.add(Number(x.year)));if(p.deposit?.date)s.add(Number(p.deposit.date.slice(0,4)));if(p.insurance?.startDate)s.add(Number(p.insurance.startDate.slice(0,4)));p.costs.forEach(x=>s.add(Number(x.year)));p.electricity.forEach(x=>s.add(Number(x.year)));(p.travelCosts||[]).forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.petroleum.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasBottles.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.gasChecks.forEach(x=>x.date&&s.add(Number(x.date.slice(0,4))));p.stays.forEach(x=>x.arrival&&s.add(Number(x.arrival.slice(0,4))));p.contracts.forEach(x=>{if(x.startDate)s.add(Number(x.startDate.slice(0,4)));if(x.endDate)s.add(Number(x.endDate.slice(0,4)))});return [...s].filter(Boolean).sort((a,b)=>b-a)}
 function closingRows(p,y){
  const r=[],ar=annualRentFor(p,y);
  if(p.deposit?.date&&String(p.deposit.date).startsWith(String(y)))r.push({d:fmt(p.deposit.date),c:'Kaution',t:'Einmalig gezahlte Kaution',a:Number(p.deposit.amount||0)});
@@ -641,6 +669,7 @@ function closingRows(p,y){
  }
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
  p.electricity.filter(x=>Number(x.year)===Number(y)).forEach(x=>{const e=electricityCalc(x);r.push({d:electricityLabel(x.year),c:'Strom',t:`Kalenderjahr ${electricityRangeText(x.year)} · ${num(e.consumption,1)} kWh × ${x.pricePerKwh!==''&&x.pricePerKwh!=null?money(x.pricePerKwh):'manueller Preis'} / kWh, Strom ${money(e.cost)}, Zählermiete ${money(e.meterRentMonthly)}/Monat × 12 = ${money(e.meterRentAnnual)}`,a:e.total})});
+ (p.travelCosts||[]).filter(x=>x.date&&(x.date||'').startsWith(String(y))).forEach(x=>{const c=travelCalc(x);r.push({d:fmt(x.date),c:'Fahrtkosten',t:`${x.direction==='return'?'Rückfahrt':'Hinfahrt'}${x.departureTime?' · '+x.departureTime+' Uhr':''} · Ziel ${x.arrivalLocation||'–'} · ${num(c.km,1)} km · ${durationText(c.durationMinutes)} · ${num(c.consumption,1)} L/100 km · ${money(c.literPrice)}/L · ${num(c.liters,2)} L`,a:c.cost})});
  p.petroleum.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Petroleum',t:`${num(x.liters,1)} L${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasBottles.filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).forEach(x=>r.push({d:fmt(x.date),c:'Gasflaschen',t:`${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}${x.location?' · '+x.location:''}${x.note?' · '+x.note:''}`,a:Number(x.price||0)}));
  p.gasChecks.filter(x=>(x.date||'').startsWith(String(y))&&Number(x.cost||0)>0).forEach(x=>r.push({d:fmt(x.date),c:'Gasprüfung',t:[x.company,x.result,x.notes].filter(Boolean).join(' · '),a:Number(x.cost||0)}));
@@ -663,7 +692,7 @@ function closingPanel(p){
 }
 
 function reportMarkup(p,y){
- const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',insurance:'Versicherung',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
+ const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',insurance:'Versicherung',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',travel:'Hin- & Rückfahrkosten',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
  let rentHtml='';
  if(ar&&isTieredRent(ar)){const b=tieredRentBreakdown(p,ar),labels=['0–90','91–180','181–365'];rentHtml=`<h2>Jahresmiete</h2><table><tr><td>Platzgrundmiete</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Tatsächliche Übernachtungen</td><td class="r">${b.used}</td></tr>${labels.map((l,i)=>`<tr><td>Erwachsene ${l}</td><td class="r">${num(b.adult[i])} Person(en) × ${money(b.adultRates[i])} = ${money(Number(b.adult[i])*Number(b.adultRates[i]))}</td></tr>`).join('')}${labels.map((l,i)=>`<tr><td>Kinder 4–15 ${l}</td><td class="r">${num(b.child[i])} Kind(er) × ${money(b.childRates[i])} = ${money(Number(b.child[i])*Number(b.childRates[i]))}</td></tr>`).join('')}${labels.map((l,i)=>`<tr><td>Auto ${l}</td><td class="r">${num(b.carTier[i])} Auto(s) × ${money(b.carRates[i])} = ${money(Number(b.carTier[i])*Number(b.carRates[i]))}</td></tr>`).join('')}<tr><td colspan="2">Die Übernachtungszahl bestimmt nur die Tarifstufe; keine Multiplikation pro Nacht.</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(b.total)}</td></tr></table>`}
  else if(ar){rentHtml=`<h2>Jahresmiete – altes Preismodell</h2><table><tr><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar,p))}</td></tr></table>`}
@@ -926,7 +955,7 @@ const field=(l,n,v='',t='text',ex='')=>`<div class="field"><label>${esc(l)}</lab
 const area=(l,n,v='')=>`<div class="field full"><label>${esc(l)}</label><textarea name="${n}">${esc(v??'')}</textarea></div>`;
 const select=(l,n,v,opts)=>`<div class="field"><label>${esc(l)}</label><select name="${n}">${opts.map(([a,b])=>`<option value="${esc(a)}" ${String(a)===String(v)?'selected':''}>${esc(b)}</option>`).join('')}</select></div>`;
 const actions=id=>`<button class="btn sec" type="button" data-close>Abbrechen</button><button class="btn" type="submit" form="${id}">Speichern</button>`;
-function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,gasbottle:p.gasBottles,electricity:p.electricity,lawn:p.lawn,wash:p.caravanWash,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
+function coll(type){const p=place();return {shopping:p.shopping,cost:p.costs,annualrent:p.annualRent,petroleum:p.petroleum,gasbottle:p.gasBottles,electricity:p.electricity,travel:p.travelCosts,lawn:p.lawn,wash:p.caravanWash,hedge:p.hedge,stay:p.stays,contract:p.contracts,gas:p.gasChecks,deadline:p.deadlines,conversation:p.conversations,family:state.family}[type]}
 
 function rentExtraRow(e={}){return `<div class="rentextra" data-rentextra><div class="field"><label>Bezeichnung</label><input data-extra-label value="${esc(e.label||'')}"></div><div class="field"><label>Anzahl</label><input data-extra-qty type="number" min="0" step="0.01" value="${esc(e.qty??1)}"></div><div class="field"><label>Preis €</label><input data-extra-price type="number" min="0" step="0.01" value="${esc(e.price??0)}"></div><button class="mini danger" type="button" data-rentextra-del>×</button></div>`}
 function editor(type,x=null){
@@ -941,6 +970,7 @@ function editor(type,x=null){
  if(type==='petroleum'){title='Petroleum';body=select('Art','kind',e.kind||'purchase',[['purchase','Einkauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Liter','liters',e.liters,'number','required min="0" step="0.1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+area('Notiz','note',e.note)}
  if(type==='gasbottle'){title='Gas';body=select('Art','kind',e.kind||'purchase',[['purchase','Kauf'],['usage','Verbrauch'],['stock','Bestand setzen']])+field('Datum','date',e.date||today(),'date','required')+field('Anzahl Flaschen','bottles',e.bottles,'number','required min="0" step="1"')+field('Preis gesamt €','price',e.price,'number','min="0" step="0.01"')+field('Kaufort','location',e.location)+area('Notiz','note',e.note)}
  if(type==='electricity'){const oldMonthly=e.meterRentMonthly!==undefined&&e.meterRentMonthly!==null&&e.meterRentMonthly!==''?e.meterRentMonthly:(e.meterRent!==undefined&&e.meterRent!==null&&e.meterRent!==''?Number(e.meterRent)/12:'');title='Stromjahr';body=`<div class="notice good"><b>Zeitraum:</b> Kalenderjahr 01.01. bis 31.12.<br><b>Zählermiete:</b> Monatsbetrag eingeben; die App rechnet automatisch × 12 Monate.</div>`+field('Jahr','year',e.year||electricityYearNow(),'number','required min="2000"')+field('Zählerstand Anfang','meterStart',e.meterStart,'number','min="0" step="0.1"')+field('Zählerstand Ende','meterEnd',e.meterEnd,'number','min="0" step="0.1"')+field('Preis pro kWh €','pricePerKwh',e.pricePerKwh,'number','min="0" step="0.0001"')+field('Zählermiete pro Monat €','meterRentMonthly',oldMonthly,'number','min="0" step="0.01"')+field('Verbrauch kWh (alternativ manuell)','consumption',e.consumption,'number','min="0" step="0.1"')+field('Stromkosten € (alternativ manuell)','cost',e.cost,'number','min="0" step="0.01"')}
+ if(type==='travel'){title='Hin- / Rückfahrt';body=select('Fahrt','direction',e.direction||'outbound',[['outbound','Hinfahrt'],['return','Rückfahrt']])+field('Datum','date',e.date||today(),'date','required')+field('Abfahrtszeit','departureTime',e.departureTime||'','time','required')+field('Ankunftsort','arrivalLocation',e.arrivalLocation,'text','required')+field('Fahrzeit (Minuten)','durationMinutes',e.durationMinutes,'number','required min="0" step="1"')+field('Kilometer','km',e.km,'number','required min="0" step="0.1"')+field('Verbrauch L / 100 km','consumption',e.consumption,'number','required min="0" step="0.1"')+field('Literpreis €','literPrice',e.literPrice,'number','required min="0" step="0.001"')+`<div class="field full"><div class="notice good">Die Kraftstoffkosten werden automatisch aus Kilometer, Verbrauch und Literpreis berechnet.</div></div>`+area('Notiz','note',e.note)}
  if(type==='lawn'||type==='hedge'){title=type==='lawn'?'Rasenschnitt':'Heckenschnitt';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='wash'){title='Caravan waschen';body=field('Datum','date',e.date||today(),'date','required')+area('Notiz','note',e.note)}
  if(type==='stay'){title='Aufenthalt';body=field('Anreise','arrival',e.arrival||today(),'date','required')+field('Abreise','departure',e.departure,'date','required')+field('Personen','people',e.people)+area('Notiz','note',e.note)}
@@ -972,6 +1002,7 @@ function saveEditor(form){
  if(type==='annualrent'){item.pricingModel='tiered-v34';item.extras=[...form.querySelectorAll('[data-rentextra]')].map(r=>({id:uid(),label:r.querySelector('[data-extra-label]')?.value||'',qty:r.querySelector('[data-extra-qty]')?.value||0,price:r.querySelector('[data-extra-price]')?.value||0})).filter(e=>e.label||Number(e.qty)||Number(e.price))}
  if(type==='electricity'&&item.meterStart!==''&&item.meterEnd!==''&&Number(item.meterEnd)<Number(item.meterStart)){toast('Endzählerstand ist kleiner als der Anfangszählerstand');return}
  if(type==='electricity'){const e=electricityCalc(item);item.consumption=e.consumption;item.cost=e.cost;item.meterRentMonthly=e.meterRentMonthly;delete item.meterRent}
+ if(type==='travel'){const c=travelCalc(item);item.liters=c.liters;item.cost=c.cost}
  if(type==='contract'){
   item.contractType=item.contractType||'general';
   if(item.contractType==='mobile'&&!item.billingPeriod)item.billingPeriod='monthly';
@@ -1233,7 +1264,7 @@ async function restoreBackupFile(file){
 }
 function monthlyBackupPrompt(){
  const key=monthlyBackupDue();if(!key)return;
- modal(`Monatsbackup · ${monthLabel(key)}`,`<div class="notice good"><b>Monatsende:</b> Möchtest du jetzt eine Sicherungsdatei erstellen?</div><p>Die Datei enthält deine CampManager-Daten und die verfügbaren gescannten Dokumente. Auf iPhone/iPad kannst du sie über das Teilen-Menü direkt in der <b>Dateien-App</b> sichern.</p><p class="rowsub">Beim späteren Einspielen werden Stellplätze, Kosten, Jahresmieten mit Preisstaffeln, Geburtsdaten, Übernachtungen, Strom inkl. kWh-Preis und monatlicher Zählermiete, Petroleum, Fristen, Verträge inkl. Handyverträgen, Gespräche und Dokumente wieder an ihren ursprünglichen Stellen hergestellt.</p>`,`<button class="btn sec" type="button" id="monthBackupLater">Später</button><button class="btn" type="button" id="monthBackupNow">Backup erstellen</button>`)
+ modal(`Monatsbackup · ${monthLabel(key)}`,`<div class="notice good"><b>Monatsende:</b> Möchtest du jetzt eine Sicherungsdatei erstellen?</div><p>Die Datei enthält deine CampManager-Daten und die verfügbaren gescannten Dokumente. Auf iPhone/iPad kannst du sie über das Teilen-Menü direkt in der <b>Dateien-App</b> sichern.</p><p class="rowsub">Beim späteren Einspielen werden Stellplätze, Kosten, Jahresmieten mit Preisstaffeln, Geburtsdaten, Übernachtungen, Strom inkl. kWh-Preis und monatlicher Zählermiete, Hin- und Rückfahrten inkl. Monats-/Jahresstatistik, Petroleum, Fristen, Verträge inkl. Handyverträgen, Gespräche und Dokumente wieder an ihren ursprünglichen Stellen hergestellt.</p>`,`<button class="btn sec" type="button" id="monthBackupLater">Später</button><button class="btn" type="button" id="monthBackupNow">Backup erstellen</button>`)
  $('#monthBackupLater').onclick=()=>{localStorage.setItem(MONTH_SNOOZE,today());closeModal()};
  $('#monthBackupNow').onclick=async()=>{const ok=await exportFullBackup(key,true);if(ok)closeModal()}
 }
@@ -1310,6 +1341,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
  if(e.target.matches('[data-check]')){const x=place().shopping.find(x=>x.id===e.target.dataset.check);if(x){x.done=e.target.checked;save()}return}
  if(e.target.id==='closeYear'){closingYear=Number(e.target.value)||yearNow();renderCosts();show('costs');return}
+ if(e.target.id==='travelYear'){travelStatsYear=Number(e.target.value)||yearNow();renderCosts();show('costs');return}
  if(e.target.id==='camInput'||e.target.id==='fileInput'){const f=e.target.files?.[0];e.target.value='';if(f)handleDoc(f).catch(err=>{console.error(err);toast('Dokument konnte nicht gespeichert werden')});return}
 });
 $('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal()});

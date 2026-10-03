@@ -1,6 +1,8 @@
-CampManager v45
+CampManager v46
 
 Neu:
-- Wetterbericht vollständig entfernt.
-- Keine Wetterabfragen/Open-Meteo-Verbindung mehr.
-- Startseite zeigt Logo/Titelbild ohne Wetterleiste.
+- Hin- und Rückfahrkosten unter Kosten.
+- Datum, Abfahrtszeit, Ankunftsort, Fahrzeit, Kilometer, Verbrauch und Literpreis.
+- Automatische Liter- und Kraftstoffkostenberechnung.
+- Monats- und Jahresstatistik für Fahrten.
+- Fahrkosten in Jahreskosten und Jahresabschluss.
