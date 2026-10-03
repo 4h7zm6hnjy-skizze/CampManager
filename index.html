@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v43</title>
+<title>CampManager v45</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -41,11 +41,6 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .hero-media{position:relative;width:100%;background:#fff;border-radius:18px;overflow:hidden;min-width:0;order:-1}
 .hero-media .hero-logo{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;background:#fff;border-radius:18px;padding:6px 4px 0}
 .hero-media .hero-title{display:block;width:100%;height:320px;object-fit:cover;background:#fff;border-radius:18px}
-.weatherbox{position:absolute;left:8px;right:8px;bottom:7px;z-index:2;color:var(--ink);background:rgba(246,248,245,.95);border:1px solid rgba(23,60,41,.15);border-radius:11px;padding:5px 7px 4px;box-shadow:0 3px 10px rgba(15,40,27,.08);backdrop-filter:blur(7px)}
-.weatherbox.loading{display:flex;align-items:center;justify-content:center;min-height:39px;font-size:10px;color:var(--muted)}
-.weatherbox.error{display:flex;align-items:center;justify-content:space-between;gap:7px;min-height:39px;font-size:9.5px;color:var(--muted)}.weatherbox.error button{flex:0 0 auto}
-.weather-top{display:grid;grid-template-columns:auto 1fr auto;gap:5px;align-items:center;line-height:1.05}.weather-place{font-size:10px;font-weight:900;color:var(--green)}.weather-current{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.weather-current b{font-size:15px;margin-right:2px}.weather-refresh{width:23px;height:23px;border:0;background:#fff;border-radius:8px;color:var(--green);font-weight:900;padding:0}
-.weather-days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:3px}.weather-day{display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;font-size:8.5px;font-weight:800;white-space:nowrap}.weather-day span:first-child{color:var(--muted)}.weather-day .rain{color:#45697d}.weather-credit{margin-top:2px;text-align:right;font-size:6.8px;line-height:1;color:#788079}.weather-credit a{color:inherit;text-decoration:none}
 .badge{display:inline-flex;border-radius:999px;padding:4px 8px;background:#edf3ef;color:#2b5c3f;font-size:12px;font-weight:800}.hero .badge{background:rgba(255,255,255,.13);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
 .card{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
@@ -82,7 +77,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.quick button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px}.quick b{display:block;font-size:20px}.quick small{color:var(--muted)}
 .avatar{width:44px;height:44px;border-radius:13px;object-fit:cover;background:#f2efe7;border:1px solid var(--line);flex:0 0 44px}.avatar.ph{display:grid;place-items:center;font-size:20px}
 .photoPreview{width:88px;height:88px;border-radius:16px;object-fit:cover;background:#eee;border:1px solid var(--line)}
-.costline{display:grid;grid-template-columns:150px 1fr 90px;gap:8px;align-items:center;font-size:13px}.bar{height:8px;background:#eee8dd;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green2),var(--gold))}.right{text-align:right}
+.costline{display:grid;grid-template-columns:150px 1fr 90px;gap:8px;align-items:center;font-size:13px}.bar{height:8px;background:#eee8dd;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green2),var(--gold))}.right{text-align:right}.coststack{display:grid;gap:12px}.costdetail{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}.costdetail-top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}.costdetail-title{font-weight:800;font-size:18px;line-height:1.2}.costdetail-value{font-weight:900;font-size:18px;white-space:nowrap}.costdetail .rowsub{margin-top:4px}.costmeta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.costpill{background:#f3f0e8;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--muted)}
 .docgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.doc{border:1px solid var(--line);background:#fff;border-radius:15px;padding:11px}.docthumb{width:100%;aspect-ratio:4/3;border-radius:11px;background:#f1eee7;display:grid;place-items:center;font-size:36px;overflow:hidden}.docthumb img{width:100%;height:100%;object-fit:contain;background:#fff}
 .conversation{white-space:pre-wrap;line-height:1.42;margin-top:6px}
 .divider{height:1px;background:var(--line);margin:14px 0}
@@ -139,7 +134,7 @@ body.report-open{overflow:hidden}
  .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
 
- .hero{grid-template-columns:1fr}.hero-media .hero-logo{max-height:220px}.hero-media .hero-title{height:220px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
+ .hero{grid-template-columns:1fr}.hero-media .hero-logo{max-height:220px}.hero-media .hero-title{height:220px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.costdetail-top{flex-direction:column;align-items:flex-start}.costdetail-value{font-size:22px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 
@@ -163,7 +158,7 @@ body.report-open{overflow:hidden}
  <div class="toprow">
   <button class="brand" id="homeBtn" type="button">
    <img class="logo" id="logoImg" src="icon-512.png" alt="CampManager App-Logo">
-   <div class="brandcopy"><b>CampManager <span class="ver">v43</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v45</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -214,13 +209,10 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=43;
-const KEY='campmanager_complete_v43';
-const OLD=['campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=45;
+const KEY='campmanager_complete_v45';
+const OLD=['campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
-const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
-const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
-const WEATHER_TIMEOUT=4000;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
 const esc=(v='')=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -474,63 +466,6 @@ function upcomingDeadlines(p,limit=5){const all=allDeadlines(p).filter(x=>!deadl
 function nextDeadline(p){return upcomingDeadlines(p,1)[0]||null}
 function deadlineText(x){if(x?.status==='paid')return 'bezahlt';if(x?.status==='cancelled')return 'gekündigt';const d=daysUntil(x.d);return d==null?'':d<0?`${Math.abs(d)} Tag(e) überfällig`:d===0?'heute':`in ${d} Tag(en)`}
 
-function weatherInfo(code){
- const c=Number(code);
- if(c===0)return ['☀️','Klar'];
- if(c===1)return ['🌤️','Meist klar'];
- if(c===2)return ['⛅','Bewölkt'];
- if(c===3)return ['☁️','Bedeckt'];
- if(c===45||c===48)return ['🌫️','Nebel'];
- if([51,53,55,56,57].includes(c))return ['🌦️','Nieselregen'];
- if([61,63,65,66,67].includes(c))return ['🌧️','Regen'];
- if([71,73,75,77].includes(c))return ['🌨️','Schnee'];
- if([80,81,82].includes(c))return ['🌦️','Schauer'];
- if([85,86].includes(c))return ['🌨️','Schneeschauer'];
- if([95,96,99].includes(c))return ['⛈️','Gewitter'];
- return ['🌡️','Wetter'];
-}
-function weatherDayLabel(v,i){if(i===0)return 'Heute';if(i===1)return 'Morgen';try{return new Date(v+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short'}).replace('.','')}catch{return 'Tag '+(i+1)}}
-function weatherCacheRead(){try{return JSON.parse(localStorage.getItem(WEATHER_CACHE)||'null')}catch{return null}}
-function renderWeather(payload,isCached=false){
- const el=$('#weatherBox');if(!el||!payload?.current||!payload?.daily)return;
- const c=payload.current,d=payload.daily,wi=weatherInfo(c.weather_code);
- const days=(d.time||[]).slice(0,3).map((date,i)=>{
-  const di=weatherInfo(d.weather_code?.[i]);
-  const hi=Math.round(Number(d.temperature_2m_max?.[i]??0)),lo=Math.round(Number(d.temperature_2m_min?.[i]??0)),rain=Math.round(Number(d.precipitation_probability_max?.[i]??0));
-  return `<div class="weather-day"><span>${esc(weatherDayLabel(date,i))}</span><b>${di[0]} ${hi}/${lo}°</b><span class="rain">${rain}%</span></div>`
- }).join('');
- el.className='weatherbox';
- el.innerHTML=`<div class="weather-top"><span class="weather-place">Hörstel</span><span class="weather-current"><b>${wi[0]} ${Math.round(Number(c.temperature_2m||0))}°</b>${esc(wi[1])} · Wind ${Math.round(Number(c.wind_speed_10m||0))} km/h${isCached?' · zuletzt gespeichert':''}</span><button class="weather-refresh" type="button" data-weather-refresh aria-label="Wetter aktualisieren">↻</button></div><div class="weather-days">${days}</div><div class="weather-credit">Wetterdaten: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · CC BY 4.0</div>`
-}
-async function loadWeather(force=false){
- const el=$('#weatherBox');if(!el)return;
- const cached=weatherCacheRead();
- if(cached?.data)renderWeather(cached.data,true);
- if(!force&&cached?.savedAt&&(Date.now()-Number(cached.savedAt)<WEATHER_MAX_AGE))return;
-
- const ctrl=new AbortController();
- const timer=setTimeout(()=>ctrl.abort(),WEATHER_TIMEOUT);
- try{
-  const res=await fetch(WEATHER_URL,{
-   cache:'no-store',
-   signal:ctrl.signal,
-   headers:{'Accept':'application/json'}
-  });
-  if(!res.ok)throw new Error('Wetter HTTP '+res.status);
-  const data=await res.json();
-  if(!data?.current||!data?.daily)throw new Error('Ungültige Wetterdaten');
-  localStorage.setItem(WEATHER_CACHE,JSON.stringify({savedAt:Date.now(),data}));
-  renderWeather(data,false)
- }catch(e){
-  console.warn('Wetter konnte nicht geladen werden',e);
-  if(!cached?.data){
-   el.className='weatherbox error';
-   el.innerHTML='<span>Wetter für Hörstel gerade nicht erreichbar</span><button class="weather-refresh" type="button" data-weather-refresh aria-label="Wetter erneut laden">↻</button>';
-  }
- }finally{
-  clearTimeout(timer);
- }
-}
 function renderTop(){
  const p=place();
  $('#topName').textContent=p.site.campName||'Campingplatz';
@@ -539,7 +474,7 @@ function renderTop(){
 }
 function renderDashboard(){
  const p=place(),y=yearNow(),ey=electricityYearNow(),c=costData(p,y),total=Object.values(c).reduce((a,b)=>a+b,0),ar=annualRentFor(p,y),ns=ar?rentNightInfo(p,ar):null,currentEl=p.electricity.find(x=>Number(x.year)===ey),latestEl=[...(p.electricity||[])].sort((a,b)=>Number(b.year||0)-Number(a.year||0))[0],el=currentEl||latestEl||null,displayEy=el?Number(el.year):ey,ec=el?electricityCalc(el):null,dead=upcomingDeadlines(p,3),lastLawn=[...p.lawn].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
- $('#v-dashboard').innerHTML=`<div class="hero"><div class="hero-media">${p.site.photoData?`<img class="hero-title" src="${p.site.photoData}" alt="Titelbild Stellplatz" onerror="this.onerror=null;this.src='logo.jpg';this.className='hero-logo';this.alt='CampManager Logo'">`:`<img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}">`}<div id="weatherBox" class="weatherbox loading">Wetter Hörstel wird geladen …</div></div><div class="hero-head"><div class="hero-meta"><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span></div><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div></div>
+ $('#v-dashboard').innerHTML=`<div class="hero"><div class="hero-media">${p.site.photoData?`<img class="hero-title" src="${p.site.photoData}" alt="Titelbild Stellplatz" onerror="this.onerror=null;this.src='logo.jpg';this.className='hero-logo';this.alt='CampManager Logo'">`:`<img class="hero-logo" src="logo.jpg" alt="CampManager Logo" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo-fallback.jpg'}else{this.style.display='none'}">`}</div><div class="hero-head"><div class="hero-meta"><span class="badge">${state.places.length} ${state.places.length===1?'Stellplatz':'Stellplätze'}</span></div><h1>CampManager</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p></div></div>
  <div class="grid">
   <button class="card cardaction" data-go="costs" data-jump="overview"><h3>Jahreskosten ${y}</h3><div class="metric">${money(total)}</div><p>alle erfassten Kosten</p></button>
   <button class="card cardaction" data-go="more" data-jump="stays"><h3>Übernachtungen ${y}</h3><div class="metric">${ns?`${ns.used} / ${ar&&isTieredRent(ar)?365:ns.included}`:totalNights(p,y)}</div><p>${ar&&isTieredRent(ar)?`Tarifstufe ${ns.used<=90?'0–90':ns.used<=180?'91–180':'181–365'}`:ns?(ns.remaining?`noch ${ns.remaining} inklusive`:`${ns.over} über inklusive`):'Jahresmiete noch nicht angelegt'}</p>${ns?`<div class="progress"><i style="width:${ns.percent}%"></i></div>`:''}</button>
@@ -571,9 +506,23 @@ function renderCosts(){
  ${t==='overview'?costOverview(p):t==='comparison'?comparisonPanel(p):t==='annualRent'?annualRentPanel(p):t==='deposit'?depositPanel(p):t==='insurance'?insurancePanel(p):t==='electricity'?electricityRows(p):t==='closing'?closingPanel(p):t==='costs'?costRows(p):t==='petroleum'?petroleumRows(p):gasBottlePanel(p)}`
 }
 function costOverview(p){
- const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',insurance:'Versicherung',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
- return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung</h2>${Object.entries(d).map(([k,v])=>`<div class="costline"><span>${lab[k]}</span><div class="bar"><i style="width:${tot?Math.min(100,v/tot*100):0}%"></i></div><b class="right">${money(v)}</b></div>`).join('')}</div></div>`
+ const y=yearNow(),d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0);
+ const rows=[
+  {k:'annual',label:'Jahresmiete / Platz',hint:'Grundmiete, Übernachtungstarife, Auto, Anhänger und Extras',count:annualRentFor(p,y)?1:0},
+  {k:'deposit',label:'Kaution (einmalig)',hint:'Einmalige Kautionszahlung für den Stellplatz',count:p.deposit?.date&&String(p.deposit.date).startsWith(String(y))?1:0},
+  {k:'insurance',label:'Versicherung',hint:'Versicherungsbeiträge und zugeordnete Versicherungsdaten',count:insuranceConfigured(p)?1:0},
+  {k:'repairs',label:'Reparaturen',hint:'Reparaturen und Instandhaltung',count:(p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category==='repairs').length},
+  {k:'purchases',label:'Neuanschaffungen',hint:'Neu gekaufte Geräte, Möbel oder Zubehör',count:(p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category==='purchases').length},
+  {k:'other',label:'Sonstiges',hint:'Weitere manuell erfasste Kosten',count:(p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category==='other').length},
+  {k:'electricity',label:'Strom + Zählermiete',hint:'Stromkosten, kWh-Preis und monatliche Zählermiete',count:(p.electricity||[]).filter(x=>Number(x.year)===Number(y)).length},
+  {k:'petroleum',label:'Petroleum',hint:'Petroleum-Einkäufe und Verbrauch',count:(p.petroleum||[]).filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).length},
+  {k:'gasBottles',label:'Gasflaschen',hint:'Gasflaschenkäufe',count:(p.gasBottles||[]).filter(x=>x.kind==='purchase'&&(x.date||'').startsWith(String(y))).length},
+  {k:'gas',label:'Gasprüfung',hint:'Kosten für Gasprüfung',count:(p.gasChecks||[]).filter(x=>(x.date||'').startsWith(String(y))).length},
+  {k:'contracts',label:'Verträge',hint:'Verträge inklusive Handyverträgen',count:(p.contracts||[]).filter(x=>contractActive(x,y)).length}
+ ];
+ return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung – detailliert</h2><div class="rowsub">Jeder Kostenpunkt wird einzeln mit Betrag, Anteil und kurzer Erklärung angezeigt.</div><div class="coststack">${rows.map(r=>{const v=Number(d[r.k]||0),share=tot?Math.min(100,v/tot*100):0;return `<div class="costdetail"><div class="costdetail-top"><div><div class="costdetail-title">${r.label}</div><div class="rowsub">${r.hint}</div></div><div class="costdetail-value">${money(v)}</div></div><div class="costmeta"><span class="costpill">Anteil: ${num(share,1)} %</span><span class="costpill">Erfasste Positionen: ${num(r.count)}</span>${v<=0?'<span class="costpill">Zurzeit 0,00 €</span>':''}</div><div class="bar" style="margin-top:10px"><i style="width:${share}%"></i></div></div>`}).join('')}</div></div></div>`
 }
+
 function comparisonPanel(p){
  const years=yearsFor(p).slice(0,6),rows=years.map(y=>{const d=costData(p,y),total=Object.values(d).reduce((a,b)=>a+b,0);return {y,d,total}});
  return `<div class="notice good"><b>Jahresvergleich:</b> Gesamtkosten und wichtige Kostenblöcke im direkten Vergleich.</div><div style="overflow:auto"><table class="comparetable"><tr><th>Jahr</th><th>Gesamt</th><th>Änderung</th><th>Jahresmiete</th><th>Kaution</th><th>Versicherung</th><th>Strom</th><th>Petroleum</th><th>Gas</th><th>Verträge</th></tr>${rows.map((r,i)=>{const prev=rows[i+1],delta=prev&&prev.total?((r.total-prev.total)/prev.total*100):null;return `<tr><td><b>${r.y}</b></td><td>${money(r.total)}</td><td>${delta==null?'–':`<span class="delta ${delta>0?'up':delta<0?'down':''}">${delta>0?'+':''}${num(delta,1)} %</span>`}</td><td>${money(r.d.annual)}</td><td>${money(r.d.deposit)}</td><td>${money(r.d.insurance)}</td><td>${money(r.d.electricity)}</td><td>${money(r.d.petroleum)}</td><td>${money(r.d.gasBottles)}</td><td>${money(r.d.contracts)}</td></tr>`}).join('')}</table></div>`
@@ -968,7 +917,7 @@ function pickPlanFile(category,camera=false){
 }
 
 
-function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view);if(view==='dashboard')setTimeout(()=>loadWeather(false),0)}
+function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view)}
 function show(v){view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===v));scrollTo(0,0)}
 
 function modal(title,body,actions){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalActions').innerHTML=actions||'';$('#modal').classList.remove('hidden');document.body.style.overflow='hidden'}
@@ -1353,7 +1302,6 @@ document.addEventListener('click',e=>{
  const bd=e.target.closest('[data-backupdownload]');if(bd){getCloudBackup(bd.dataset.backupdownload).then(x=>x?.data&&downloadBackup(x.data,'campmanager-cloud-backup-'+bd.dataset.backupdownload+'.json')).catch(()=>toast('Download fehlgeschlagen'));return}
  if(e.target.id==='syncDocsBtn'){syncPendingDocuments().then(n=>toast(n+' Dokument(e) hochgeladen')).catch(()=>toast('Synchronisierung fehlgeschlagen'));return}
  if(e.target.id==='updateBtn'){applyUpdate();return}
- const wr=e.target.closest('[data-weather-refresh]');if(wr){loadWeather(true);return}
  if(e.target.closest('[data-report-close]')){closeAnnualReport();return}
  if(e.target.id==='reportSaveBtn'){saveAnnualPdf();return}
  if(e.target.id==='reportPrintBtn'){printAnnualReport();return}
@@ -1380,7 +1328,7 @@ async function registerPWA(){
  try{swReg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});if(swReg.waiting)showUpdate();swReg.addEventListener('updatefound',()=>{const w=swReg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)showUpdate()})});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(updateReloading)return;updateReloading=true;location.reload()})}catch(e){console.warn('Service Worker',e)}
 }
 async function applyUpdate(){try{if(swReg)await swReg.update();if(swReg?.waiting){swReg.waiting.postMessage({type:'SKIP_WAITING'});return}location.replace(location.pathname+'?v='+Date.now())}catch{location.reload()}}
-(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800);setInterval(()=>{if(view==='dashboard')loadWeather(true)},WEATHER_MAX_AGE)})();
+(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800)})();
 })();
 </script>
 </body>

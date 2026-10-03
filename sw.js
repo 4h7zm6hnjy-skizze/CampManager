@@ -1,4 +1,4 @@
-const VERSION = 'v43';
+const VERSION = 'v45';
 const CACHE = `campmanager-${VERSION}`;
 const CORE = [
   './',
