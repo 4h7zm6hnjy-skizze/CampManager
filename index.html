@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v36</title>
+<title>CampManager v38</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -214,9 +214,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=36;
-const KEY='campmanager_complete_v36';
-const OLD=['campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=38;
+const KEY='campmanager_complete_v38';
+const OLD=['campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const WEATHER_CACHE='campmanager_weather_hoerstel_v1', WEATHER_MAX_AGE=30*60*1000;
 const WEATHER_URL='https://api.open-meteo.com/v1/forecast?latitude=52.2976&longitude=7.5838&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FBerlin&forecast_days=3';
@@ -239,7 +239,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:36,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:38,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -273,10 +273,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:36,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:38,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:36,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:38,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -850,7 +850,9 @@ function lawnPanel(p){const rows=[...p.lawn].sort((a,b)=>String(b.date).localeCo
 function hedgePanel(p){const y=yearNow(),count=p.hedge.filter(x=>(x.date||'').startsWith(String(y))).length,rows=[...p.hedge].sort((a,b)=>String(b.date).localeCompare(String(a.date)));return `<div class="grid"><div class="card half"><h2>Heckenschnitt ${y}</h2><div class="metric">${count} / 2</div></div></div><div class="toolbar"><button class="btn" data-add="hedge" ${count>=2?'disabled':''}>＋ Heckenschnitt</button></div>${rows.length?`<div class="list">${rows.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">Hecke geschnitten</div><div class="rowsub">${fmt(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div class="rowactions"><button class="mini" data-edit="hedge" data-id="${x.id}">✎</button><button class="mini danger" data-del="hedge" data-id="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Heckenschnitt.')}`}
 
 function renderMore(){
- const p=place(),t=tab.more;$('#v-more').innerHTML=`<div class="head"><div><h1>Verwaltung</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>${tabs('more',[['stays','Übernachtungen'],['deadlines','Fristen'],['conversations','Gespräche'],['documents','Dokumente'],['plans','Pläne'],['contracts','Verträge'],['gas','Gasprüfung'],['site','Stellplatz'],['family','Familie']])}${t==='stays'?stayPanel(p):t==='deadlines'?deadlinePanel(p):t==='conversations'?conversationPanel(p):t==='documents'?documentPanel(p):t==='plans'?planPanel(p):t==='contracts'?contractPanel(p):t==='gas'?gasPanel(p):t==='site'?sitePanel(p):familyPanel()}`
+ const p=place(),t=tab.more,panels={stays:()=>stayPanel(p),deadlines:()=>deadlinePanel(p),conversations:()=>conversationPanel(p),documents:()=>documentPanel(p),plans:()=>planPanel(p),contracts:()=>contractPanel(p),gas:()=>gasPanel(p),site:()=>sitePanel(p),family:()=>familyPanel()};
+ if(!panels[t])tab.more='stays';
+ $('#v-more').innerHTML=`<div class="head"><div><h1>Verwaltung</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch)}</p></div></div>${tabs('more',[['stays','Übernachtungen'],['deadlines','Fristen'],['conversations','Gespräche'],['documents','Dokumente'],['plans','Pläne'],['contracts','Verträge'],['gas','Gasprüfung'],['site','Stellplatz'],['family','Familie']])}${(panels[tab.more]||panels.stays)()}`
 }
 function stayPanel(p){
  const y=yearNow(),rows=[...p.stays].sort((a,b)=>String(b.arrival).localeCompare(String(a.arrival))),ar=annualRentFor(p,y),ns=ar?rentNightInfo(p,ar):null;
@@ -937,7 +939,7 @@ function pickPlanFile(category,camera=false){
  input.type='file';input.accept=camera?'image/*':'image/*,application/pdf';input.style.display='none';
  if(camera)input.setAttribute('capture','environment');
  document.body.appendChild(input);
- input.onchange=async()=>{const f=input.files?.[0];input.remove();if(f)await handleDoc(f,{category,title:docLabel(category)})};
+ input.onchange=async()=>{const f=input.files?.[0];input.remove();if(f)try{await handleDoc(f,{category,title:docLabel(category)})}catch(err){console.error(err);toast('Plan konnte nicht gespeichert werden')}};
  input.oncancel=()=>input.remove();
  input.click()
 }
@@ -1046,6 +1048,58 @@ function savePlace(form){
 }
 function switcher(){modal('Stellplatz wechseln',`<div class="list">${state.places.map(p=>`<button type="button" class="row" data-placeswitch="${p.id}" style="width:100%;text-align:left">${avatar(p)}<div class="rowmain"><div class="rowtitle">${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</div><div class="rowsub">${p.id===state.activePlaceId?'Aktiv':'Antippen zum Wechseln'}</div></div></button>`).join('')}</div><div class="toolbar"><button class="btn" data-placeadd>＋ Neuer Platz</button></div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`)}
 
+// Dokumente & Pläne: gemeinsame lokale Dateiverwaltung
+const DOCCAT=[
+ ['other','Sonstiges'],['annual','Jahresmiete / Gebühr'],['electricity','Strom'],['insurance','Versicherung'],
+ ['contract','Vertrag'],['gas','Gasprüfung'],['repairs','Reparatur'],['purchase','Neuanschaffung']
+];
+const PLAN_CATS=[
+ ['plan_building','Bebauungsplan'],['plan_tent','Zeltplan'],['plan_sunshade','Sonnensegelplan'],['plan_other','Sonstiger Plan']
+];
+function isPlanCategory(v){return String(v||'').startsWith('plan_')}
+function isPlanDoc(x){return !!x&&isPlanCategory(x.category)}
+function docLabel(category){
+ const all=[...DOCCAT,...PLAN_CATS,['insurance_claim','Schadenfoto']];
+ return all.find(([k])=>k===category)?.[1]||'Dokument'
+}
+function planIcon(category){return category==='plan_building'?'📐':category==='plan_tent'?'⛺':category==='plan_sunshade'?'☀️':'🗺️'}
+
+const DOC_DB='campmanager_documents_v1',DOC_STORE='files';
+let docDbPromise=null;
+function openDocDb(){
+ if(!('indexedDB' in window))return Promise.reject(new Error('IndexedDB nicht verfügbar'));
+ if(docDbPromise)return docDbPromise;
+ docDbPromise=new Promise((resolve,reject)=>{
+  const req=indexedDB.open(DOC_DB,1);
+  req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(DOC_STORE))db.createObjectStore(DOC_STORE)};
+  req.onsuccess=()=>resolve(req.result);
+  req.onerror=()=>reject(req.error||new Error('Dokumentenspeicher konnte nicht geöffnet werden'));
+ });
+ return docDbPromise
+}
+async function dbPut(id,blob){const db=await openDocDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DOC_STORE,'readwrite');tx.objectStore(DOC_STORE).put(blob,id);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)})}
+async function dbGet(id){const db=await openDocDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DOC_STORE,'readonly'),q=tx.objectStore(DOC_STORE).get(id);q.onsuccess=()=>resolve(q.result||null);q.onerror=()=>reject(q.error)})}
+async function dbDel(id){const db=await openDocDb();return new Promise((resolve,reject)=>{const tx=db.transaction(DOC_STORE,'readwrite');tx.objectStore(DOC_STORE).delete(id);tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)})}
+async function compress(file){
+ if(!file)return file;
+ if(!String(file.type||'').startsWith('image/')||file.size<=3*1024*1024)return file;
+ try{
+  const bmp=await createImageBitmap(file),max=1800,scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale));
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');ctx.drawImage(bmp,0,0,w,h);bmp.close?.();
+  const out=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.84));
+  return out||file
+ }catch(e){console.warn('Bildkomprimierung',e);return file}
+}
+function documentPanel(p){
+ const rows=[...(p.documents||[])].filter(x=>!isPlanDoc(x)&&x.category!=='insurance_claim').sort((a,b)=>String(b.date||b.createdAt||'').localeCompare(String(a.date||a.createdAt||'')));
+ return `<div class="notice good"><b>Dokumente:</b> Rechnungen, Verträge und sonstige Unterlagen fotografieren oder als Bild/PDF hinzufügen. Dateien werden lokal auf diesem Gerät gespeichert und in der CampManager-Sicherung mitgesichert.</div>
+ <div class="toolbar"><button class="btn" data-docscan>📷 Dokument scannen</button><button class="btn sec" data-docupload>📁 Datei hinzufügen</button></div>
+ <input id="camInput" type="file" accept="image/*" capture="environment" hidden><input id="fileInput" type="file" accept="image/*,application/pdf" hidden>
+ ${rows.length?`<div class="docgrid">${rows.map(x=>`<div class="doc"><div class="docthumb" data-docopen="${x.id}">${x.mime?.startsWith('image/')?'🧾':'📄'}</div><div class="rowtitle" style="margin-top:8px">${esc(x.title||x.filename||'Dokument')}${x.cloudPath?'<span class="cloudtag">Cloud</span>':'<span class="cloudtag">lokal</span>'}</div><div class="rowsub">${docLabel(x.category)} · ${fmt(x.date)}</div>${x.amount?`<div class="rowsub">${money(x.amount)}</div>`:''}${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}<div class="toolbar"><button class="mini" data-docopen="${x.id}">Öffnen</button><button class="mini" data-docedit="${x.id}">✎</button><button class="mini danger" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch keine Dokumente gespeichert.')}`
+}
+
 const pendingDocs=new Map();
 function storagePath(path){return String(path||'').split('/').map(encodeURIComponent).join('/')}
 async function storageRequest(path,{method='GET',body=null,mime='application/octet-stream',upsert=false}={}){
@@ -1074,8 +1128,8 @@ function docEditor(x,isNew=false){
   :field('Titel','title',x.title||defaultTitle)+select('Kategorie','category',x.category||'other',opts)+field('Belegdatum','date',x.date||today(),'date','required')+field('Jahr','year',x.year||yearNow(),'number','min="2000"')+field('Betrag €','amount',x.amount||'','number','min="0" step="0.01"')+area('Notiz','note',x.note||'');
  modal(plan?(isNew?'Plan speichern':'Plan bearbeiten'):(isNew?'Dokument speichern':'Dokument bearbeiten'),`<form id="docForm" data-id="${x.id}" data-new="${isNew?'1':'0'}"><div class="formgrid">${form}</div></form>`,actions('docForm'))
 }
-async function openDoc(id){const meta=place().documents.find(x=>x.id===id);let b=await dbGet(id).catch(()=>null);if(!b&&meta?.cloudPath){try{b=await downloadDocumentCloud(meta.cloudPath);await dbPut(id,b)}catch(e){console.warn(e)}}if(!b){toast('Datei nicht gefunden');return}const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.target='_blank';a.click();setTimeout(()=>URL.revokeObjectURL(u),60000)}
-async function delDoc(id){if(!confirm('Dokument löschen?'))return;const meta=place().documents.find(x=>x.id===id);place().documents=place().documents.filter(x=>x.id!==id);await dbDel(id).catch(()=>{});if(meta?.cloudPath)deleteDocumentCloud(meta.cloudPath).catch(console.warn);save();toast('Dokument gelöscht')}
+async function openDoc(id){const meta=place().documents.find(x=>x.id===id);let b=await dbGet(id).catch(()=>null);if(!b&&meta?.cloudPath){try{b=await downloadDocumentCloud(meta.cloudPath);await dbPut(id,b)}catch(e){console.warn(e)}}if(!b){toast('Datei nicht gefunden');return}const u=URL.createObjectURL(b);if(String(b.type||meta?.mime||'').startsWith('image/')){modal(meta?.title||'Dokument',`<img src="${u}" alt="Dokument" style="display:block;max-width:100%;max-height:70vh;margin:auto;border-radius:12px">`,`<button class="btn sec" type="button" data-close>Schließen</button><a class="btn" href="${u}" target="_blank" rel="noopener">Extern öffnen</a>`);setTimeout(()=>URL.revokeObjectURL(u),120000);return}const a=document.createElement('a');a.href=u;a.target='_blank';a.rel='noopener';a.download=meta?.filename||'';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),120000)}
+async function delDoc(id){const found=place().documents.find(x=>x.id===id);if(!confirm(isPlanDoc(found)?'Plan wirklich löschen?':'Dokument wirklich löschen?'))return;const meta=place().documents.find(x=>x.id===id);place().documents=place().documents.filter(x=>x.id!==id);await dbDel(id).catch(()=>{});if(meta?.cloudPath)deleteDocumentCloud(meta.cloudPath).catch(console.warn);save();toast('Dokument gelöscht')}
 
 function deleteItem(type,id){if(!confirm('Eintrag wirklich löschen?'))return;const a=coll(type),i=a.findIndex(x=>x.id===id);if(i>=0){a.splice(i,1);save()}}
 function editItem(type,id){const x=coll(type).find(x=>x.id===id);if(x)editor(type,x)}
@@ -1232,13 +1286,13 @@ document.addEventListener('submit',e=>{
  if(f.id==='insuranceForm'){saveInsurance(f);return}
  if(f.id==='insuranceClaimForm'){saveInsuranceClaim(f);return}
  if(f.id==='placeForm'){savePlace(f);return}
- if(f.id==='docForm'){const d=Object.fromEntries(new FormData(f).entries()),id=f.dataset.id;let x=place().documents.find(x=>x.id===id);if(!x){x={...(pendingDocs.get(id)||{}),id,createdAt:new Date().toISOString()};place().documents.push(x)}Object.assign(x,d);pendingDocs.delete(id);closeModal();save();toast('Dokument gespeichert');return}
+ if(f.id==='docForm'){const d=Object.fromEntries(new FormData(f).entries()),id=f.dataset.id;let x=place().documents.find(x=>x.id===id);if(!x){x={...(pendingDocs.get(id)||{}),id,createdAt:new Date().toISOString()};place().documents.push(x)}Object.assign(x,d);if(isPlanDoc(x)){delete x.year;delete x.amount}else{x.year=d.year||String(new Date((d.date||today())+'T12:00:00').getFullYear())}pendingDocs.delete(id);closeModal();save();toast(isPlanDoc(x)?'Plan gespeichert':'Dokument gespeichert');return}
 });
 document.addEventListener('click',e=>{
  if(e.target.closest('[data-close]')){closeModal();return}
  const n=e.target.closest('[data-view]');if(n){show(n.dataset.view);return}
  const g=e.target.closest('[data-go]');if(g){const v=g.dataset.go;if(g.dataset.jump)tab[v]=g.dataset.jump;render();show(v);return}
- const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;render();show(tj.dataset.tabsec);return}
+ const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;try{if(tj.dataset.tabsec==='more')renderMore();else if(tj.dataset.tabsec==='costs')renderCosts();else if(tj.dataset.tabsec==='care')renderCare();else render()}catch(err){console.error(err);toast('Ansicht konnte nicht geladen werden')}show(tj.dataset.tabsec);return}
  const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
  if(e.target.closest('[data-depositedit]')){depositEditor();return}
  if(e.target.closest('[data-insurance-edit]')){insuranceEditor();return}
@@ -1278,7 +1332,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('change',e=>{
  if(e.target.matches('[data-check]')){const x=place().shopping.find(x=>x.id===e.target.dataset.check);if(x){x.done=e.target.checked;save()}return}
  if(e.target.id==='closeYear'){closingYear=Number(e.target.value)||yearNow();renderCosts();show('costs');return}
- if(e.target.id==='camInput'||e.target.id==='fileInput'){const f=e.target.files?.[0];e.target.value='';if(f)handleDoc(f);return}
+ if(e.target.id==='camInput'||e.target.id==='fileInput'){const f=e.target.files?.[0];e.target.value='';if(f)handleDoc(f).catch(err=>{console.error(err);toast('Dokument konnte nicht gespeichert werden')});return}
 });
 $('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal()});
 $('#homeBtn').onclick=()=>show('dashboard');
