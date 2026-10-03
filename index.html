@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v51</title>
+<title>CampManager v52</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -80,6 +80,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .nav{border:0;background:transparent;border-radius:12px;padding:6px 3px;color:#6c756d;display:flex;flex-direction:column;align-items:center;gap:2px}.nav span{font-size:19px}.nav small{font-size:10px;font-weight:800}.nav.active{background:#edf3ef;color:var(--green)}
 .toast{position:fixed;left:50%;bottom:86px;z-index:120;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#102319;color:#fff;padding:10px 14px;border-radius:999px;font-weight:750;transition:.2s;max-width:calc(100vw - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
 .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.quick button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px}.quick b{display:block;font-size:20px}.quick small{color:var(--muted)}
+.quick button.health-quick{grid-column:1/-1;display:flex;align-items:center;gap:13px;text-align:left;border:3px solid #c51919;background:linear-gradient(135deg,#fff7f7,#ffe8e8);color:#801111;box-shadow:0 8px 24px rgba(185,22,22,.18);min-height:84px;padding:12px 14px}.health-quick .health-cross{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:16px;background:#c51919;color:#fff;font-size:38px;font-weight:900;line-height:1}.health-quick .health-copy b{display:block;font-size:17px;color:#8f1111}.health-quick .health-copy small{display:block;color:#761515;font-weight:800;margin-top:3px}.health-alert{border:2px solid #c51919;background:#fff4f4;border-radius:16px;padding:11px;margin-bottom:12px}.health-alert strong{color:#9d1111}.health-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 12px}.health-action{display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;border-radius:14px;padding:12px 9px;font-weight:900;text-align:center}.health-action.emergency{background:#bd1717;color:#fff}.health-action.oncall{background:#fff;color:#9b1515;border:2px solid #bd1717}.health-action.pharmacy{background:#fff7e8;color:#7a4b00;border:1px solid #e4bd70}.health-action.official{background:#eef5ef;color:var(--green);border:1px solid #cbdccc}.health-status{padding:10px 11px;border-radius:12px;background:#f5f2ea;color:var(--muted);font-size:12px;margin:8px 0}.health-status.busy{background:#fff5dc;color:#77530e}.health-status.ok{background:#eaf4ed;color:#25583a}.health-status.err{background:#fff0ef;color:#8c241e}.health-results{display:grid;gap:8px;margin-top:10px}.health-place{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px}.health-place-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.health-place-title{font-weight:850}.health-type{font-size:11px;font-weight:850;border-radius:999px;padding:3px 7px;background:var(--soft);white-space:nowrap}.health-distance{font-size:12px;font-weight:800;color:var(--green)}.health-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.health-links a{font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:6px 8px;color:var(--ink);background:#fff}.health-location-grid{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.health-location-grid .field{min-width:0}
 .avatar{width:44px;height:44px;border-radius:13px;object-fit:cover;background:#f2efe7;border:1px solid var(--line);flex:0 0 44px}.avatar.ph{display:grid;place-items:center;font-size:20px}
 .photoPreview{width:88px;height:88px;border-radius:16px;object-fit:cover;background:#eee;border:1px solid var(--line)}
 .memberselect{grid-column:1/-1;display:grid;gap:8px}.memberselect-title{font-size:12px;font-weight:800}.membergrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.membercheck{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:750;min-width:0}.membercheck input{width:20px;height:20px;flex:0 0 auto}.membercheck span{min-width:0;overflow-wrap:anywhere}.membercheck small{display:block;color:var(--muted);font-weight:600;margin-top:2px}.membertag{display:inline-flex;padding:3px 7px;border-radius:999px;background:var(--soft);font-size:11px;font-weight:750;color:var(--green)}
@@ -140,7 +141,7 @@ body.report-open{overflow:hidden}
  .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
 
- .hero{grid-template-columns:1fr}.hero-banner .hero-logo{max-height:260px}.hero-banner .hero-title{height:auto;max-height:260px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.costdetail-top{flex-direction:column;align-items:flex-start}.costdetail-value{font-size:22px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.membergrid{grid-template-columns:1fr}.logo{width:44px;height:44px}
+ .hero{grid-template-columns:1fr}.hero-banner .hero-logo{max-height:260px}.hero-banner .hero-title{height:auto;max-height:260px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.costdetail-top{flex-direction:column;align-items:flex-start}.costdetail-value{font-size:22px}.health-actions{grid-template-columns:1fr 1fr}.health-location-grid{grid-template-columns:1fr}.health-location-grid .btn{width:100%}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.membergrid{grid-template-columns:1fr}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 
@@ -164,7 +165,7 @@ body.report-open{overflow:hidden}
 <header class="top">
  <div class="toprow">
   <button class="brand brandtextonly" id="homeBtn" type="button">
-   <div class="brandcopy"><b>CampManager <span class="ver">v51</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v52</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -215,10 +216,11 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=51;
-const KEY='campmanager_complete_v51';
-const OLD=['campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=52;
+const KEY='campmanager_complete_v52';
+const OLD=['campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
+const HEALTH_PREF='campmanager_health_pref_v1', HEALTH_CACHE='campmanager_health_cache_v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
 const esc=(v='')=>String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -237,7 +239,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:46,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:52,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -273,10 +275,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:46,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:52,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:46,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:52,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -527,6 +529,7 @@ function renderDashboard(){
   <button class="card cardaction" data-go="costs" data-jump="annualRent"><h3>Jahresmiete</h3><div class="metric">${ar?money(annualRentTotal(ar,p)):'–'}</div><p>Platzgrundmiete, Personen, Auto & Extras</p></button>
   <button class="card cardaction" data-go="care"><h3>Letzter Rasenschnitt</h3><div class="metric" style="font-size:20px">${lastLawn?fmt(lastLawn.date):'–'}</div><p>${lastLawn?'eingetragen':'noch kein Eintrag'}</p></button>
   <div class="card full"><h2>Schnellzugriff</h2><div class="quick">
+   <button class="health-quick" data-health-open type="button"><span class="health-cross">✚</span><span class="health-copy"><b>ÄRZTE & APOTHEKEN – NOTFALL</b><small>112 · 116117 · Notdienst · Umkreissuche</small></span></button>
    <button data-add="shopping"><b>＋</b><small>Einkauf</small></button><button data-add="stay"><b>☾</b><small>Aufenthalt</small></button><button data-add="conversation"><b>✎</b><small>Gespräch</small></button><button data-add="petroleum"><b>⛽</b><small>Petroleum</small></button><button data-add="gasbottle"><b>🔥</b><small>Gas</small></button><button data-planadd="plan_building"><b>📐</b><small>Bebauungsplan</small></button><button data-planadd="plan_tent"><b>⛺</b><small>Zeltplan</small></button><button data-planadd="plan_sunshade"><b>☀</b><small>Sonnensegelplan</small></button><button data-planadd="plan_other"><b>🗺</b><small>Sonstige Pläne</small></button>
   </div></div>
   <div class="card full"><h2>Nächste Fristen</h2>${dead.length?`<div class="list">${dead.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.t)}</div><div class="rowsub ${!deadlineClosed(x.status)&&daysUntil(x.d)<0?'deadline-overdue':x.status==='paid'?'deadline-done':x.status==='cancelled'?'deadline-cancelled':''}">${fmt(x.d)} · ${esc(deadlineText(x))}</div></div></div>`).join('')}</div>`:empty('Keine Frist eingetragen.')}</div>
@@ -979,6 +982,50 @@ function pickPlanFile(category,camera=false){
 function render(){renderTop();renderDashboard();renderShopping();renderCosts();renderCare();renderMore();show(view)}
 function show(v){view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='v-'+v));$$('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===v));scrollTo(0,0)}
 
+function healthPref(){try{return JSON.parse(localStorage.getItem(HEALTH_PREF)||'{}')||{}}catch{return {}}}
+function healthSavePref(v){localStorage.setItem(HEALTH_PREF,JSON.stringify(v||{}))}
+function healthCache(){try{return JSON.parse(localStorage.getItem(HEALTH_CACHE)||'null')}catch{return null}}
+function healthSaveCache(v){localStorage.setItem(HEALTH_CACHE,JSON.stringify(v||null))}
+function haversineKm(a,b,c,d){const R=6371,toRad=x=>x*Math.PI/180,dp=toRad(c-a),dl=toRad(d-b),q=Math.sin(dp/2)**2+Math.cos(toRad(a))*Math.cos(toRad(c))*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
+function healthAddress(t={}){return [t['addr:street'],t['addr:housenumber']].filter(Boolean).join(' ')+(([t['addr:postcode'],t['addr:city']||t['addr:place']].filter(Boolean).join(' '))?(', '+[t['addr:postcode'],t['addr:city']||t['addr:place']].filter(Boolean).join(' ')):'')}
+function healthKind(t={}){if(t.amenity==='pharmacy')return 'Apotheke';if(t.amenity==='doctors'||t.healthcare==='doctor')return 'Arzt';if(t.amenity==='clinic'||t.healthcare==='clinic')return 'Klinik/Praxis';return 'Medizin'}
+function healthCoords(el){return {lat:Number(el.lat??el.center?.lat),lon:Number(el.lon??el.center?.lon)}}
+function healthResultsHtml(cache){
+ const items=Array.isArray(cache?.items)?cache.items:[];
+ if(!items.length)return '<div class="empty">Keine Ärzte oder Apotheken in diesem Radius gefunden.</div>';
+ return items.map(x=>`<div class="health-place"><div class="health-place-top"><div><div class="health-place-title">${esc(x.name)}</div><div class="rowsub">${esc(x.address||'Adresse nicht hinterlegt')}</div></div><span class="health-type">${esc(x.kind)}</span></div><div class="health-links"><span class="health-distance">${num(x.distance,1)} km</span>${x.phone?`<a href="tel:${esc(x.phone)}">☎ Anrufen</a>`:''}<a href="https://www.openstreetmap.org/?mlat=${encodeURIComponent(x.lat)}&mlon=${encodeURIComponent(x.lon)}#map=17/${encodeURIComponent(x.lat)}/${encodeURIComponent(x.lon)}" target="_blank" rel="noopener">🗺 Karte</a></div></div>`).join('')
+}
+async function healthGeocode(query){
+ const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=de&accept-language=de&q='+encodeURIComponent(query);
+ const r=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});if(!r.ok)throw new Error('Ortssuche nicht erreichbar');const a=await r.json();if(!a?.length)throw new Error('Ort nicht gefunden');return {lat:Number(a[0].lat),lon:Number(a[0].lon),label:a[0].display_name||query}
+}
+async function healthNearby(lat,lon,radiusKm){
+ const radius=Math.max(1,Math.min(50,Number(radiusKm)||10))*1000;
+ const q=`[out:json][timeout:20];(nwr(around:${Math.round(radius)},${lat},${lon})["amenity"="pharmacy"];nwr(around:${Math.round(radius)},${lat},${lon})["amenity"="doctors"];nwr(around:${Math.round(radius)},${lat},${lon})["healthcare"="doctor"];nwr(around:${Math.round(radius)},${lat},${lon})["amenity"="clinic"];nwr(around:${Math.round(radius)},${lat},${lon})["healthcare"="clinic"];);out center tags;`;
+ const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:'data='+encodeURIComponent(q),cache:'no-store'});if(!r.ok)throw new Error('Umkreissuche nicht erreichbar');const d=await r.json();const seen=new Set(),items=[];
+ for(const el of d.elements||[]){const c=healthCoords(el);if(!Number.isFinite(c.lat)||!Number.isFinite(c.lon))continue;const t=el.tags||{},kind=healthKind(t),name=t.name||t.operator||(kind==='Apotheke'?'Apotheke':kind==='Arzt'?'Arztpraxis':'Praxis/Klinik'),dist=haversineKm(lat,lon,c.lat,c.lon),key=kind+'|'+name+'|'+c.lat.toFixed(5)+'|'+c.lon.toFixed(5);if(seen.has(key))continue;seen.add(key);items.push({kind,name,address:healthAddress(t),phone:t.phone||t['contact:phone']||'',lat:c.lat,lon:c.lon,distance:dist})}
+ return items.sort((a,b)=>a.distance-b.distance).slice(0,30)
+}
+function healthSetStatus(text,kind=''){const el=$('#healthStatus');if(el){el.className='health-status '+kind;el.textContent=text}}
+function healthRenderResults(cache){const el=$('#healthResults');if(!el)return;el.innerHTML=healthResultsHtml(cache);const upd=$('#healthUpdated');if(upd&&cache?.updatedAt)upd.textContent='Aktualisiert: '+new Date(cache.updatedAt).toLocaleString('de-DE')}
+function healthGetGps(){return new Promise((resolve,reject)=>{if(!navigator.geolocation)return reject(new Error('Standort nicht verfügbar'));navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lon:p.coords.longitude,label:'Aktueller Standort'}),e=>reject(new Error(e.code===1?'Standortfreigabe abgelehnt':'Standort konnte nicht ermittelt werden')),{enableHighAccuracy:true,maximumAge:0,timeout:10000})})}
+async function healthRefresh(pref,{interactive=false}={}){
+ const radius=Number(pref.radius)||10;let loc;
+ if(pref.mode==='gps')loc=await healthGetGps();else if(pref.mode==='manual'&&pref.query)loc=await healthGeocode(pref.query);else throw new Error('Bitte Ort eingeben oder aktuellen Standort verwenden');
+ if(interactive)healthSetStatus('Suche wird aktualisiert …','busy');
+ const items=await healthNearby(loc.lat,loc.lon,radius),cache={...loc,radius,mode:pref.mode,query:pref.query||'',items,updatedAt:new Date().toISOString()};healthSaveCache(cache);if(interactive){healthRenderResults(cache);healthSetStatus(`${items.length} Treffer im Umkreis von ${radius} km`,'ok')}return cache
+}
+function healthOpen(){
+ const pref=healthPref(),cache=healthCache();
+ modal('Ärzte & Apotheken',`<div class="health-alert"><strong>✚ NOTFALL / BEREITSCHAFT</strong><div class="rowsub">Bei Lebensgefahr sofort 112. Außerhalb der Sprechzeiten hilft der ärztliche Bereitschaftsdienst 116117.</div></div><div class="health-actions"><a class="health-action emergency" href="tel:112">☎ 112 NOTRUF</a><a class="health-action oncall" href="tel:116117">☎ 116117</a><a class="health-action pharmacy" href="https://www.aponet.de/notdienstsuche/0" target="_blank" rel="noopener">💊 Notdienst-Apotheke</a><a class="health-action official" href="https://www.116117.de/de/aerztlicher-bereitschaftsdienst.php" target="_blank" rel="noopener">🩺 Bereitschaftspraxis</a></div><div class="divider"></div><h3>Ärzte & Apotheken im Umkreis</h3><div class="health-location-grid"><div class="field"><label>Ort / PLZ</label><input id="healthLocation" value="${esc(pref.query||'')}" placeholder="z. B. Hörstel oder 48477"></div><button class="btn sec" id="healthManual" type="button">Ort verwenden</button></div><div class="toolbar"><button class="btn" id="healthGps" type="button">📍 Aktuellen Standort verwenden</button><label class="field" style="min-width:150px"><span style="font-size:12px;font-weight:800">Umkreis</span><select id="healthRadius"><option value="5">5 km</option><option value="10">10 km</option><option value="25">25 km</option><option value="50">50 km</option></select></label></div><div id="healthStatus" class="health-status">Standort wählen oder gespeicherte Suche aktualisieren.</div><div class="rowsub" id="healthUpdated"></div><div id="healthResults" class="health-results">${cache?healthResultsHtml(cache):'<div class="empty">Noch keine Umkreissuche durchgeführt.</div>'}</div><div class="notice"><b>Hinweis:</b> Die Umkreissuche nutzt OpenStreetMap-Daten. Für Bereitschaftsdienst und Apotheken-Notdienst bitte die offiziellen Schaltflächen oben verwenden.</div>`,`<button class="btn sec" type="button" data-close>Schließen</button>`);
+ const radius=$('#healthRadius');if(radius)radius.value=String(pref.radius||cache?.radius||10);
+ if(cache?.updatedAt){const u=$('#healthUpdated');if(u)u.textContent='Zuletzt aktualisiert: '+new Date(cache.updatedAt).toLocaleString('de-DE')}
+ $('#healthManual').onclick=async()=>{const query=$('#healthLocation').value.trim(),radius=Number($('#healthRadius').value)||10;if(!query){healthSetStatus('Bitte Ort oder PLZ eingeben.','err');return}const p={mode:'manual',query,radius};healthSavePref(p);try{await healthRefresh(p,{interactive:true})}catch(e){healthSetStatus(e.message||'Suche fehlgeschlagen','err')}};
+ $('#healthGps').onclick=async()=>{const p={mode:'gps',query:'',radius:Number($('#healthRadius').value)||10};healthSavePref(p);try{await healthRefresh(p,{interactive:true});$('#healthLocation').value=''}catch(e){healthSetStatus(e.message||'Standortsuche fehlgeschlagen','err')}};
+ if(pref.mode){healthRefresh({...pref,radius:Number(pref.radius)||10},{interactive:true}).catch(e=>healthSetStatus(e.message||'Aktualisierung fehlgeschlagen','err'))}
+}
+async function healthRefreshOnStartup(){const p=healthPref();if(!p.mode)return;try{await healthRefresh(p,{interactive:false})}catch(e){console.warn('Gesundheitssuche',e)}}
+
 function modal(title,body,actions){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modalActions').innerHTML=actions||'';$('#modal').classList.remove('hidden');document.body.style.overflow='hidden'}
 function closeModal(){$('#modal').classList.add('hidden');document.body.style.overflow=''}
 const field=(l,n,v='',t='text',ex='')=>`<div class="field"><label>${esc(l)}</label><input name="${n}" type="${t}" value="${esc(v??'')}" ${ex}></div>`;
@@ -1352,6 +1399,7 @@ document.addEventListener('click',e=>{
  const planSrc=e.target.closest('[data-plan-source]');if(planSrc){pickPlanFile(planSrc.dataset.planCategory,planSrc.dataset.planSource==='camera');return}
  const mobile=e.target.closest('[data-mobilecontract]');if(mobile){editor('contract',{contractType:'mobile',billingPeriod:'monthly',name:'Handyvertrag'});return}
  const ds=e.target.closest('[data-deadline-status]');if(ds){setDeadlineStatus(ds.dataset.deadlineId,ds.dataset.deadlineStatus);return}
+ if(e.target.closest('[data-health-open]')){healthOpen();return}
  const a=e.target.closest('[data-add]');if(a){editor(a.dataset.add);return}
  const ed=e.target.closest('[data-edit]');if(ed){editItem(ed.dataset.edit,ed.dataset.id);return}
  const de=e.target.closest('[data-del]');if(de){deleteItem(de.dataset.del,de.dataset.id);return}
@@ -1396,7 +1444,7 @@ async function registerPWA(){
  try{swReg=await navigator.serviceWorker.register('./sw.js',{scope:'./'});if(swReg.waiting)showUpdate();swReg.addEventListener('updatefound',()=>{const w=swReg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)showUpdate()})});navigator.serviceWorker.addEventListener('controllerchange',()=>{if(updateReloading)return;updateReloading=true;location.reload()})}catch(e){console.warn('Service Worker',e)}
 }
 async function applyUpdate(){try{if(swReg)await swReg.update();if(swReg?.waiting){swReg.waiting.postMessage({type:'SKIP_WAITING'});return}location.replace(location.pathname+'?v='+Date.now())}catch{location.reload()}}
-(async()=>{render();await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800)})();
+(async()=>{render();healthRefreshOnStartup().catch(console.warn);await registerPWA();setTimeout(()=>checkForUpdate(false),1200);if(cloudReady()&&session?.access_token){await pullCloud();dailyCloudBackup(false).catch(console.warn);syncPendingDocuments().catch(console.warn)}setTimeout(monthlyBackupPrompt,1800)})();
 })();
 </script>
 </body>
