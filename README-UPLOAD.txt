@@ -1,6 +1,1 @@
-CampManager v49
-
-Fehlerbehebung:
-- Startseite rendert wieder vollständig.
-- Verwaisten logoImg-JavaScript-Verweis entfernt.
-- Großes Logo bleibt oben, kleines Logo links bleibt entfernt.
+CampManager v51\n\nNeu:\n- Hochgeladenes CampManager-Bild oben im Kopfbereich eingefügt.\n- Version/Lokal/Zahnrad bleiben darunter sichtbar.\n- Fallback auf logo.jpg, falls top-banner.jpg fehlt.\n

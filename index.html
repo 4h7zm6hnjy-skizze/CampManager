@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v49</title>
+<title>CampManager v51</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -24,7 +24,7 @@ html,body{margin:0;max-width:100%;overflow-x:hidden;background:var(--bg);color:v
 button,input,select,textarea{font:inherit;min-width:0}
 button{cursor:pointer;touch-action:manipulation}
 .hidden{display:none!important}
-.top{position:sticky;top:0;z-index:40;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.toprow,.subrow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}.subrow{min-width:0}.topname{font-size:13px;color:var(--muted);font-weight:700;min-width:0;flex:1;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
+.masthead{padding:12px 12px 0;background:var(--bg)}.masthead img{display:block;width:100%;height:auto;max-height:190px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:24px;padding:10px;box-shadow:var(--shadow)}.top{position:sticky;top:0;z-index:40;display:flex;flex-direction:column;gap:6px;padding:8px 12px;background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.toprow,.subrow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}.subrow{min-width:0}.topname{font-size:13px;color:var(--muted);font-weight:700;min-width:0;flex:1;white-space:normal;overflow-wrap:anywhere;line-height:1.2}
 .brand{display:flex;align-items:center;gap:9px;border:0;background:transparent;padding:0;color:inherit;text-align:left;min-width:0}
 .brand.brandtextonly{gap:0}
 .logo{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:12px;border:1px solid var(--line)}
@@ -40,8 +40,8 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .hero{background:linear-gradient(135deg,#173c29,#10261a);color:#fff;border-radius:26px;padding:18px;display:grid;grid-template-columns:1fr;gap:14px;align-items:center;box-shadow:var(--shadow)}
 .hero-banner{background:#fff;border:1px solid var(--line);border-radius:24px;padding:10px;box-shadow:var(--shadow);margin-bottom:14px}
 .hero-banner .hero-logo,.hero-banner .hero-title{display:block;width:100%;border-radius:18px;background:#fff}
-.hero-banner .hero-logo{height:auto;max-height:360px;object-fit:contain}
-.hero-banner .hero-title{height:260px;object-fit:cover}
+.hero-banner .hero-logo{height:auto;max-height:420px;object-fit:contain}
+.hero-banner .hero-title{height:auto;max-height:420px;object-fit:contain}
 .hero h1{margin:6px 0;font-size:28px}.hero p{margin:0;color:#dce7df}
 .hero-media{position:relative;width:100%;background:#fff;border-radius:18px;overflow:hidden;min-width:0;order:-1}
 .hero-media .hero-logo{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;background:#fff;border-radius:18px;padding:6px 4px 0}
@@ -140,7 +140,7 @@ body.report-open{overflow:hidden}
  .tabs.manage-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
  .tabs.manage-tabs .chip{font-size:13px;border-radius:13px}
 
- .hero{grid-template-columns:1fr}.hero-banner .hero-logo{max-height:220px}.hero-banner .hero-title{height:200px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.costdetail-top{flex-direction:column;align-items:flex-start}.costdetail-value{font-size:22px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.membergrid{grid-template-columns:1fr}.logo{width:44px;height:44px}
+ .hero{grid-template-columns:1fr}.hero-banner .hero-logo{max-height:260px}.hero-banner .hero-title{height:auto;max-height:260px}.card,.card.half{grid-column:1/-1}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.quick{grid-template-columns:repeat(2,1fr)}.docgrid{grid-template-columns:1fr}.costline{grid-template-columns:115px 1fr 75px}.costdetail-top{flex-direction:column;align-items:flex-start}.costdetail-value{font-size:22px}.top{padding-left:10px;padding-right:10px}.topname{font-size:12px}.placebtn,.status{font-size:11px;padding:6px 8px}.membergrid{grid-template-columns:1fr}.logo{width:44px;height:44px}
 }
 @media(min-width:900px){.bottom{left:50%;right:auto;transform:translateX(-50%);width:620px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0}}
 
@@ -160,10 +160,11 @@ body.report-open{overflow:hidden}
 </style>
 </head>
 <body>
+<div class="masthead"><img src="top-banner.jpg" alt="CampManager Banner" onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='logo.jpg'}else{this.style.display='none'}"></div>
 <header class="top">
  <div class="toprow">
   <button class="brand brandtextonly" id="homeBtn" type="button">
-   <div class="brandcopy"><b>CampManager <span class="ver">v49</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v51</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -214,9 +215,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=49;
-const KEY='campmanager_complete_v49';
-const OLD=['campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=51;
+const KEY='campmanager_complete_v51';
+const OLD=['campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const uid=()=>crypto?.randomUUID?.()||Date.now()+'-'+Math.random().toString(16).slice(2);
