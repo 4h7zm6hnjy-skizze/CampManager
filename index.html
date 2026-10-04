@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v59</title>
+<title>CampManager v60</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -166,7 +166,7 @@ body.report-open{overflow:hidden}
 <header class="top">
  <div class="toprow">
   <button class="brand brandtextonly" id="homeBtn" type="button">
-   <div class="brandcopy"><b>CampManager <span class="ver">v59</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v60</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -217,9 +217,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=59;
-const KEY='campmanager_complete_v59';
-const OLD=['campmanager_complete_v58','campmanager_complete_v57','campmanager_complete_v56','campmanager_complete_v55','campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=60;
+const KEY='campmanager_complete_v60';
+const OLD=['campmanager_complete_v59','campmanager_complete_v58','campmanager_complete_v57','campmanager_complete_v56','campmanager_complete_v55','campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const HEALTH_PREF='campmanager_health_pref_v1', HEALTH_CACHE='campmanager_health_cache_v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -240,7 +240,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:59,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:60,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -276,10 +276,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:59,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:60,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:59,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:60,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -293,7 +293,7 @@ const tab={costs:'overview',care:'lawn',more:'stays'};
 let shoppingSearch='';
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=59;state.updatedAt=new Date().toISOString();
+ state.version=60;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -583,28 +583,35 @@ function renderShopping(){
  <div class="toolbar"><button class="btn" data-add="shopping">＋ Artikel zur Einkaufsliste</button></div>
  <div class="card full" style="margin-bottom:12px"><div class="field full"><label>Suche</label><input id="shoppingSearch" type="search" value="${esc(shoppingSearch)}" placeholder="Artikel oder Jahr suchen, z. B. Stuhl oder 2025"></div><div class="rowsub" id="shoppingSearchResult"></div></div>
  <div class="card full" style="margin-bottom:12px"><h2>🛒 Einkaufsliste</h2><p>Datum, Artikel und Notizen. Mit dem Haken wird der Kauf abgeschlossen.</p>${pendingHtml}</div>
- <div class="card full"><h2>✓ Abgeschlossene Käufe</h2><p>Rechnung, Datum, Firma, Artikel und Notizen werden dauerhaft gespeichert.</p>${completedHtml}</div>`;
+ <div class="card full"><h2>✓ Abgeschlossene Käufe</h2><p>Abgeschlossene Käufe können direkt hinzugefügt werden. Datum und Artikel sind Pflicht; Firma, Notizen und Rechnung sind optional.</p><div class="toolbar"><button class="btn" type="button" data-shopping-complete-add>＋ Abgeschlossenen Kauf hinzufügen</button></div>${completedHtml}</div>`;
  requestAnimationFrame(applyShoppingSearch)
 }
-function shoppingCompleteEditor(id){
- const x=(place().shopping||[]).find(v=>String(v.id)===String(id));if(!x)return;
- const receipts=shoppingReceipts(place(),id);
- modal(x.done?'Abgeschlossenen Kauf bearbeiten':'Kauf abschließen',`<form id="shoppingCompleteForm" data-id="${x.id}"><div class="formgrid">${field('Datum','purchaseDate',x.purchaseDate||x.date||today(),'date','required')}${field('Firma','company',x.company||'','text','required')}${field('Artikel','name',x.name||'','text','required')}${area('Notizen','note',x.note||'')}<div class="field full"><label>Rechnung</label><div class="toolbar"><label class="btn sec">📷 Rechnung fotografieren<input id="shoppingReceiptCameraInput" type="file" accept="image/*" capture="environment" hidden></label><label class="btn sec">🧾 Bild / PDF auswählen<input id="shoppingReceiptFileInput" type="file" accept="image/*,application/pdf" hidden></label></div><div class="rowsub" id="shoppingReceiptSelected">${receipts.length?`${receipts.length} Rechnung(en) bereits gespeichert.`:'Noch keine Rechnung gespeichert.'}</div></div></div></form>`,actions('shoppingCompleteForm'));
+function shoppingCompleteEditor(id=null){
+ const p=place(),existing=id?(p.shopping||[]).find(v=>String(v.id)===String(id)):null;
+ const isNew=!existing,x=existing||{id:uid(),done:true,purchaseDate:today(),company:'',name:'',note:''};
+ const receipts=isNew?[]:shoppingReceipts(p,x.id);
+ modal(isNew?'Abgeschlossenen Kauf hinzufügen':(x.done?'Abgeschlossenen Kauf bearbeiten':'Kauf abschließen'),`<form id="shoppingCompleteForm" data-id="${x.id}" data-new="${isNew?'1':'0'}"><div class="formgrid">${field('Datum','purchaseDate',x.purchaseDate||x.date||today(),'date','required')}${field('Firma','company',x.company||'','text')}${field('Artikel','name',x.name||'','text','required')}${area('Notizen','note',x.note||'')}<div class="field full"><label>Rechnung</label><div class="toolbar"><label class="btn sec">📷 Rechnung fotografieren<input id="shoppingReceiptCameraInput" type="file" accept="image/*" capture="environment" hidden></label><label class="btn sec">🧾 Bild / PDF auswählen<input id="shoppingReceiptFileInput" type="file" accept="image/*,application/pdf" hidden></label></div><div class="rowsub" id="shoppingReceiptSelected">${receipts.length?`${receipts.length} Rechnung(en) bereits gespeichert.`:'Rechnung ist optional und kann auch später hinzugefügt werden.'}</div></div></div></form>`,actions('shoppingCompleteForm'));
  const showSelected=input=>{const f=input?.files?.[0];if(f&&$('#shoppingReceiptSelected'))$('#shoppingReceiptSelected').textContent='Ausgewählt: '+f.name};
  $('#shoppingReceiptCameraInput').onchange=()=>showSelected($('#shoppingReceiptCameraInput'));
  $('#shoppingReceiptFileInput').onchange=()=>showSelected($('#shoppingReceiptFileInput'))
 }
 async function saveShoppingComplete(form){
- const id=form.dataset.id,x=(place().shopping||[]).find(v=>String(v.id)===String(id));if(!x)return;
+ const p=place(),id=form.dataset.id||uid(),isNew=form.dataset.new==='1';
+ let x=(p.shopping||[]).find(v=>String(v.id)===String(id));
  const d=Object.fromEntries(new FormData(form).entries());
- x.name=d.name||x.name||'Artikel';
+ if(!x){
+  x={id,done:true,createdAt:new Date().toISOString()};
+  p.shopping.push(x)
+ }
+ x.name=d.name||'Artikel';
  x.note=d.note||'';
  x.company=d.company||'';
  x.purchaseDate=d.purchaseDate||today();
+ x.date=x.date||x.purchaseDate;
  x.done=true;
  x.completedAt=x.completedAt||new Date().toISOString();
  const file=$('#shoppingReceiptCameraInput')?.files?.[0]||$('#shoppingReceiptFileInput')?.files?.[0]||null;
- closeModal();save();toast('Kauf abgeschlossen');
+ closeModal();save();toast(isNew?'Abgeschlossener Kauf hinzugefügt':'Kauf gespeichert');
  if(file){
   try{await saveInsuranceFile(file,{category:'shopping_receipt',shoppingId:id,title:'Rechnung',date:x.purchaseDate})}
   catch(err){console.error(err);toast('Kauf gespeichert – Rechnung konnte nicht gespeichert werden')}
@@ -1554,6 +1561,7 @@ document.addEventListener('click',e=>{
  const g=e.target.closest('[data-go]');if(g){const v=g.dataset.go;if(g.dataset.jump)tab[v]=g.dataset.jump;render();show(v);return}
  const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;try{if(tj.dataset.tabsec==='more')renderMore();else if(tj.dataset.tabsec==='costs')renderCosts();else if(tj.dataset.tabsec==='care')renderCare();else render()}catch(err){console.error(err);toast('Ansicht konnte nicht geladen werden')}show(tj.dataset.tabsec);return}
  const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
+ if(e.target.closest('[data-shopping-complete-add]')){shoppingCompleteEditor();return}
  const shopDoneEdit=e.target.closest('[data-shopping-complete-edit]');if(shopDoneEdit){shoppingCompleteEditor(shopDoneEdit.dataset.shoppingCompleteEdit);return}
  const shopReceiptCam=e.target.closest('[data-shopping-receipt-camera]');if(shopReceiptCam){pickShoppingReceipt(shopReceiptCam.dataset.shoppingReceiptCamera,true);return}
  const shopReceiptFile=e.target.closest('[data-shopping-receipt-file]');if(shopReceiptFile){pickShoppingReceipt(shopReceiptFile.dataset.shoppingReceiptFile,false);return}
