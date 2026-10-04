@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v55</title>
+<title>CampManager v57</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -70,7 +70,7 @@ main{max-width:1100px;margin:auto;padding:16px 14px calc(94px + var(--safe))}
 .mini{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 8px}.mini.danger{color:var(--danger)}
 .empty{padding:25px 14px;text-align:center;border:1px dashed #cfc6b8;border-radius:16px;color:var(--muted);background:rgba(255,255,255,.45)}
 .notice{padding:11px;border:1px solid #dfd6bf;border-radius:14px;background:#f9f4e8;margin:10px 0}.notice.good{background:#eaf4ed;border-color:#cfe2d5}.notice.warn{background:#fff1da;border-color:#ecd8af}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:4px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.deposit-date-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}.deposit-date-grid select{width:100%}.field{display:flex;flex-direction:column;gap:4px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:800}
 .field input,.field select,.field textarea{width:100%;font-size:16px;line-height:1.2;border:1px solid #d9d2c5;background:#fff;border-radius:11px;padding:10px;color:var(--ink);outline:none}.field textarea{min-height:74px;resize:vertical}
 .modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:8px;background:rgba(9,20,14,.58);backdrop-filter:blur(4px)}
 .modalcard{width:min(100%,620px);max-height:calc(100dvh - 16px);overflow-y:auto;overflow-x:hidden;background:#faf8f3;border-radius:22px;border:1px solid var(--line);padding:12px;box-shadow:0 30px 90px rgba(0,0,0,.28)}
@@ -166,7 +166,7 @@ body.report-open{overflow:hidden}
 <header class="top">
  <div class="toprow">
   <button class="brand brandtextonly" id="homeBtn" type="button">
-   <div class="brandcopy"><b>CampManager <span class="ver">v55</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v57</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -217,9 +217,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=55;
-const KEY='campmanager_complete_v55';
-const OLD=['campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=57;
+const KEY='campmanager_complete_v57';
+const OLD=['campmanager_complete_v56','campmanager_complete_v55','campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const HEALTH_PREF='campmanager_health_pref_v1', HEALTH_CACHE='campmanager_health_cache_v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -240,7 +240,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:52,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:57,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -276,10 +276,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:52,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:57,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:52,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:57,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -292,7 +292,7 @@ let state=load(), view='dashboard';
 const tab={costs:'overview',care:'lawn',more:'stays'};
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=46;state.updatedAt=new Date().toISOString();
+ state.version=57;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -402,8 +402,7 @@ function tieredRentBreakdown(p,x){
   personDetails.push({id:person.id,name:person.name||'Person',adultNights,childNights,freeNights,adultTier:ai,childTier:ci,totalNights:ps.dates.length});
  }
  const used=dates.length,tierDays=tierDaysForCount(used),carCount=Math.max(0,Number(x?.carCount||0)),carTier=[0,0,0];
- const presence=personPresenceDatesForYear(p,y);presence.legacy.forEach(id=>legacyStayIds.add(id));
- const carPresenceNights=Math.min(365,presence.dates.length),carIndex=tierIndexByStayNumber(carPresenceNights);
+ const carPresenceNights=Math.min(365,used),carIndex=tierIndexByStayNumber(carPresenceNights);
  if(carIndex>=0&&carCount>0)carTier[carIndex]=carCount;
  const carCost=carIndex>=0?carCount*Number(carRates[carIndex]||0):0;
  const trailerCost=Number(x?.trailerCount||0)*Number(x?.trailerAnnualPrice||0),extrasCost=rentExtraTotal(x);
@@ -597,24 +596,46 @@ function annualRentPanel(p){
  return `<div class="notice good"><b>Jahresmiete:</b> Die tatsächlich eingetragenen Übernachtungen bestimmen nur die Tarifstufe 0–90, 91–180 oder 181–365. Der hinterlegte Staffelbetrag wird <b>einmal pro Person bzw. Auto</b> berechnet – nicht pro Übernachtung. Pro Aufenthalt werden nur die ausgewählten Familienmitglieder berücksichtigt. Kinder werden vom 4. bis einschließlich 15. Lebensjahr als Kind berechnet; ab dem 16. Geburtstag als Erwachsener. Unter 4 Jahren entstehen keine Personenkosten.</div>${familyMissing.length?`<div class="notice warn"><b>Geburtsdatum fehlt:</b> ${familyMissing.map(x=>esc(x.name||'Person')).join(', ')}. Diese Personen werden bis zur Eingabe des Geburtsdatums nicht automatisch berechnet. Unter Verwaltung → Familie ergänzen.</div>`:''}<div class="toolbar"><button class="btn" data-add="annualrent">＋ Jahresmiete anlegen</button></div>${rows.length?`<div class="list">${rows.map(x=>{
   if(!isTieredRent(x)){const ns=legacyRentNightInfo(p,x),pn=legacyRentPersonNights(p,x);return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(annualRentTotal(x,p))}</div><div class="rowsub">Altes Preismodell · Grundbetrag ${money(x.baseAmount)} · ${ns.used}/${ns.included} Übernachtungen</div><div class="rowsub">${num(pn.adult)} Erwachsenen- / ${num(pn.child)} Kinder-Übernachtungen danach</div><div class="rowsub">Beim Bearbeiten wird diese Jahresmiete auf das neue Staffelmodell umgestellt.</div></div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`}
   const b=tieredRentBreakdown(p,x),labels=['0–90','91–180','181–365'],extras=Array.isArray(x.extras)?x.extras:[];
-  return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(b.total)}</div><div class="rowsub"><b>Platzgrundmiete:</b> ${money(x.baseAmount)} · <b>tatsächliche Übernachtungen:</b> ${b.used}</div><div class="tierline"><span>Erwachsene</span><b>${money(b.adultCost)}</b></div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.adult[i])} Person(en) × Tarif ${money(b.adultRates[i])}</div>`).join('')}<div class="tierline"><span>Kinder 4–15 Jahre</span><b>${money(b.childCost)}</b></div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.child[i])} Kind(er) × Tarif ${money(b.childRates[i])}</div>`).join('')}<div class="tierline"><span>Auto · ${num(b.carCount)} Fahrzeug(e)</span><b>${money(b.carCost)}</b></div><div class="rowsub">Kfz-Anwesenheit: ${num(b.carPresenceNights)} Nacht/Nächte – automatisch aus den ausgewählten Familienmitgliedern.</div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.carTier[i])} Auto(s) × Tarif ${money(b.carRates[i])}</div>`).join('')}<div class="rowsub">Die Übernachtungszahl wählt nur die Tarifstufe; sie wird nicht mit dem Tarifbetrag multipliziert.</div>${Number(x.trailerCount||0)?`<div class="rowsub">Anhänger: ${num(x.trailerCount)} × ${money(x.trailerAnnualPrice)}</div>`:''}${extras.length?`<div class="rowsub">Extras: ${extras.map(e=>`${esc(e.label||'Position')} ${num(e.qty||0)} × ${money(e.price)}`).join(' · ')}</div>`:''}${b.missing.length?`<div class="rowsub agewarn">Nicht berechnet ohne Geburtsdatum: ${b.missing.map(esc).join(', ')}</div>`:''}${x.dueDate?`<div class="rowsub">Fällig: ${fmt(x.dueDate)}</div>`:''}${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`
+  return `<div class="row"><div class="rowmain"><div class="rowtitle">${esc(x.year)} · ${money(b.total)}</div><div class="rowsub"><b>Platzgrundmiete:</b> ${money(x.baseAmount)} · <b>tatsächliche Übernachtungen:</b> ${b.used}</div><div class="tierline"><span>Erwachsene</span><b>${money(b.adultCost)}</b></div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.adult[i])} Person(en) × Tarif ${money(b.adultRates[i])}</div>`).join('')}<div class="tierline"><span>Kinder 4–15 Jahre</span><b>${money(b.childCost)}</b></div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.child[i])} Kind(er) × Tarif ${money(b.childRates[i])}</div>`).join('')}<div class="tierline"><span>Auto · ${num(b.carCount)} Fahrzeug(e)</span><b>${money(b.carCost)}</b></div><div class="rowsub">Kfz-Tarifgrundlage: ${num(b.carPresenceNights)} Übernachtungen – automatisch aus den tatsächlichen Übernachtungen des Stellplatzes.</div>${labels.map((l,i)=>`<div class="rowsub">${l}: ${num(b.carTier[i])} Auto(s) × Tarif ${money(b.carRates[i])}</div>`).join('')}<div class="rowsub">Die Übernachtungszahl wählt nur die Tarifstufe; sie wird nicht mit dem Tarifbetrag multipliziert.</div>${Number(x.trailerCount||0)?`<div class="rowsub">Anhänger: ${num(x.trailerCount)} × ${money(x.trailerAnnualPrice)}</div>`:''}${extras.length?`<div class="rowsub">Extras: ${extras.map(e=>`${esc(e.label||'Position')} ${num(e.qty||0)} × ${money(e.price)}`).join(' · ')}</div>`:''}${b.missing.length?`<div class="rowsub agewarn">Nicht berechnet ohne Geburtsdatum: ${b.missing.map(esc).join(', ')}</div>`:''}${x.dueDate?`<div class="rowsub">Fällig: ${fmt(x.dueDate)}</div>`:''}${x.note?`<div class="rowsub">${esc(x.note)}</div>`:''}</div><div class="rowactions"><button class="mini" data-edit="annualrent" data-id="${x.id}">✎</button><button class="mini danger" data-del="annualrent" data-id="${x.id}">×</button></div></div>`
  }).join('')}</div>`:empty('Noch keine Jahresmiete angelegt.')}`
 }
 
+function depositPhotos(p=place()){
+ return (p.documents||[]).filter(x=>x.category==='deposit_photo').sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))
+}
+function depositDateFields(value=''){
+ const parts=String(value||'').split('-'),yy=parts[0]||'',mm=parts[1]||'',dd=parts[2]||'';
+ const days=Array.from({length:31},(_,i)=>[String(i+1).padStart(2,'0'),String(i+1)]);
+ const months=[['01','Januar'],['02','Februar'],['03','März'],['04','April'],['05','Mai'],['06','Juni'],['07','Juli'],['08','August'],['09','September'],['10','Oktober'],['11','November'],['12','Dezember']];
+ const years=[];for(let y=yearNow()+2;y>=1900;y--)years.push([String(y),String(y)]);
+ return `<div class="field full"><label>Zahlungsdatum</label><div class="deposit-date-grid"><select name="depositDay" required><option value="">Tag</option>${days.map(([v,l])=>`<option value="${v}" ${v===dd?'selected':''}>${l}</option>`).join('')}</select><select name="depositMonth" required><option value="">Monat</option>${months.map(([v,l])=>`<option value="${v}" ${v===mm?'selected':''}>${l}</option>`).join('')}</select><select name="depositYear" required><option value="">Jahr</option>${years.map(([v,l])=>`<option value="${v}" ${v===yy?'selected':''}>${l}</option>`).join('')}</select></div><div class="rowsub">Tag, Monat und Jahr werden getrennt gewählt. Damit ist die Tagesauswahl auch auf iPhone und iPad direkt möglich.</div></div>`
+}
 function depositPanel(p){
- const d=p.deposit||{date:'',amount:''},has=!!(d.date||Number(d.amount||0));
- return `<div class="notice good"><b>Kaution:</b> Diese Position ist einmalig und gehört nicht zur wiederkehrenden Jahresmiete. Pro Stellplatz gibt es genau eine feste Kautionsposition.</div>${has?`<div class="grid"><div class="card half"><h2>Zahlungsdatum</h2><div class="metric" style="font-size:22px">${fmt(d.date)}</div></div><div class="card half"><h2>Kautionssumme</h2><div class="metric">${money(d.amount)}</div></div></div><div class="toolbar"><button class="btn sec" data-depositedit>✎ Kaution bearbeiten</button></div>`:`<div class="card full"><h2>🔐 Kaution</h2><p>Noch keine einmalige Kaution hinterlegt.</p><div class="toolbar"><button class="btn" data-depositedit>＋ Kaution eintragen</button></div></div>`}`
+ const d=p.deposit||{date:'',amount:''},has=!!(d.date||Number(d.amount||0)),photos=depositPhotos(p);
+ const photoArea=`<div class="card full"><h2>📷 Kautionsbeleg / Foto</h2><p>Foto direkt aufnehmen oder ein vorhandenes Bild aus der Mediathek hinzufügen.</p><div class="toolbar"><button class="btn" type="button" data-deposit-camera>📷 Kamera</button><button class="btn sec" type="button" data-deposit-library>🖼️ Aus Mediathek</button></div>${photos.length?`<div class="list">${photos.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">📷 ${esc(x.title||'Kautionsbeleg')}</div><div class="rowsub">${fmt(x.date||d.date)}${x.cloudPath?' · Cloud':' · lokal'}</div></div><div class="rowactions"><button class="mini" type="button" data-docopen="${x.id}">Öffnen</button><button class="mini danger" type="button" data-docdel="${x.id}">×</button></div></div>`).join('')}</div>`:empty('Noch kein Foto zur Kaution hinterlegt.')}</div>`;
+ return `<div class="notice good"><b>Kaution:</b> Diese Position ist einmalig und gehört nicht zur wiederkehrenden Jahresmiete. Pro Stellplatz gibt es genau eine feste Kautionsposition.</div>${has?`<div class="grid"><div class="card half"><h2>Zahlungsdatum</h2><div class="metric" style="font-size:22px">${fmt(d.date)}</div></div><div class="card half"><h2>Kautionssumme</h2><div class="metric">${money(d.amount)}</div></div>${photoArea}</div><div class="toolbar"><button class="btn sec" data-depositedit>✎ Kaution bearbeiten</button></div>`:`<div class="grid"><div class="card full"><h2>🔐 Kaution</h2><p>Noch keine einmalige Kaution hinterlegt.</p><div class="toolbar"><button class="btn" data-depositedit>＋ Kaution eintragen</button></div></div>${photoArea}</div>`}`
 }
 function depositEditor(){
  const d=place().deposit||{date:'',amount:''};
- modal('Einmalige Kaution',`<div class="notice"><b>Feststehende Position:</b> Zahlungsdatum und einmalig gezahlte Summe.</div><form id="depositForm"><div class="formgrid">${field('Zahlungsdatum','date',d.date,'date','required')}${field('Summe €','amount',d.amount,'number','required min="0" step="0.01"')}</div></form>`,actions('depositForm'))
+ modal('Einmalige Kaution',`<div class="notice"><b>Feststehende Position:</b> Zahlungsdatum und einmalig gezahlte Summe.</div><form id="depositForm"><div class="formgrid">${depositDateFields(d.date)}${field('Summe €','amount',d.amount,'number','required min="0" step="0.01"')}</div></form>`,actions('depositForm'))
 }
 function saveDeposit(form){
  const data=Object.fromEntries(new FormData(form).entries());
- place().deposit={date:data.date||'',amount:data.amount||''};
+ const y=String(data.depositYear||''),m=String(data.depositMonth||'').padStart(2,'0'),d=String(data.depositDay||'').padStart(2,'0');
+ if(!y||!m||!d){toast('Bitte Tag, Monat und Jahr auswählen');return}
+ const iso=`${y}-${m}-${d}`,check=new Date(iso+'T12:00:00');
+ if(check.getFullYear()!==Number(y)||check.getMonth()+1!==Number(m)||check.getDate()!==Number(d)){toast('Ungültiges Zahlungsdatum');return}
+ place().deposit={...(place().deposit||{}),date:iso,amount:data.amount||''};
  closeModal();save();toast('Kaution gespeichert')
 }
-
+function pickDepositPhoto(camera=false){
+ const input=document.createElement('input');input.type='file';input.accept='image/*';input.style.display='none';
+ if(camera)input.setAttribute('capture','environment');
+ document.body.appendChild(input);
+ input.onchange=async()=>{const f=input.files?.[0];input.remove();if(!f)return;try{await saveInsuranceFile(f,{category:'deposit_photo',title:'Kautionsbeleg',date:place().deposit?.date||today()})}catch(err){console.error(err);toast('Foto konnte nicht gespeichert werden')}};
+ input.oncancel=()=>input.remove();
+ input.click()
+}
 
 function insurancePanel(p){
  const x=p.insurance||{},annual=insuranceAnnualCost(p,yearNow()),claims=[...(p.insuranceClaims||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))),docs=insuranceDocs(p);
@@ -714,7 +735,7 @@ function closingRows(p,y){
  if(p.deposit?.date&&String(p.deposit.date).startsWith(String(y)))r.push({d:fmt(p.deposit.date),c:'Kaution',t:'Einmalig gezahlte Kaution',a:Number(p.deposit.amount||0)});
  const insCost=insuranceAnnualCost(p,y);if(insCost>0)r.push({d:String(y),c:'Versicherung',t:`${p.insurance.company||'Versicherung'} · ${insurancePeriodLabel(p.insurance.billingPeriod)} · ${money(p.insurance.amount)} je Zahlung`,a:insCost});
  if(ar){
-  if(isTieredRent(ar)){const b=tieredRentBreakdown(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Platzgrundmiete ${money(ar.baseAmount)}, ${b.used} Übernachtungstage, Erwachsene ${money(b.adultCost)}, Kinder 4–15 ${money(b.childCost)}, Auto ${money(b.carCost)} (${num(b.carPresenceNights)} Anwesenheitsnächte), Anhänger ${money(b.trailerCost)}, Extras ${money(b.extrasCost)}${b.missing.length?', Geburtsdatum fehlt: '+b.missing.join(', '):''}`,a:b.total})}
+  if(isTieredRent(ar)){const b=tieredRentBreakdown(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Platzgrundmiete ${money(ar.baseAmount)}, ${b.used} Übernachtungstage, Erwachsene ${money(b.adultCost)}, Kinder 4–15 ${money(b.childCost)}, Auto ${money(b.carCost)} (${num(b.carPresenceNights)} Übernachtungen als Tarifgrundlage), Anhänger ${money(b.trailerCost)}, Extras ${money(b.extrasCost)}${b.missing.length?', Geburtsdatum fehlt: '+b.missing.join(', '):''}`,a:b.total})}
   else{const pn=legacyRentPersonNights(p,ar),ns=legacyRentNightInfo(p,ar);r.push({d:String(y),c:'Jahresmiete',t:`Altes Preismodell: Grundbetrag ${money(ar.baseAmount)}, ${ns.used}/${ns.included} Übernachtungen, ${num(pn.adult)} Erw. x ${money(ar.adultPrice)}, ${num(pn.child)} Kinder x ${money(ar.childPrice)}`,a:annualRentTotal(ar,p)})}
  }
  p.costs.filter(x=>Number(x.year)===Number(y)).forEach(x=>r.push({d:String(y),c:{annual:'Jahresgebühr manuell',repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'}[x.category]||'Kosten',t:x.note||'',a:Number(x.amount||0)}));
@@ -744,7 +765,7 @@ function closingPanel(p){
 function reportMarkup(p,y){
  const d=costData(p,y),tot=Object.values(d).reduce((a,b)=>a+b,0),rows=closingRows(p,y),ar=annualRentFor(p,y),lab={annual:'Jahresmiete / Platz',deposit:'Kaution (einmalig)',insurance:'Versicherung',repairs:'Reparaturen',purchases:'Neuanschaffungen',other:'Sonstiges',electricity:'Strom + Zählermiete',travel:'Hin- & Rückfahrkosten',petroleum:'Petroleum',gasBottles:'Gasflaschen',gas:'Gasprüfung',contracts:'Verträge'};
  let rentHtml='';
- if(ar&&isTieredRent(ar)){const b=tieredRentBreakdown(p,ar),labels=['0–90','91–180','181–365'];rentHtml=`<h2>Jahresmiete</h2><table><tr><td>Platzgrundmiete</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Tatsächliche Übernachtungen</td><td class="r">${b.used}</td></tr>${labels.map((l,i)=>`<tr><td>Erwachsene ${l}</td><td class="r">${num(b.adult[i])} Person(en) × ${money(b.adultRates[i])} = ${money(Number(b.adult[i])*Number(b.adultRates[i]))}</td></tr>`).join('')}${labels.map((l,i)=>`<tr><td>Kinder 4–15 ${l}</td><td class="r">${num(b.child[i])} Kind(er) × ${money(b.childRates[i])} = ${money(Number(b.child[i])*Number(b.childRates[i]))}</td></tr>`).join('')}<tr><td>Kfz-Anwesenheit</td><td class="r">${num(b.carPresenceNights)} Nacht/Nächte</td></tr>${labels.map((l,i)=>`<tr><td>Auto ${l}</td><td class="r">${num(b.carTier[i])} Auto(s) × ${money(b.carRates[i])} = ${money(Number(b.carTier[i])*Number(b.carRates[i]))}</td></tr>`).join('')}<tr><td colspan="2">Kfz-Anwesenheit folgt automatisch den ausgewählten Personen im Aufenthalt. Die Übernachtungszahl bestimmt nur die Tarifstufe; keine Multiplikation pro Nacht.</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(b.total)}</td></tr></table>`}
+ if(ar&&isTieredRent(ar)){const b=tieredRentBreakdown(p,ar),labels=['0–90','91–180','181–365'];rentHtml=`<h2>Jahresmiete</h2><table><tr><td>Platzgrundmiete</td><td class="r">${money(ar.baseAmount)}</td></tr><tr><td>Tatsächliche Übernachtungen</td><td class="r">${b.used}</td></tr>${labels.map((l,i)=>`<tr><td>Erwachsene ${l}</td><td class="r">${num(b.adult[i])} Person(en) × ${money(b.adultRates[i])} = ${money(Number(b.adult[i])*Number(b.adultRates[i]))}</td></tr>`).join('')}${labels.map((l,i)=>`<tr><td>Kinder 4–15 ${l}</td><td class="r">${num(b.child[i])} Kind(er) × ${money(b.childRates[i])} = ${money(Number(b.child[i])*Number(b.childRates[i]))}</td></tr>`).join('')}<tr><td>Kfz-Tarifgrundlage</td><td class="r">${num(b.carPresenceNights)} Übernachtungen</td></tr>${labels.map((l,i)=>`<tr><td>Auto ${l}</td><td class="r">${num(b.carTier[i])} Auto(s) × ${money(b.carRates[i])} = ${money(Number(b.carTier[i])*Number(b.carRates[i]))}</td></tr>`).join('')}<tr><td colspan="2">Die Kfz-Tarifstufe richtet sich ausschließlich nach den tatsächlichen Übernachtungen des Stellplatzes. Das Auto bleibt ein eigener Kostenpunkt und wird nicht unter Personen abgerechnet. Keine Multiplikation pro Nacht.</td></tr><tr class="total"><td>Berechnete Jahresmiete</td><td class="r">${money(b.total)}</td></tr></table>`}
  else if(ar){rentHtml=`<h2>Jahresmiete – altes Preismodell</h2><table><tr><td>Berechnete Jahresmiete</td><td class="r">${money(annualRentTotal(ar,p))}</td></tr></table>`}
  return `<h1>CampManager – Jahresabschluss ${y}</h1><p>${esc(p.site.campName)} · Platz ${esc(p.site.pitch||'–')}</p><div class="report-help">Oben kannst du den Abschluss als echte PDF-Datei speichern, drucken oder mit „Zurück“ wieder zur App wechseln.</div><h2>Zusammenfassung</h2><table>${Object.entries(d).map(([k,v])=>`<tr><td>${lab[k]}</td><td class="r">${money(v)}</td></tr>`).join('')}<tr class="total"><td>Gesamtkosten</td><td class="r">${money(tot)}</td></tr></table><p><b>Übernachtungen ${y}:</b> ${totalNights(p,y)}</p>${rentHtml}<h2>Alle Kostenpositionen</h2><table><tr><th>Datum/Jahr</th><th>Kategorie</th><th>Beschreibung</th><th class="r">Betrag</th></tr>${rows.map(x=>`<tr><td>${esc(x.d)}</td><td>${esc(x.c)}</td><td>${esc(x.t)}</td><td class="r">${money(x.a)}</td></tr>`).join('')}</table>`
 }
@@ -818,9 +839,9 @@ function buildAnnualPdfBlob(p,y){
   heading('Jahresmiete');row('Platzgrundmiete',money(ar.baseAmount));row('Tatsächliche Übernachtungen',String(b.used));
   labels.forEach((l,i)=>row('Erwachsene '+l,`${num(b.adult[i])} Person(en) x ${money(b.adultRates[i])} = ${money(Number(b.adult[i])*Number(b.adultRates[i]))}`));
   labels.forEach((l,i)=>row('Kinder 4-15 '+l,`${num(b.child[i])} Kind(er) x ${money(b.childRates[i])} = ${money(Number(b.child[i])*Number(b.childRates[i]))}`));
-  row('Kfz-Anwesenheit',`${num(b.carPresenceNights)} Nacht/Nächte`);
+  row('Kfz-Tarifgrundlage',`${num(b.carPresenceNights)} Übernachtungen`);
   labels.forEach((l,i)=>row('Auto '+l,`${num(b.carTier[i])} Auto(s) x ${money(b.carRates[i])} = ${money(Number(b.carTier[i])*Number(b.carRates[i]))}`));
-  paragraph('Kfz-Anwesenheit folgt automatisch den ausgewählten Personen im Aufenthalt. Die Übernachtungszahl bestimmt nur die Tarifstufe; der Tarifbetrag wird nicht pro Nacht multipliziert.');
+  paragraph('Die Kfz-Tarifstufe richtet sich ausschließlich nach den tatsächlichen Übernachtungen des Stellplatzes. Das Auto bleibt ein eigener Kostenpunkt und wird nicht unter Personen abgerechnet. Der Tarifbetrag wird nicht pro Nacht multipliziert.');
   if(Number(ar.trailerCount||0))row('Anhänger',`${num(ar.trailerCount)} x ${money(ar.trailerAnnualPrice)} = ${money(b.trailerCost)}`);
   extras.forEach(e=>row(e.label||'Extra',`${num(e.qty||0)} x ${money(e.price)} = ${money(Number(e.qty||0)*Number(e.price||0))}`));
   if(b.missing.length)paragraph('Nicht berechnet ohne Geburtsdatum: '+b.missing.join(', '));row('Berechnete Jahresmiete',money(b.total),true)
@@ -1219,7 +1240,7 @@ const PLAN_CATS=[
 function isPlanCategory(v){return String(v||'').startsWith('plan_')}
 function isPlanDoc(x){return !!x&&isPlanCategory(x.category)}
 function docLabel(category){
- const all=[...DOCCAT,...PLAN_CATS,['insurance_claim','Schadenfoto']];
+ const all=[...DOCCAT,...PLAN_CATS,['insurance_claim','Schadenfoto'],['deposit_photo','Kautionsbeleg']];
  return all.find(([k])=>k===category)?.[1]||'Dokument'
 }
 function planIcon(category){return category==='plan_building'?'📐':category==='plan_tent'?'⛺':category==='plan_sunshade'?'☀️':'🗺️'}
@@ -1455,6 +1476,8 @@ document.addEventListener('click',e=>{
  const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;try{if(tj.dataset.tabsec==='more')renderMore();else if(tj.dataset.tabsec==='costs')renderCosts();else if(tj.dataset.tabsec==='care')renderCare();else render()}catch(err){console.error(err);toast('Ansicht konnte nicht geladen werden')}show(tj.dataset.tabsec);return}
  const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
  if(e.target.closest('[data-depositedit]')){depositEditor();return}
+ if(e.target.closest('[data-deposit-camera]')){pickDepositPhoto(true);return}
+ if(e.target.closest('[data-deposit-library]')){pickDepositPhoto(false);return}
  if(e.target.closest('[data-insurance-edit]')){insuranceEditor();return}
  if(e.target.closest('[data-claim-add]')){insuranceClaimEditor();return}
  const claimEdit=e.target.closest('[data-claim-edit]');if(claimEdit){insuranceClaimEditor(claimEdit.dataset.claimEdit);return}
