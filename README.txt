@@ -1,17 +1,23 @@
-CampManager v33 – komplette Version
+CampManager v56 – Kfz-Tarif-Hotfix
 
-Neu:
-- bestehendes Titelbild eines Stellplatzes kann jederzeit nachträglich geändert werden
-- eigener Button „🖼️ Titelbild ändern“ unter Mehr → Stellplatz
-- neues Titelbild wahlweise:
-  📷 Foto aufnehmen
-  🖼️ Aus Mediathek
-- vorhandenes Titelbild wird direkt ersetzt
-- Titelbild kann auch komplett entfernt werden
-- Änderung wird sofort gespeichert
-- weiterhin kann das Titelbild zusätzlich über „Stellplatz bearbeiten“ geändert werden
-- alle Daten aus v32 bleiben erhalten
+Korrektur:
+- Das Auto ist ein eigener Kostenpunkt.
+- Die tatsächlichen Stellplatz-Übernachtungen bestimmen nur die Kfz-Tarifstufe:
+  0–90 / 91–180 / 181–365.
+- Berechnung: Anzahl Autos × Tarif der erreichten Stufe.
+- Das Auto wird NICHT unter Personen abgerechnet.
+- Die Personenauswahl beeinflusst die Kfz-Kosten nicht.
+
+Beispiel:
+122 Übernachtungen + 1 Auto + Kfz-Tarif 91–180 = 80,00 €
+=> Auto = 1 × 80,00 € = 80,00 €.
 
 Installation:
-Alle Dateien aus dem ZIP in das Hauptverzeichnis deines GitHub-Pages-Projekts hochladen
-und vorhandene Dateien ersetzen. Die aktive Startdatei muss index.html heißen.
+1. sw.js und version.json in deinem GitHub-Projekt ersetzen.
+2. Web-App öffnen.
+3. Falls „Neue CampManager-Version verfügbar“ erscheint: Aktualisieren tippen.
+4. Falls nötig App einmal vollständig schließen und erneut öffnen.
+
+Hinweis:
+Der direkte GitHub-Schreibzugriff war beim Erstellen dieses Hotfixes mit HTTP 403 blockiert.
+Darum wird die Korrektur über den Service Worker auf die vorhandene v55 angewendet, ohne deine bestehenden Daten zu verändern.
