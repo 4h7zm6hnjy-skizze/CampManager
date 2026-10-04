@@ -1,6 +1,9 @@
-CampManager v54
+CampManager v55
 
-Neu:
-- Kfz-Tarife sind an die tatsächliche Personen-Anwesenheit gekoppelt.
-- Ein Auto zählt nur an Aufenthaltstagen mit mindestens einem ausgewählten Familienmitglied.
-- Kfz-Anwesenheitsnächte werden in Jahresmiete und Jahresabschluss angezeigt.
+Behoben:
+- Offizieller Aponet-Notdienst-Link korrigiert: https://www.aponet.de/notdienstsuche
+- Umkreissuche mit mehreren Overpass-Fallback-Servern.
+- Ortssuche mit zusätzlichem Geocoding-Fallback.
+- Gespeicherte Treffer bleiben sichtbar, wenn die Live-Suche ausfällt.
+- Button „Erneut versuchen“ ergänzt.
+- PWA-Dateien wieder vollständig im Paket enthalten.

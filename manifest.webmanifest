@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung mit Kosten, Übernachtungen, Dokumenten, Verträgen und Statistiken.",
+  "description": "Campingplatzverwaltung",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

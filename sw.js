@@ -1,4 +1,4 @@
-const VERSION = 'v54';
+const VERSION = 'v55';
 const CACHE = `campmanager-${VERSION}`;
 const CORE = [
   './',
@@ -7,6 +7,7 @@ const CORE = [
   './version.json',
   './logo.jpg',
   './logo-fallback.jpg',
+  './top-banner.jpg',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png'
