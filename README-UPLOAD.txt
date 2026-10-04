@@ -1,4 +1,4 @@
-CampManager v58
+CampManager v59
 
 Behoben:
 - Offizieller Aponet-Notdienst-Link korrigiert: https://www.aponet.de/notdienstsuche
@@ -9,7 +9,10 @@ Behoben:
 - PWA-Dateien wieder vollständig im Paket enthalten.
 
 
-v58: Kaution mit separater Tages-/Monats-/Jahresauswahl sowie Foto über Kamera oder Mediathek.
+v59: Kaution mit separater Tages-/Monats-/Jahresauswahl sowie Foto über Kamera oder Mediathek.
 
 
-v58: Einkäufe neu gegliedert in Einkaufsliste und abgeschlossene Käufe. Abgeschlossene Käufe speichern Datum, Firma, Artikel, Notizen und Rechnungen als Foto/PDF. Zusätzlich Suche nach Artikel oder Jahr.
+v59: Einkäufe neu gegliedert in Einkaufsliste und abgeschlossene Käufe. Abgeschlossene Käufe speichern Datum, Firma, Artikel, Notizen und Rechnungen als Foto/PDF. Zusätzlich Suche nach Artikel oder Jahr.
+
+
+v59: Datum zur Einkaufsliste ergänzt. Das Datum wird angezeigt, durchsucht und beim Kaufabschluss als Vorgabe übernommen.
