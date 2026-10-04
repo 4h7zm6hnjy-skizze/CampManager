@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="CampManager">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>CampManager v60</title>
+<title>CampManager v61</title>
 <style>
 :root{
  --bg:#f5f2ea;--card:#fff;--ink:#142019;--muted:#6d766e;--line:#ddd7ca;
@@ -159,6 +159,10 @@ body.report-open{overflow:hidden}
  .tabs.cost-tabs .chip:last-child:nth-child(odd){grid-column:auto}
 }
 
+
+button.costpill{cursor:pointer;font:inherit}
+button.costpill:disabled{cursor:default;opacity:.75}
+button.costpill:not(:disabled):active{transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -166,7 +170,7 @@ body.report-open{overflow:hidden}
 <header class="top">
  <div class="toprow">
   <button class="brand brandtextonly" id="homeBtn" type="button">
-   <div class="brandcopy"><b>CampManager <span class="ver">v60</span></b><small class="copyright">© Marcel Hentschel</small></div>
+   <div class="brandcopy"><b>CampManager <span class="ver">v61</span></b><small class="copyright">© Marcel Hentschel</small></div>
   </button>
   <div class="topright">
    <span class="status" id="syncStatus">Lokal</span>
@@ -217,9 +221,9 @@ body.report-open{overflow:hidden}
 <script>
 (()=>{'use strict';
 
-const APP_VERSION=60;
-const KEY='campmanager_complete_v60';
-const OLD=['campmanager_complete_v59','campmanager_complete_v58','campmanager_complete_v57','campmanager_complete_v56','campmanager_complete_v55','campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
+const APP_VERSION=61;
+const KEY='campmanager_complete_v61';
+const OLD=['campmanager_complete_v60','campmanager_complete_v59','campmanager_complete_v58','campmanager_complete_v57','campmanager_complete_v56','campmanager_complete_v55','campmanager_complete_v54','campmanager_complete_v53','campmanager_complete_v52','campmanager_complete_v51','campmanager_complete_v50','campmanager_complete_v49','campmanager_complete_v48','campmanager_complete_v47','campmanager_complete_v46','campmanager_complete_v45','campmanager_complete_v44','campmanager_complete_v43','campmanager_complete_v42','campmanager_complete_v41','campmanager_complete_v40','campmanager_complete_v39','campmanager_complete_v38','campmanager_complete_v37','campmanager_complete_v36','campmanager_complete_v35','campmanager_complete_v34','campmanager_complete_v33','campmanager_complete_v32','campmanager_complete_v31','campmanager_complete_v30','campmanager_complete_v29','campmanager_complete_v28','campmanager_complete_v27','campmanager_complete_v26','campmanager_complete_v25','campmanager_complete_v24','campmanager_complete_v23','campmanager_complete_v22','campmanager_complete_v21','campmanager_complete_v20','campmanager_complete_v19','campmanager_complete_v18','campmanager_complete_v17','campmanager_complete_v16','campmanager_complete_v15','campmanager_complete_v14','campmanager_complete_v13','campmanager_complete_v12','campmanager_complete_v11','campmanager_complete_v10','campmanager_complete_v9','campmanager_complete_v8','campmanager_complete_v7','campmanager_complete_v6','campmanager_full_v5','campmanager_full_v4','campmanager_full_v3','campmanager_full_v2','campmanager_full_v1'];
 const CFG='campmanager_cloud_cfg_v16', SES='campmanager_cloud_session_v16', BACKUP_DAY='campmanager_backup_day_v23', MONTH_BACKUP='campmanager_month_backup_v23', MONTH_SNOOZE='campmanager_month_backup_snooze_v23';
 const HEALTH_PREF='campmanager_health_pref_v1', HEALTH_CACHE='campmanager_health_cache_v1';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -240,7 +244,7 @@ function blankPlace(name='Campingplatz',pitch='161'){
 }
 function defaults(){
  const p=blankPlace('Campingplatz','161');
- return {version:60,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
+ return {version:61,updatedAt:new Date().toISOString(),activePlaceId:p.id,family:[{id:uid(),name:'Marcel',birthDate:''},{id:uid(),name:'Denise',birthDate:''},{id:uid(),name:'Leon',birthDate:''},{id:uid(),name:'Luca',birthDate:''}],places:[p]}
 }
 function normFamily(list,fallback=[]){
  const src=Array.isArray(list)?list:fallback;
@@ -276,10 +280,10 @@ function normalize(raw){
  const d=defaults(); if(!raw||typeof raw!=='object')return d;
  if(Array.isArray(raw.places)&&raw.places.length){
   const places=raw.places.map(normPlace);
-  return {version:60,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
+  return {version:61,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:places.some(p=>p.id===raw.activePlaceId)?raw.activePlaceId:places[0].id,family:normFamily(raw.family,d.family),places}
  }
  const p=normPlace(raw);
- return {version:60,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
+ return {version:61,updatedAt:raw.updatedAt||new Date().toISOString(),activePlaceId:p.id,family:normFamily(raw.family,d.family),places:[p]}
 }
 function load(){
  try{
@@ -293,7 +297,7 @@ const tab={costs:'overview',care:'lawn',more:'stays'};
 let shoppingSearch='';
 function place(){return state.places.find(p=>p.id===state.activePlaceId)||state.places[0]}
 function persist(){
- state.version=60;state.updatedAt=new Date().toISOString();
+ state.version=61;state.updatedAt=new Date().toISOString();
  try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){toast('Speichern im Browser fehlgeschlagen');return false}
 }
 function save(){const ok=persist();render();schedulePush();scheduleDailyBackup();return ok}
@@ -656,7 +660,96 @@ function costOverview(p){
   {k:'gas',label:'Gasprüfung',hint:'Kosten für Gasprüfung',count:(p.gasChecks||[]).filter(x=>(x.date||'').startsWith(String(y))).length},
   {k:'contracts',label:'Verträge',hint:'Verträge inklusive Handyverträgen',count:(p.contracts||[]).filter(x=>contractActive(x,y)).length}
  ];
- return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung – detailliert</h2><div class="rowsub">Jeder Kostenpunkt wird einzeln mit Betrag, Anteil und kurzer Erklärung angezeigt.</div><div class="coststack">${rows.map(r=>{const v=Number(d[r.k]||0),share=tot?Math.min(100,v/tot*100):0;return `<div class="costdetail"><div class="costdetail-top"><div><div class="costdetail-title">${r.label}</div><div class="rowsub">${r.hint}</div></div><div class="costdetail-value">${money(v)}</div></div><div class="costmeta"><span class="costpill">Anteil: ${num(share,1)} %</span><span class="costpill">Erfasste Positionen: ${num(r.count)}</span>${v<=0?'<span class="costpill">Zurzeit 0,00 €</span>':''}</div><div class="bar" style="margin-top:10px"><i style="width:${share}%"></i></div></div>`}).join('')}</div></div></div>`
+ return `<div class="grid"><div class="card half"><h2>Gesamtkosten ${y}</h2><div class="metric">${money(tot)}</div></div><div class="card half"><h2>Übernachtungen</h2><div class="metric">${totalNights(p,y)}</div></div><div class="card full"><h2>Aufteilung – detailliert</h2><div class="rowsub">Jeder Kostenpunkt wird einzeln mit Betrag, Anteil und kurzer Erklärung angezeigt.</div><div class="coststack">${rows.map(r=>{const v=Number(d[r.k]||0),share=tot?Math.min(100,v/tot*100):0;return `<div class="costdetail"><div class="costdetail-top"><div><div class="costdetail-title">${r.label}</div><div class="rowsub">${r.hint}</div></div><div class="costdetail-value">${money(v)}</div></div><div class="costmeta"><span class="costpill">Anteil: ${num(share,1)} %</span><button type="button" class="costpill" data-cost-positions="${r.k}" data-cost-year="${y}" ${r.count?'':'disabled'}>Erfasste Positionen: ${num(r.count)}</button>${v<=0?'<span class="costpill">Zurzeit 0,00 €</span>':''}</div><div class="bar" style="margin-top:10px"><i style="width:${share}%"></i></div></div>`}).join('')}</div></div></div>`
+}
+
+
+function costPositionItems(p,key,y){
+ const items=[];
+ const push=(title,sub='',amount=null,editType='',id='')=>items.push({title,sub,amount,editType,id});
+
+ if(key==='annual'){
+  const x=annualRentFor(p,y);
+  if(x){
+   const total=annualRentTotal(x,p);
+   push(`Jahresmiete ${y}`,`Platzgrundmiete ${money(x.baseAmount||0)}${x.dueDate?' · Fällig '+fmt(x.dueDate):''}`,total,'annualrent',x.id)
+  }
+ }
+ if(key==='deposit'&&p.deposit?.date&&String(p.deposit.date).startsWith(String(y))){
+  push('Kaution',`Zahlungsdatum ${fmt(p.deposit.date)}`,Number(p.deposit.amount||0),'deposit','deposit')
+ }
+ if(key==='insurance'&&insuranceConfigured(p)){
+  const x=p.insurance||{};
+  push(x.company||'Versicherung',`${insurancePeriodLabel(x.billingPeriod)} · ${money(x.amount||0)} je Zahlung${x.startDate?' · Vertragsbeginn '+fmt(x.startDate):''}`,insuranceAnnualCost(p,y),'insurance','insurance')
+ }
+ if(['repairs','purchases','other'].includes(key)){
+  (p.costs||[]).filter(x=>Number(x.year)===Number(y)&&x.category===key).forEach(x=>{
+   push(({repairs:'Reparatur',purchases:'Neuanschaffung',other:'Sonstiges'})[key],x.note||`Jahr ${y}`,Number(x.amount||0),'cost',x.id)
+  })
+ }
+ if(key==='electricity'){
+  (p.electricity||[]).filter(x=>Number(x.year)===Number(y)).forEach(x=>{
+   const c=electricityCalc(x);
+   push(`Strom ${x.year}`,`${num(c.consumption,1)} kWh · Zählermiete ${money(c.meterRentAnnual)}`,c.total,'electricity',x.id)
+  })
+ }
+ if(key==='travel'){
+  (p.travelCosts||[]).filter(x=>x.date&&String(x.date).startsWith(String(y))).forEach(x=>{
+   const c=travelCalc(x);
+   push(`${x.direction==='return'?'Rückfahrt':'Hinfahrt'} · ${fmt(x.date)}`,`${esc(x.arrivalLocation||'–')} · ${num(c.km,1)} km · ${durationText(c.durationMinutes)}`,c.cost,'travel',x.id)
+  })
+ }
+ if(key==='petroleum'){
+  (p.petroleum||[]).filter(x=>x.kind==='purchase'&&x.date&&String(x.date).startsWith(String(y))).forEach(x=>{
+   push(`Petroleum · ${fmt(x.date)}`,`${num(x.liters,1)} L${x.note?' · '+esc(x.note):''}`,Number(x.price||0),'petroleum',x.id)
+  })
+ }
+ if(key==='gasBottles'){
+  (p.gasBottles||[]).filter(x=>x.kind==='purchase'&&x.date&&String(x.date).startsWith(String(y))).forEach(x=>{
+   push(`Gasflaschen · ${fmt(x.date)}`,`${num(x.bottles)} ${Number(x.bottles)===1?'Flasche':'Flaschen'}${x.location?' · '+esc(x.location):''}`,Number(x.price||0),'gasbottle',x.id)
+  })
+ }
+ if(key==='gas'){
+  (p.gasChecks||[]).filter(x=>x.date&&String(x.date).startsWith(String(y))).forEach(x=>{
+   push(`Gasprüfung · ${fmt(x.date)}`,[x.company,x.result,x.notes].filter(Boolean).map(esc).join(' · '),Number(x.cost||0),'gas',x.id)
+  })
+ }
+ if(key==='contracts'){
+  (p.contracts||[]).filter(x=>contractActive(x,y)).forEach(x=>{
+   push(x.name||contractTypeLabel(x),[x.provider,x.mobileNumber,contractBillingPeriod(x)==='monthly'?`${money(contractBaseAmount(x))} / Monat`:`${money(contractBaseAmount(x))} / Jahr`].filter(Boolean).map(esc).join(' · '),contractCostForYear(x,y),'contract',x.id)
+  })
+ }
+ return items
+}
+function costPositionsTitle(key){
+ return ({
+  annual:'Jahresmiete / Platz',
+  deposit:'Kaution',
+  insurance:'Versicherung',
+  repairs:'Reparaturen',
+  purchases:'Neuanschaffungen',
+  other:'Sonstiges',
+  electricity:'Strom + Zählermiete',
+  travel:'Hin- & Rückfahrkosten',
+  petroleum:'Petroleum',
+  gasBottles:'Gasflaschen',
+  gas:'Gasprüfung',
+  contracts:'Verträge'
+ })[key]||'Erfasste Positionen'
+}
+function showCostPositions(key,y){
+ const p=place(),items=costPositionItems(p,key,Number(y)||yearNow()),title=costPositionsTitle(key);
+ const total=items.reduce((sum,x)=>sum+Number(x.amount||0),0);
+ const body=items.length
+  ?`<div class="notice good"><b>${esc(title)} · ${esc(y)}</b><br>${items.length} Position(en) · zusammen ${money(total)}</div><div class="list">${items.map(x=>`<div class="row"><div class="rowmain"><div class="rowtitle">${x.title}</div>${x.sub?`<div class="rowsub">${x.sub}</div>`:''}</div>${x.amount!=null?`<b>${money(x.amount)}</b>`:''}${x.editType?`<div class="rowactions"><button class="mini" type="button" data-cost-position-edit="${x.editType}" data-id="${x.id}">✎</button></div>`:''}</div>`).join('')}</div>`
+  :empty('Keine erfassten Positionen in diesem Jahr.');
+ modal(`Erfasste Positionen – ${title}`,body,`<button class="btn sec" type="button" data-close>Schließen</button>`)
+}
+function editCostPosition(type,id){
+ closeModal();
+ if(type==='deposit'){depositEditor();return}
+ if(type==='insurance'){insuranceEditor();return}
+ editItem(type,id)
 }
 
 function comparisonPanel(p){
@@ -1561,6 +1654,8 @@ document.addEventListener('click',e=>{
  const g=e.target.closest('[data-go]');if(g){const v=g.dataset.go;if(g.dataset.jump)tab[v]=g.dataset.jump;render();show(v);return}
  const tj=e.target.closest('[data-tabsec]');if(tj){tab[tj.dataset.tabsec]=tj.dataset.tab;try{if(tj.dataset.tabsec==='more')renderMore();else if(tj.dataset.tabsec==='costs')renderCosts();else if(tj.dataset.tabsec==='care')renderCare();else render()}catch(err){console.error(err);toast('Ansicht konnte nicht geladen werden')}show(tj.dataset.tabsec);return}
  const cj=e.target.closest('[data-costjump]');if(cj){tab.costs=cj.dataset.costjump;renderCosts();show('costs');return}
+ const cp=e.target.closest('[data-cost-positions]');if(cp){showCostPositions(cp.dataset.costPositions,cp.dataset.costYear);return}
+ const cpe=e.target.closest('[data-cost-position-edit]');if(cpe){editCostPosition(cpe.dataset.costPositionEdit,cpe.dataset.id);return}
  if(e.target.closest('[data-shopping-complete-add]')){shoppingCompleteEditor();return}
  const shopDoneEdit=e.target.closest('[data-shopping-complete-edit]');if(shopDoneEdit){shoppingCompleteEditor(shopDoneEdit.dataset.shoppingCompleteEdit);return}
  const shopReceiptCam=e.target.closest('[data-shopping-receipt-camera]');if(shopReceiptCam){pickShoppingReceipt(shopReceiptCam.dataset.shoppingReceiptCamera,true);return}
