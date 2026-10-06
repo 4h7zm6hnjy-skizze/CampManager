@@ -1,6 +1,6 @@
-CampManager v57
+CampManager v58
 
 Neu:
-- Kfz-Tarif nutzt dieselben tatsächlichen Übernachtungen wie die Jahresmiete.
-- Kfz-Staffeln werden kumulativ 0–90, 91–180, 181–365 berechnet.
-- Beispiel bei 122 Übernachtungen und 1 Auto: Tarif 0–90 + Tarif 91–180.
+- Jede Tarifstufe zeigt jetzt Anzahl × Tarif = Einzelbetrag.
+- Detaillierte Rechnung für Erwachsene, Kinder, Auto, Anhänger und Extras.
+- Komplette Summenrechnung am Ende jeder Jahresmiete.
