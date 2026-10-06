@@ -1,7 +1,7 @@
 {
   "name": "CampManager",
   "short_name": "CampManager",
-  "description": "Campingplatzverwaltung",
+  "description": "Campingplatzverwaltung mit Kosten, Jahresmiete, Dokumenten, Fristen und Fahrten.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
