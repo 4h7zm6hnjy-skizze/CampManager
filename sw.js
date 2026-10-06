@@ -1,4 +1,4 @@
-const VERSION = 'v56';
+const VERSION = 'v57';
 const CACHE = `campmanager-${VERSION}`;
 const CORE = ['./','./index.html','./manifest.webmanifest','./version.json','./logo.jpg','./logo-fallback.jpg','./top-banner.jpg','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE).catch(()=>{})))});

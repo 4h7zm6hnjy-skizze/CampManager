@@ -1,9 +1,6 @@
-CampManager v56
+CampManager v57
 
 Neu:
-- Jahresmiet-Tarifstaffeln werden kumulativ berechnet.
-- 0–90: Tarif 1.
-- 91–180: Tarif 1 + Tarif 2.
-- 181–365: Tarif 1 + Tarif 2 + Tarif 3.
-- Gilt für Erwachsene, Kinder und Auto.
-- Vorherige Staffelbeträge bleiben vollständig in der Jahressumme enthalten.
+- Kfz-Tarif nutzt dieselben tatsächlichen Übernachtungen wie die Jahresmiete.
+- Kfz-Staffeln werden kumulativ 0–90, 91–180, 181–365 berechnet.
+- Beispiel bei 122 Übernachtungen und 1 Auto: Tarif 0–90 + Tarif 91–180.
