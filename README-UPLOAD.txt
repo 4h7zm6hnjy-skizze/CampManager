@@ -1,6 +1,8 @@
-CampManager v58
+CampManager v59
 
 Neu:
-- Jede Tarifstufe zeigt jetzt Anzahl × Tarif = Einzelbetrag.
-- Detaillierte Rechnung für Erwachsene, Kinder, Auto, Anhänger und Extras.
-- Komplette Summenrechnung am Ende jeder Jahresmiete.
+- Mehrere Versicherungen pro Stellplatz.
+- Bestehende Einzelversicherung wird automatisch übernommen.
+- Schäden und Dokumente können Versicherungen zugeordnet werden.
+- Neuer Bereich Steuer mit monatlicher, quartalsweiser oder jährlicher Zahlung.
+- Versicherungen und Steuer fließen in Jahreskosten, Jahresvergleich und Jahresabschluss ein.
