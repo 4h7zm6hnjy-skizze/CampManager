@@ -1,8 +1,7 @@
-CampManager v59
+CampManager v60
 
 Neu:
-- Mehrere Versicherungen pro Stellplatz.
-- Bestehende Einzelversicherung wird automatisch übernommen.
-- Schäden und Dokumente können Versicherungen zugeordnet werden.
-- Neuer Bereich Steuer mit monatlicher, quartalsweiser oder jährlicher Zahlung.
-- Versicherungen und Steuer fließen in Jahreskosten, Jahresvergleich und Jahresabschluss ein.
+- Ratenzahlungen als eigener Kostenbereich.
+- Felder: Für was, Preis monatlich, Startdatum, Ende der Ratenzahlung, Notiz.
+- Automatische Jahresberechnung nach aktiven Monaten.
+- Integration in Kostenübersicht, Jahresvergleich, Jahresabschluss und Backup.
