@@ -1,10 +1,10 @@
 'use strict';
-/* CampManager v61 service worker.
-   Preserves the current index.html and injects the v61 receipt/car-fix add-on.
+/* CampManager v62 service worker.
+   Preserves the current index.html and injects the v62 receipt/car-fix/PDF-attachments add-on.
    LocalStorage and IndexedDB are never modified here.
 */
 const CACHE_PREFIX = 'campmanager-';
-const CACHE_NAME = 'campmanager-v61-offline-20261009';
+const CACHE_NAME = 'campmanager-v62-offline-20261009';
 const REQUIRED = ['./index.html', './cost-receipts.js'];
 const OPTIONAL = [
   './', './manifest.webmanifest', './version.json',
@@ -41,7 +41,7 @@ async function injectAddon(response) {
   if (!type.includes('text/html')) return response;
 
   const html = await response.text();
-  const tag = '<script src="./cost-receipts.js?v=61"></script>';
+  const tag = '<script src="./cost-receipts.js?v=62"></script>';
   const transformed = html.includes('cost-receipts.js')
     ? html
     : (html.includes('</body>') ? html.replace('</body>', tag + '</body>') : html + tag);
