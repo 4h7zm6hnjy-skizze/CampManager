@@ -1,12 +1,23 @@
 {
-  "name":"CampManager",
-  "short_name":"CampManager",
-  "description":"Campingplatzverwaltung",
-  "start_url":"./",
-  "scope":"./",
-  "display":"standalone",
-  "background_color":"#f5f2ea",
-  "theme_color":"#173c29",
-  "orientation":"any",
-  "icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]
+  "name": "CampManager",
+  "short_name": "CampManager",
+  "description": "Campingplatzverwaltung mit Kosten, Rechnungsbelegen, Jahresabschluss, PDF/Druck, Backups und PWA-Updates",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f2ea",
+  "theme_color": "#173c29",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

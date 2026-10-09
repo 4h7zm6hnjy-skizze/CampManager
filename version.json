@@ -1,4 +1,6 @@
 {
-  "version": 60,
-  "name": "CampManager v60"
+  "version": 65,
+  "name": "CampManager v65",
+  "released": "2026-10-09",
+  "notes": "Jahresabschluss/PDF/Druck, Rechnungsbelege und PWA-Updateprüfung repariert"
 }
