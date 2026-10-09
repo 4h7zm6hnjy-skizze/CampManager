@@ -1,536 +1,249 @@
 'use strict';
-/* CampManager v62 add-on
-   - Rechnungen/Belege an allen Kostenstellen
-   - Kamera oder Mediathek
-   - Kfz-Tarif: Übernachtungen wählen nur die eine aktuelle Tarifstufe
+/* CampManager v63 add-on
+   FIX:
+   - Jahresabschluss öffnet wieder mit der originalen CampManager-Funktion.
+   - Frage nach Rechnungen/Dokumenten erst beim PDF-Speichern.
+   - Rechnungen/Belege werden direkt gespeichert, ohne Versicherungs-Umweg.
+   - Upload sichtbar in Kosten-Übersicht und in allen Kosten-Unterbereichen.
 */
 (() => {
-  if (window.__campmanagerV62Installed) return;
-  window.__campmanagerV62Installed = true;
+  if (window.__campmanagerV63Installed) return;
+  window.__campmanagerV63Installed = true;
 
-  const RECEIPT_LABELS = {
-    annualRent: 'Jahresmiete / Jahresbeitrag',
-    deposit: 'Kaution',
-    insurance: 'Versicherung',
-    taxes: 'Steuer',
-    installments: 'Ratenzahlung',
-    electricity: 'Strom',
-    travel: 'Hin- & Rückfahrten',
-    costs: 'Jahresbeitrag / Reparatur / Neuanschaffung / Sonstiges',
-    petroleum: 'Petroleum',
-    gasbottles: 'Gas'
+  const SECTION_LABELS = {
+    annualRent:'Jahresmiete / Jahresbeitrag',
+    deposit:'Kaution',
+    insurance:'Versicherung',
+    taxes:'Steuer',
+    installments:'Ratenzahlung',
+    electricity:'Strom / Zählermiete',
+    travel:'Hin- & Rückfahrten',
+    repairs:'Reparaturen',
+    purchases:'Neuanschaffungen',
+    other:'Sonstiges',
+    petroleum:'Petroleum',
+    gasbottles:'Gas / Gasflaschen',
+    gascheck:'Gasprüfung',
+    contracts:'Verträge'
   };
 
-  function escLocal(value) {
-    if (typeof esc === 'function') return esc(value);
-    return String(value ?? '').replace(/[&<>"']/g, c => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[c]));
+  const TAB_TO_SECTION = {
+    annualRent:'annualRent', deposit:'deposit', insurance:'insurance', taxes:'taxes',
+    installments:'installments', electricity:'electricity', travel:'travel',
+    petroleum:'petroleum', gasbottles:'gasbottles'
+  };
+
+  function E(v){
+    try { if (typeof esc === 'function') return esc(v); } catch {}
+    return String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function F(v){
+    try { if (typeof fmt === 'function') return fmt(v); } catch {}
+    if(!v)return '–'; const d=new Date(String(v).slice(0,10)+'T12:00:00');
+    return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('de-DE');
+  }
+  function Y(){ try{return String(yearNow())}catch{return String(new Date().getFullYear())} }
+  function T(){ try{return today()}catch{return new Date().toISOString().slice(0,10)} }
+  function P(){ try{return place()}catch{return null} }
+
+  function receiptDocs(section){
+    const p=P(); if(!p)return [];
+    return (p.documents||[]).filter(d=>d.category==='cost_receipt'&&d.costSection===section)
+      .sort((a,b)=>String(b.date||b.createdAt||'').localeCompare(String(a.date||a.createdAt||'')));
   }
 
-  function formatDate(value) {
-    if (typeof fmt === 'function') return fmt(value);
-    if (!value) return '–';
-    const d = new Date(value + 'T12:00:00');
-    return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleDateString('de-DE');
+  function receiptCount(section){ return receiptDocs(section).length; }
+
+  function receiptCards(section){
+    const docs=receiptDocs(section);
+    if(!docs.length)return '<div class="empty">Noch keine Rechnung / kein Beleg gespeichert.</div>';
+    return `<div class="docgrid">${docs.map(d=>`<div class="doc">
+      <div class="docthumb" data-docopen="${E(d.id)}">${String(d.mime||'').startsWith('image/')?'🧾':'📄'}</div>
+      <div class="rowtitle" style="margin-top:8px">${E(d.title||d.filename||'Rechnung / Beleg')}</div>
+      <div class="rowsub">${F(d.date)}${d.year?' · '+E(d.year):''}</div>
+      ${d.note?`<div class="rowsub">${E(d.note)}</div>`:''}
+      <div class="toolbar"><button class="mini" type="button" data-docopen="${E(d.id)}">Öffnen</button><button class="mini" type="button" data-costreceipt-edit="${E(d.id)}">✎</button><button class="mini danger" type="button" data-costreceipt-del="${E(d.id)}">×</button></div>
+    </div>`).join('')}</div>`;
   }
 
-  function receiptDocs(section) {
-    try {
-      return (place().documents || [])
-        .filter(x => x.category === 'cost_receipt' && x.costSection === section)
-        .sort((a,b) => String(b.date || b.createdAt || '').localeCompare(String(a.date || a.createdAt || '')));
-    } catch {
-      return [];
+  function receiptBlock(section){
+    const label=SECTION_LABELS[section]; if(!label)return '';
+    return `<div class="divider"></div><div class="card full cm-cost-receipts" data-cm-receipts="${E(section)}">
+      <h2>🧾 Rechnungen & Belege – ${E(label)}</h2>
+      <div class="rowsub">${receiptCount(section)} Beleg(e) gespeichert</div>
+      <div class="toolbar">
+        <button class="btn" type="button" data-costreceipt-camera="${E(section)}">📷 Foto aufnehmen</button>
+        <button class="btn sec" type="button" data-costreceipt-library="${E(section)}">🖼️ Aus Mediathek</button>
+        <button class="btn sec" type="button" data-costreceipt-file="${E(section)}">📁 Datei / PDF</button>
+      </div>${receiptCards(section)}</div>`;
+  }
+
+  function overviewMap(){
+    return ['annualRent','deposit','insurance','taxes','installments','repairs','purchases','other','electricity','travel','petroleum','gasbottles','gascheck','contracts'];
+  }
+
+  function injectOverviewButtons(host){
+    const cards=[...host.querySelectorAll('.costdetail')];
+    overviewMap().forEach((section,i)=>{
+      const card=cards[i]; if(!card||card.querySelector('[data-costreceipt-overview]'))return;
+      const wrap=document.createElement('div'); wrap.className='toolbar'; wrap.style.marginTop='10px'; wrap.dataset.costreceiptOverview=section;
+      wrap.innerHTML=`<button class="mini" type="button" data-costreceipt-camera="${E(section)}">📷 Rechnung</button><button class="mini" type="button" data-costreceipt-library="${E(section)}">🖼️ Mediathek</button><span class="costpill">${receiptCount(section)} Beleg(e)</span>`;
+      card.appendChild(wrap);
+    });
+  }
+
+  function injectReceiptUI(){
+    const host=document.querySelector('#v-costs'); if(!host)return;
+    let active=''; try{active=tab?.costs||''}catch{}
+    host.querySelectorAll('.cm-cost-receipts').forEach(n=>n.remove());
+    if(active==='overview'){
+      injectOverviewButtons(host); return;
     }
-  }
-
-  function receiptBlock(section) {
-    const label = RECEIPT_LABELS[section];
-    if (!label) return '';
-    const docs = receiptDocs(section);
-    const cards = docs.length
-      ? `<div class="docgrid">${docs.map(x => `
-          <div class="doc">
-            <div class="docthumb" data-docopen="${escLocal(x.id)}">🧾</div>
-            <div class="rowtitle" style="margin-top:8px">${escLocal(x.title || (label + ' Rechnung'))}</div>
-            <div class="rowsub">${formatDate(x.date)}${x.year ? ' · ' + escLocal(x.year) : ''}</div>
-            ${x.note ? `<div class="rowsub">${escLocal(x.note)}</div>` : ''}
-            <div class="toolbar">
-              <button class="mini" type="button" data-docopen="${escLocal(x.id)}">Öffnen</button>
-              <button class="mini" type="button" data-costreceipt-edit="${escLocal(x.id)}">✎</button>
-              <button class="mini danger" type="button" data-costreceipt-del="${escLocal(x.id)}">×</button>
-            </div>
-          </div>`).join('')}</div>`
-      : `<div class="empty">Noch keine Rechnung oder kein Beleg für diesen Kostenbereich gespeichert.</div>`;
-
-    return `
-      <div class="divider"></div>
-      <div class="card full cm-cost-receipts" data-cm-cost-receipts="${escLocal(section)}">
-        <h2>🧾 Rechnungen & Belege – ${escLocal(label)}</h2>
-        <p>Rechnung direkt fotografieren oder ein vorhandenes Bild aus der Mediathek auswählen.</p>
-        <div class="toolbar">
-          <button class="btn" type="button" data-costreceipt-camera="${escLocal(section)}">📷 Foto aufnehmen</button>
-          <button class="btn sec" type="button" data-costreceipt-library="${escLocal(section)}">🖼️ Aus Mediathek</button>
-        </div>
-        ${cards}
-      </div>`;
-  }
-
-  function currentCostSection() {
-    try { return tab && tab.costs ? tab.costs : ''; }
-    catch { return ''; }
-  }
-
-  function appendReceiptBlock() {
-    const section = currentCostSection();
-    if (!RECEIPT_LABELS[section]) return;
-    const host = document.querySelector('#v-costs');
-    if (!host) return;
-    const old = host.querySelector('.cm-cost-receipts');
-    if (old && old.dataset.cmCostReceipts === section) return;
-    old?.remove();
-    host.insertAdjacentHTML('beforeend', receiptBlock(section));
-
-    if (section === 'annualRent') {
-      const notices = host.querySelectorAll('.notice.good');
-      if (notices.length) {
-        notices[0].innerHTML =
-          '<b>Jahresmiete:</b> Die Personenberechnung bleibt unverändert. ' +
-          'Beim <b>Auto</b> bestimmen die tatsächlichen Übernachtungen ausschließlich die aktuelle Kfz-Tarifstufe. ' +
-          'Berechnet wird <b>Anzahl Autos × Tarif dieser Stufe</b>. Das Auto wird nicht unter Personen abgerechnet.';
-      }
-    }
-  }
-
-  async function saveReceiptFile(file, section) {
-    if (!file) return;
-    const label = RECEIPT_LABELS[section];
-    if (!label) return;
-    if (!String(file.type || '').startsWith('image/')) {
-      toast?.('Bitte ein Foto oder Bild auswählen');
+    if(active==='costs'){
+      host.insertAdjacentHTML('beforeend',`<div class="notice"><b>Rechnungen & Belege:</b> Die drei manuellen Kostenarten werden getrennt gespeichert.</div>${receiptBlock('repairs')}${receiptBlock('purchases')}${receiptBlock('other')}`);
       return;
     }
-    try {
-      await saveInsuranceFile(file, {
-        category: 'cost_receipt',
-        costSection: section,
-        title: label + ' Rechnung',
-        date: typeof today === 'function' ? today() : new Date().toISOString().slice(0,10),
-        year: String(typeof yearNow === 'function' ? yearNow() : new Date().getFullYear())
-      });
-      if (typeof renderCosts === 'function') renderCosts();
-      setTimeout(appendReceiptBlock, 0);
-    } catch (err) {
-      console.error('Rechnung konnte nicht gespeichert werden', err);
-      toast?.('Rechnung konnte nicht gespeichert werden');
-    }
+    const section=TAB_TO_SECTION[active] || '';
+    if(section)host.insertAdjacentHTML('beforeend',receiptBlock(section));
   }
 
-  function pickReceipt(section, camera) {
-    if (!RECEIPT_LABELS[section]) return;
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.style.display = 'none';
-    if (camera) input.setAttribute('capture', 'environment');
+  async function saveReceiptFile(file,section){
+    const p=P(),label=SECTION_LABELS[section]; if(!p||!file||!label)return;
+    if(file.size>25*1024*1024){ try{toast('Datei zu groß (max. 25 MB)')}catch{} return; }
+    try{
+      const id=typeof uid==='function'?uid():(Date.now()+'-'+Math.random().toString(36).slice(2));
+      const blob=typeof compress==='function'?await compress(file):file;
+      if(typeof dbPut!=='function')throw new Error('Dokumentenspeicher nicht verfügbar');
+      await dbPut(id,blob);
+      let cloudPath='';
+      try{
+        if(typeof cloudReady==='function'&&cloudReady()&&typeof session!=='undefined'&&session?.access_token&&typeof uploadDocumentCloud==='function'){
+          cloudPath=await uploadDocumentCloud(id,blob);
+        }
+      }catch(err){ console.warn('Cloud-Beleg',err); }
+      const meta={id,category:'cost_receipt',costSection:section,title:label+' – Rechnung / Beleg',date:T(),year:Y(),mime:blob.type||file.type||'application/octet-stream',filename:file.name||'beleg',size:blob.size||file.size||0,cloudPath,createdAt:new Date().toISOString(),note:''};
+      p.documents||(p.documents=[]); p.documents.push(meta);
+      if(typeof save==='function')save(); else if(typeof persist==='function')persist();
+      try{toast('Rechnung / Beleg gespeichert')}catch{}
+      if(typeof renderCosts==='function')renderCosts(); setTimeout(injectReceiptUI,0);
+    }catch(err){ console.error('Beleg speichern',err); try{toast('Rechnung konnte nicht gespeichert werden')}catch{} }
+  }
+
+  function pickReceipt(section,mode){
+    if(!SECTION_LABELS[section])return;
+    const input=document.createElement('input'); input.type='file'; input.style.display='none';
+    input.accept=mode==='file'?'image/*,application/pdf':'image/*';
+    if(mode==='camera')input.setAttribute('capture','environment');
     document.body.appendChild(input);
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      input.remove();
-      if (file) await saveReceiptFile(file, section);
-    };
-    input.oncancel = () => input.remove();
-    input.click();
+    input.onchange=async()=>{const f=input.files?.[0];input.remove();if(f)await saveReceiptFile(f,section)};
+    input.oncancel=()=>input.remove(); input.click();
   }
 
-  function editReceipt(id) {
-    const doc = (place().documents || []).find(x => x.id === id && x.category === 'cost_receipt');
-    if (!doc) return;
-    const sectionLabel = RECEIPT_LABELS[doc.costSection] || 'Kosten';
-    modal('Rechnung bearbeiten',
-      `<form id="cmReceiptEditForm" data-id="${escLocal(id)}">
-        <div class="formgrid">
-          ${field('Titel','title',doc.title || (sectionLabel + ' Rechnung'),'text','required')}
-          ${field('Belegdatum','date',doc.date || today(),'date','required')}
-          ${field('Jahr','year',doc.year || yearNow(),'number','min="2000"')}
-          ${area('Notiz','note',doc.note || '')}
-        </div>
-      </form>`,
-      actions('cmReceiptEditForm')
-    );
+  function editReceipt(id){
+    const p=P(); if(!p)return; const d=(p.documents||[]).find(x=>x.id===id&&x.category==='cost_receipt'); if(!d)return;
+    const label=SECTION_LABELS[d.costSection]||'Kosten';
+    modal('Rechnung / Beleg bearbeiten',`<form id="cmReceiptEditForm" data-id="${E(id)}"><div class="formgrid">${field('Titel','title',d.title||(label+' – Rechnung / Beleg'),'text','required')}${field('Belegdatum','date',d.date||T(),'date','required')}${field('Jahr','year',d.year||Y(),'number','min="2000"')}${area('Notiz','note',d.note||'')}</div></form>`,actions('cmReceiptEditForm'));
   }
 
-  async function deleteReceipt(id) {
-    const doc = (place().documents || []).find(x => x.id === id && x.category === 'cost_receipt');
-    if (!doc) return;
-    if (!confirm('Rechnung / Beleg wirklich löschen?')) return;
-    try {
-      place().documents = (place().documents || []).filter(x => x.id !== id);
-      if (typeof dbDel === 'function') await dbDel(id).catch(() => {});
-      if (doc.cloudPath && typeof deleteDocumentCloud === 'function') {
-        deleteDocumentCloud(doc.cloudPath).catch(() => {});
-      }
-      save();
-      if (typeof renderCosts === 'function') renderCosts();
-      setTimeout(appendReceiptBlock, 0);
-      toast?.('Rechnung gelöscht');
-    } catch (err) {
-      console.error(err);
-      toast?.('Rechnung konnte nicht gelöscht werden');
-    }
+  async function deleteReceipt(id){
+    const p=P(); if(!p)return; const d=(p.documents||[]).find(x=>x.id===id&&x.category==='cost_receipt'); if(!d)return;
+    if(!confirm('Rechnung / Beleg wirklich löschen?'))return;
+    p.documents=(p.documents||[]).filter(x=>x.id!==id);
+    try{await dbDel(id)}catch{}
+    try{if(d.cloudPath&&typeof deleteDocumentCloud==='function')await deleteDocumentCloud(d.cloudPath)}catch{}
+    if(typeof save==='function')save(); else if(typeof persist==='function')persist();
+    if(typeof renderCosts==='function')renderCosts(); setTimeout(injectReceiptUI,0); try{toast('Beleg gelöscht')}catch{}
   }
 
-  // Kfz-Fix: Die tatsächlichen Übernachtungen wählen genau EINE Tarifstufe.
-  // Das Auto bleibt ein eigener Kostenposten und wird niemals als Person berechnet.
-  try {
-    const originalTieredRentBreakdown = tieredRentBreakdown;
-    tieredRentBreakdown = function(p, x) {
-      const b = originalTieredRentBreakdown(p, x);
-      const used = Math.max(0, Math.min(365, Number(b.used || 0)));
-      const index = used <= 0 ? -1 : used <= 90 ? 0 : used <= 180 ? 1 : 2;
-      const carCount = Math.max(0, Number(x?.carCount || 0));
-      const carRates = Array.isArray(b.carRates)
-        ? b.carRates.map(Number)
-        : [x?.carRate1, x?.carRate2, x?.carRate3].map(Number);
-      const previousCarCost = Number(b.carCost || 0);
-      const carTier = [0,0,0];
-      let carCost = 0;
-      if (index >= 0 && carCount > 0) {
-        carTier[index] = carCount;
-        carCost = carCount * Number(carRates[index] || 0);
-      }
-      b.carCount = carCount;
-      b.carTier = carTier;
-      b.carTierNights = carTier;
-      b.carPresenceNights = used;
-      b.carCost = carCost;
-      b.total = Number(b.total || 0) - previousCarCost + carCost;
-      return b;
-    };
-  } catch (err) {
-    console.warn('Kfz-Tarif-Fix konnte nicht installiert werden', err);
+  // ---- Jahresabschluss: Öffnen NICHT abfangen. Original bleibt vollständig aktiv. ----
+  let pendingPdfChoice=false;
+  function annualDocuments(year){
+    const y=String(year||''),p=P(); if(!p)return [];
+    return (p.documents||[]).filter(d=>String(d.year||'')===y||String(d.date||'').startsWith(y)||String(d.createdAt||'').startsWith(y))
+      .sort((a,b)=>String(a.date||a.createdAt||'').localeCompare(String(b.date||b.createdAt||'')));
+  }
+  function kind(d){
+    try{if(typeof docLabel==='function')return docLabel(d.category)}catch{}
+    return d.category==='cost_receipt'?'Rechnung / Beleg':d.category==='insurance'?'Versicherungsdokument':d.category==='insurance_claim'?'Schadenfoto':'Dokument';
+  }
+  function askPdfChoice(){
+    const docs=annualDocuments(typeof closingYear!=='undefined'?closingYear:Y());
+    pendingPdfChoice=true;
+    modal('Jahresabschluss speichern',`<div class="notice good"><b>Rechnungen & Dokumente</b><br>Sollen alle Rechnungen und Dokumente des gewählten Jahres mit in die PDF aufgenommen werden?</div><div class="card full"><h2>${docs.length} Dokument${docs.length===1?'':'e'} gefunden</h2><p>Bei „Ja“ werden Fotos/Bilder als PDF-Seiten angehängt. Vorhandene PDF-Dateien werden – soweit möglich – mit ihren Seiten übernommen.</p></div>`,`<button class="btn" type="button" data-cm-pdfchoice="yes">Ja – mit Rechnungen & Dokumenten</button><button class="btn sec" type="button" data-cm-pdfchoice="no">Nein – nur Jahresabschluss</button><button class="btn sec" type="button" data-close>Abbrechen</button>`);
   }
 
-  // Kategorie im zentralen Dokumentbereich verfügbar machen.
-  try {
-    if (Array.isArray(DOCCAT) && !DOCCAT.some(x => x?.[0] === 'cost_receipt')) {
-      DOCCAT.splice(1, 0, ['cost_receipt', 'Rechnung / Beleg']);
-    }
-  } catch {}
-
-  // Versionsanzeige der Erweiterung.
-  const badge = document.querySelector('.ver');
-  if (badge) badge.textContent = 'v62';
-  document.title = 'CampManager v62';
-
-  // Nach jedem Neuaufbau der Kostenansicht den passenden Belegbereich ergänzen.
-  const costHost = document.querySelector('#v-costs');
-  if (costHost) {
-    const observer = new MutationObserver(() => setTimeout(appendReceiptBlock, 0));
-    observer.observe(costHost, {childList:true, subtree:false});
-  }
-  setTimeout(appendReceiptBlock, 0);
-
-  document.addEventListener('click', e => {
-    const camera = e.target.closest('[data-costreceipt-camera]');
-    if (camera) {
-      e.preventDefault();
-      pickReceipt(camera.dataset.costreceiptCamera, true);
-      return;
-    }
-    const library = e.target.closest('[data-costreceipt-library]');
-    if (library) {
-      e.preventDefault();
-      pickReceipt(library.dataset.costreceiptLibrary, false);
-      return;
-    }
-    const edit = e.target.closest('[data-costreceipt-edit]');
-    if (edit) {
-      e.preventDefault();
-      editReceipt(edit.dataset.costreceiptEdit);
-      return;
-    }
-    const del = e.target.closest('[data-costreceipt-del]');
-    if (del) {
-      e.preventDefault();
-      deleteReceipt(del.dataset.costreceiptDel);
-    }
-  }, true);
-
-  document.addEventListener('submit', e => {
-    const form = e.target;
-    if (!(form instanceof HTMLFormElement) || form.id !== 'cmReceiptEditForm') return;
-    e.preventDefault();
-    const id = form.dataset.id;
-    const doc = (place().documents || []).find(x => x.id === id && x.category === 'cost_receipt');
-    if (!doc) return;
-    const data = Object.fromEntries(new FormData(form).entries());
-    doc.title = data.title || doc.title;
-    doc.date = data.date || doc.date;
-    doc.year = data.year || doc.year;
-    doc.note = data.note || '';
-    closeModal();
-    save();
-    if (typeof renderCosts === 'function') renderCosts();
-    setTimeout(appendReceiptBlock, 0);
-    toast?.('Rechnung aktualisiert');
-  }, true);
-
-
-  // Jahresabschluss: vor dem Öffnen fragen, ob Rechnungen und Dokumente
-  // des gewählten Jahres als echte PDF-Anlagen eingebunden werden sollen.
-  let annualIncludeDocuments = null;
-
-  function annualDocuments(year) {
-    const y = String(year || '');
-    try {
-      return (place().documents || [])
-        .filter(d => {
-          const dy = String(d.year || '');
-          const date = String(d.date || '');
-          const created = String(d.createdAt || '');
-          return dy === y || date.startsWith(y) || created.startsWith(y);
-        })
-        .sort((a,b) => String(a.date || a.createdAt || '').localeCompare(String(b.date || b.createdAt || '')));
-    } catch {
-      return [];
-    }
-  }
-
-  function docKindLabel(d) {
-    try {
-      if (typeof docLabel === 'function') return docLabel(d.category);
-    } catch {}
-    if (d.category === 'cost_receipt') return 'Rechnung / Beleg';
-    if (d.category === 'insurance') return 'Versicherungsdokument';
-    if (d.category === 'insurance_claim') return 'Schadenfoto';
-    return 'Dokument';
-  }
-
-  function askAnnualDocumentChoice() {
-    const docs = annualDocuments(closingYear);
-    const count = docs.length;
-    modal('Jahresabschluss PDF', `
-      <div class="notice good"><b>Rechnungen & Dokumente</b><br>
-      Sollen alle Rechnungen und Dokumente für <b>${escLocal(closingYear)}</b> mit in die PDF eingebunden werden?</div>
-      <div class="card full"><h2>${count} Dokument${count === 1 ? '' : 'e'} gefunden</h2>
-      <p>Bei „Ja“ werden Bilder als eigene PDF-Seiten angehängt. Bereits vorhandene PDF-Dokumente werden mit ihren Originalseiten übernommen.</p></div>`,
-      `<button class="btn" type="button" data-annual-doc-choice="yes">Ja – mit Rechnungen & Dokumenten</button>
-       <button class="btn sec" type="button" data-annual-doc-choice="no">Nein – nur Jahresabschluss</button>
-       <button class="btn sec" type="button" data-close>Abbrechen</button>`
-    );
-  }
-
-  function openAnnualAfterChoice(includeDocs) {
-    annualIncludeDocuments = !!includeDocs;
-    closeModal();
-    openPdf();
-    const c = document.querySelector('#reportContent');
-    if (c) {
-      const count = annualDocuments(closingYear).length;
-      c.insertAdjacentHTML('afterbegin', `<div class="notice ${includeDocs ? 'good' : ''}" style="margin-bottom:14px"><b>PDF-Anlagen:</b> ${includeDocs ? `${count} Rechnung(en) / Dokument(e) werden beim Speichern eingebunden.` : 'Rechnungen und Dokumente werden nicht eingebunden.'}</div>`);
-    }
-  }
-
-  function loadPdfLib() {
-    if (window.PDFLib?.PDFDocument) return Promise.resolve(window.PDFLib);
-    if (window.__cmPdfLibPromise) return window.__cmPdfLibPromise;
-    const urls = [
-      'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
-      'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js'
-    ];
-    window.__cmPdfLibPromise = new Promise((resolve,reject) => {
-      let index = 0;
-      const next = () => {
-        if (window.PDFLib?.PDFDocument) return resolve(window.PDFLib);
-        if (index >= urls.length) return reject(new Error('PDF-Bibliothek konnte nicht geladen werden'));
-        const script = document.createElement('script');
-        script.src = urls[index++];
-        script.async = true;
-        script.onload = () => window.PDFLib?.PDFDocument ? resolve(window.PDFLib) : next();
-        script.onerror = () => { script.remove(); next(); };
-        document.head.appendChild(script);
-      };
-      next();
-    }).catch(err => { window.__cmPdfLibPromise = null; throw err; });
+  function loadPdfLib(){
+    if(window.PDFLib?.PDFDocument)return Promise.resolve(window.PDFLib);
+    if(window.__cmPdfLibPromise)return window.__cmPdfLibPromise;
+    const urls=['https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js','https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js'];
+    window.__cmPdfLibPromise=new Promise((resolve,reject)=>{let i=0;const next=()=>{if(window.PDFLib?.PDFDocument)return resolve(window.PDFLib);if(i>=urls.length)return reject(new Error('PDF-Bibliothek nicht verfügbar'));const s=document.createElement('script');s.src=urls[i++];s.async=true;s.onload=()=>window.PDFLib?.PDFDocument?resolve(window.PDFLib):next();s.onerror=()=>{s.remove();next()};document.head.appendChild(s)};next()}).catch(e=>{window.__cmPdfLibPromise=null;throw e});
     return window.__cmPdfLibPromise;
   }
+  async function getBlob(meta){
+    let b=null;try{b=await dbGet(meta.id)}catch{}
+    if(!b&&meta.cloudPath&&typeof downloadDocumentCloud==='function'){try{b=await downloadDocumentCloud(meta.cloudPath);if(b)await dbPut(meta.id,b).catch(()=>{})}catch(e){console.warn(e)}}
+    return b;
+  }
+  async function imageForPdf(blob){
+    const t=String(blob?.type||'').toLowerCase(); if(t.includes('jpeg')||t.includes('jpg')||t.includes('png'))return blob;
+    if(!t.startsWith('image/'))return blob;
+    const bmp=await createImageBitmap(blob);try{const max=2200,scale=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);return await new Promise((res,rej)=>c.toBlob(x=>x?res(x):rej(new Error('Bildkonvertierung fehlgeschlagen')),'image/jpeg',.9))}finally{bmp.close?.()}
+  }
+  function clean(v){return String(v??'').replace(/[\u{1F300}-\u{1FAFF}]/gu,'').replace(/[\r\n\t]+/g,' ').trim()}
 
-  async function getAnnualDocumentBlob(meta) {
-    let blob = null;
-    try { blob = await dbGet(meta.id); } catch {}
-    if (!blob && meta?.cloudPath && typeof downloadDocumentCloud === 'function') {
-      try {
-        blob = await downloadDocumentCloud(meta.cloudPath);
-        if (blob) await dbPut(meta.id, blob).catch(() => {});
-      } catch (err) { console.warn('Dokument aus Cloud', err); }
-    }
-    return blob;
+  async function buildWithDocs(p,year){
+    if(typeof buildAnnualPdfBlob!=='function')throw new Error('Jahresabschluss-PDF-Funktion fehlt');
+    const L=await loadPdfLib(),{PDFDocument,StandardFonts,rgb}=L,base=buildAnnualPdfBlob(p,year),out=await PDFDocument.load(await base.arrayBuffer()),regular=await out.embedFont(StandardFonts.Helvetica),bold=await out.embedFont(StandardFonts.HelveticaBold),docs=annualDocuments(year),A4=[595.28,841.89];
+    if(docs.length){const cover=out.addPage(A4);cover.drawText('Rechnungen und Dokumente',{x:42,y:790,size:21,font:bold,color:rgb(.08,.16,.11)});cover.drawText(`Jahresabschluss ${year} - ${docs.length} Anlage${docs.length===1?'':'n'}`,{x:42,y:758,size:12,font:regular});let yy=720;for(let i=0;i<docs.length;i++){if(yy<60){break}cover.drawText(`${i+1}. ${clean(docs[i].title||docs[i].filename||kind(docs[i])).slice(0,80)}`,{x:52,y:yy,size:9,font:regular,maxWidth:490});yy-=15}}
+    let included=0,missing=0;
+    for(const meta of docs){const b=await getBlob(meta);if(!b){const pg=out.addPage(A4);pg.drawText('Anlage nicht verfügbar',{x:42,y:790,size:18,font:bold});pg.drawText(clean(meta.title||meta.filename||kind(meta)),{x:42,y:755,size:11,font:regular,maxWidth:510});missing++;continue}const mime=String(b.type||meta.mime||'').toLowerCase(),fn=String(meta.filename||'').toLowerCase();try{if(mime.includes('pdf')||fn.endsWith('.pdf')){const src=await PDFDocument.load(await b.arrayBuffer(),{ignoreEncryption:true}),pages=await out.copyPages(src,src.getPageIndices());pages.forEach(pg=>out.addPage(pg));included++}else if(mime.startsWith('image/')){const ib=await imageForPdf(b),bytes=await ib.arrayBuffer(),img=String(ib.type||'').includes('png')?await out.embedPng(bytes):await out.embedJpg(bytes),pg=out.addPage(A4);pg.drawText(clean(meta.title||meta.filename||kind(meta)).slice(0,90),{x:42,y:808,size:11,font:bold,maxWidth:510});pg.drawText(`${clean(kind(meta))} - ${clean(F(meta.date))}`,{x:42,y:790,size:8,font:regular});const maxW=511,maxH=725,scale=Math.min(maxW/img.width,maxH/img.height),w=img.width*scale,h=img.height*scale;pg.drawImage(img,{x:(A4[0]-w)/2,y:45+(maxH-h)/2,width:w,height:h});included++}else{missing++}}catch(e){console.warn('Anlage',e);missing++}}
+    return {blob:new Blob([await out.save()],{type:'application/pdf'}),included,missing,total:docs.length};
+  }
+  async function deliverPdf(blob,name,title){
+    if(typeof File!=='undefined'&&navigator.share){const f=new File([blob],name,{type:'application/pdf'}),can=!navigator.canShare||navigator.canShare({files:[f]});if(can){try{await navigator.share({title,files:[f]});return}catch(e){if(e?.name==='AbortError')return}}}
+    const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);
+  }
+  async function saveWithDocs(){
+    const p=P(),y=typeof closingYear!=='undefined'?closingYear:Y(); if(!p)return;
+    const docs=annualDocuments(y); if(!docs.length){try{toast('Keine Dokumente gefunden – normale PDF wird erstellt')}catch{};return saveAnnualPdf()}
+    try{try{toast(`PDF mit ${docs.length} Anlage${docs.length===1?'':'n'} wird erstellt …`)}catch{};const r=await buildWithDocs(p,y),base=(typeof annualPdfFilename==='function'?annualPdfFilename(p,y):`CampManager-Jahresabschluss-${y}.pdf`).replace(/\.pdf$/i,''),name=base+'-mit-Rechnungen-und-Dokumenten.pdf';await deliverPdf(r.blob,name,`CampManager Jahresabschluss ${y} mit Anlagen`);try{toast(r.missing?`PDF erstellt: ${r.included} eingebunden, ${r.missing} nicht verfügbar`:`PDF mit ${r.included} Anlagen erstellt`)}catch{}}catch(err){console.error(err);if(confirm('Dokumente konnten nicht eingebunden werden. Jahresabschluss ohne Anlagen speichern?'))saveAnnualPdf()}
   }
 
-  async function imageBlobForPdf(blob) {
-    const type = String(blob?.type || '').toLowerCase();
-    if (type.includes('jpeg') || type.includes('jpg') || type.includes('png')) return blob;
-    if (!type.startsWith('image/')) return blob;
-    const bmp = await createImageBitmap(blob);
-    try {
-      const max = 2200, scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
-      const w = Math.max(1, Math.round(bmp.width * scale));
-      const h = Math.max(1, Math.round(bmp.height * scale));
-      const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
-      return await new Promise((resolve,reject) => canvas.toBlob(b => b ? resolve(b) : reject(new Error('Bildkonvertierung fehlgeschlagen')), 'image/jpeg', 0.9));
-    } finally { bmp.close?.(); }
-  }
-
-  function cleanPdfText(value) {
-    return String(value ?? '').replace(/[\u{1F300}-\u{1FAFF}]/gu, '').replace(/[\r\n\t]+/g, ' ').trim();
-  }
-
-  async function buildAnnualPdfWithDocuments(p, year) {
-    const PDFLib = await loadPdfLib();
-    const { PDFDocument, StandardFonts, rgb } = PDFLib;
-    const baseBlob = buildAnnualPdfBlob(p, year);
-    const out = await PDFDocument.load(await baseBlob.arrayBuffer());
-    const regular = await out.embedFont(StandardFonts.Helvetica);
-    const bold = await out.embedFont(StandardFonts.HelveticaBold);
-    const docs = annualDocuments(year);
-    const A4 = [595.28, 841.89];
-
-    const addTitlePage = (meta, extra='') => {
-      const page = out.addPage(A4);
-      page.drawText('Anlage zum Jahresabschluss', {x:42,y:790,size:20,font:bold,color:rgb(0.08,0.16,0.11)});
-      page.drawText(cleanPdfText(meta.title || meta.filename || docKindLabel(meta)), {x:42,y:750,size:15,font:bold,maxWidth:510});
-      page.drawText('Art: ' + cleanPdfText(docKindLabel(meta)), {x:42,y:720,size:10,font:regular});
-      page.drawText('Datum: ' + cleanPdfText(formatDate(meta.date || '')), {x:42,y:702,size:10,font:regular});
-      if (meta.filename) page.drawText('Datei: ' + cleanPdfText(meta.filename), {x:42,y:684,size:10,font:regular,maxWidth:510});
-      if (extra) page.drawText(cleanPdfText(extra), {x:42,y:650,size:10,font:regular,maxWidth:510,lineHeight:14});
-      return page;
-    };
-
-    if (docs.length) {
-      const cover = out.addPage(A4);
-      cover.drawText('Rechnungen und Dokumente', {x:42,y:790,size:21,font:bold,color:rgb(0.08,0.16,0.11)});
-      cover.drawText(`Jahresabschluss ${year} - ${docs.length} Anlage${docs.length===1?'':'n'}`, {x:42,y:756,size:12,font:regular});
-      let y = 720;
-      docs.forEach((d,i) => {
-        if (y < 70) return;
-        cover.drawText(`${i+1}. ${cleanPdfText(d.title || d.filename || docKindLabel(d)).slice(0,75)}`, {x:52,y,size:9,font:regular,maxWidth:490});
-        y -= 15;
-      });
+  // Render-Wrapper statt nur MutationObserver: Belegbereich kommt zuverlässig nach jedem Kosten-Neuaufbau.
+  try{
+    if(typeof renderCosts==='function'){
+      const original=renderCosts;
+      renderCosts=function(...args){const r=original.apply(this,args);setTimeout(injectReceiptUI,0);return r};
     }
+  }catch(e){console.warn('renderCosts wrapper',e)}
+  const host=document.querySelector('#v-costs'); if(host)new MutationObserver(()=>setTimeout(injectReceiptUI,0)).observe(host,{childList:true,subtree:false});
 
-    let included = 0, missing = 0;
-    for (const meta of docs) {
-      const blob = await getAnnualDocumentBlob(meta);
-      if (!blob) {
-        addTitlePage(meta, 'Die gespeicherte Datei war auf diesem Gerät und in der Cloud nicht verfügbar.');
-        missing++;
-        continue;
-      }
-      const mime = String(blob.type || meta.mime || '').toLowerCase();
-      const filename = String(meta.filename || '').toLowerCase();
-      try {
-        if (mime.includes('pdf') || filename.endsWith('.pdf')) {
-          addTitlePage(meta, 'Das folgende PDF-Dokument wurde im Original angehängt.');
-          const source = await PDFDocument.load(await blob.arrayBuffer(), {ignoreEncryption:true});
-          const copied = await out.copyPages(source, source.getPageIndices());
-          copied.forEach(page => out.addPage(page));
-          included++;
-        } else if (mime.startsWith('image/') || /\.(jpe?g|png|webp|heic|heif)$/i.test(filename)) {
-          const imgBlob = await imageBlobForPdf(blob);
-          const bytes = await imgBlob.arrayBuffer();
-          const imgType = String(imgBlob.type || '').toLowerCase();
-          const image = imgType.includes('png') ? await out.embedPng(bytes) : await out.embedJpg(bytes);
-          const page = out.addPage(A4);
-          const title = cleanPdfText(meta.title || meta.filename || docKindLabel(meta));
-          page.drawText(title.slice(0,90), {x:42,y:808,size:11,font:bold,maxWidth:510});
-          page.drawText(`${cleanPdfText(docKindLabel(meta))} - ${cleanPdfText(formatDate(meta.date || ''))}`, {x:42,y:790,size:8,font:regular});
-          const maxW=511, maxH=725, scale=Math.min(maxW/image.width,maxH/image.height);
-          const w=image.width*scale,h=image.height*scale;
-          page.drawImage(image,{x:(A4[0]-w)/2,y:45+(maxH-h)/2,width:w,height:h});
-          included++;
-        } else {
-          addTitlePage(meta, 'Dieser Dateityp kann nicht als sichtbare PDF-Seite eingebettet werden.');
-          missing++;
-        }
-      } catch (err) {
-        console.warn('Dokument konnte nicht eingebettet werden', meta, err);
-        addTitlePage(meta, 'Das Dokument konnte nicht eingebettet werden: ' + (err?.message || 'unbekannter Fehler'));
-        missing++;
-      }
-    }
+  document.addEventListener('click',e=>{
+    const cam=e.target.closest('[data-costreceipt-camera]');if(cam){e.preventDefault();e.stopPropagation();pickReceipt(cam.dataset.costreceiptCamera,'camera');return}
+    const lib=e.target.closest('[data-costreceipt-library]');if(lib){e.preventDefault();e.stopPropagation();pickReceipt(lib.dataset.costreceiptLibrary,'library');return}
+    const file=e.target.closest('[data-costreceipt-file]');if(file){e.preventDefault();e.stopPropagation();pickReceipt(file.dataset.costreceiptFile,'file');return}
+    const ed=e.target.closest('[data-costreceipt-edit]');if(ed){e.preventDefault();editReceipt(ed.dataset.costreceiptEdit);return}
+    const del=e.target.closest('[data-costreceipt-del]');if(del){e.preventDefault();deleteReceipt(del.dataset.costreceiptDel);return}
 
-    const bytes = await out.save();
-    return {blob:new Blob([bytes],{type:'application/pdf'}), included, missing, total:docs.length};
-  }
+    // Wichtig: #pdfBtn wird NICHT abgefangen. So öffnet der Jahresabschluss immer original.
+    const close=e.target.closest('[data-close]');if(close&&pendingPdfChoice)pendingPdfChoice=false;
+    const saveBtn=e.target.closest('#reportSaveBtn');
+    if(saveBtn&&!pendingPdfChoice){e.preventDefault();e.stopImmediatePropagation();askPdfChoice();return}
+    const choice=e.target.closest('[data-cm-pdfchoice]');
+    if(choice){e.preventDefault();e.stopImmediatePropagation();const yes=choice.dataset.cmPdfchoice==='yes';pendingPdfChoice=false;try{closeModal()}catch{};if(yes)saveWithDocs();else saveAnnualPdf();return}
+  },true);
 
-  async function shareOrDownloadPdf(blob, name, title) {
-    if (typeof File !== 'undefined' && navigator.share) {
-      const file = new File([blob], name, {type:'application/pdf'});
-      const can = !navigator.canShare || navigator.canShare({files:[file]});
-      if (can) {
-        try { await navigator.share({title, files:[file]}); return true; }
-        catch (e) { if (e?.name === 'AbortError') return true; console.warn('PDF teilen', e); }
-      }
-    }
-    const u = URL.createObjectURL(blob), a = document.createElement('a');
-    a.href = u; a.download = name; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(u), 60000);
-    return true;
-  }
+  document.addEventListener('submit',e=>{
+    const f=e.target;if(!(f instanceof HTMLFormElement)||f.id!=='cmReceiptEditForm')return;e.preventDefault();
+    const p=P(),d=(p?.documents||[]).find(x=>x.id===f.dataset.id&&x.category==='cost_receipt');if(!d)return;
+    const v=Object.fromEntries(new FormData(f).entries());d.title=v.title||d.title;d.date=v.date||d.date;d.year=v.year||d.year;d.note=v.note||'';
+    try{closeModal()}catch{};if(typeof save==='function')save();else if(typeof persist==='function')persist();if(typeof renderCosts==='function')renderCosts();try{toast('Rechnung aktualisiert')}catch{}
+  },true);
 
-  async function saveAnnualPdfWithDocuments() {
-    try {
-      const p = place();
-      const docs = annualDocuments(closingYear);
-      if (!docs.length) {
-        toast?.('Keine Rechnungen oder Dokumente für dieses Jahr gefunden - normale PDF wird erstellt');
-        return saveAnnualPdf();
-      }
-      toast?.(`PDF mit ${docs.length} Anlage${docs.length===1?'':'n'} wird erstellt …`);
-      const result = await buildAnnualPdfWithDocuments(p, closingYear);
-      const base = annualPdfFilename(p, closingYear).replace(/\.pdf$/i,'');
-      const name = base + '-mit-Rechnungen-und-Dokumenten.pdf';
-      await shareOrDownloadPdf(result.blob, name, `CampManager Jahresabschluss ${closingYear} mit Anlagen`);
-      if (result.missing) toast?.(`PDF erstellt: ${result.included} eingebunden, ${result.missing} nicht vollständig verfügbar`);
-      else toast?.(`PDF mit ${result.included} Anlagen erstellt`);
-    } catch (err) {
-      console.error('PDF mit Dokumenten', err);
-      const fallback = confirm('Rechnungen/Dokumente konnten nicht eingebunden werden. Jahresabschluss ohne Anlagen erstellen?');
-      if (fallback) saveAnnualPdf();
-      else toast?.('PDF-Erstellung abgebrochen');
-    }
-  }
+  // Dokumentkategorie im normalen Dokumentbereich ergänzen.
+  try{if(Array.isArray(DOCCAT)&&!DOCCAT.some(x=>x?.[0]==='cost_receipt'))DOCCAT.splice(1,0,['cost_receipt','Rechnung / Beleg'])}catch{}
 
-  // Diese Capture-Handler laufen vor den vorhandenen CampManager-Handlern.
-  document.addEventListener('click', e => {
-    const pdfOpen = e.target.closest('#pdfBtn');
-    if (pdfOpen) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      askAnnualDocumentChoice();
-      return;
-    }
-    const choice = e.target.closest('[data-annual-doc-choice]');
-    if (choice) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openAnnualAfterChoice(choice.dataset.annualDocChoice === 'yes');
-      return;
-    }
-    const saveBtn = e.target.closest('#reportSaveBtn');
-    if (saveBtn && annualIncludeDocuments === true) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      saveAnnualPdfWithDocuments();
-    }
-  }, true);
-
-  // Falls die Ansicht bereits offen ist, neu zeichnen, damit auch der Kfz-Fix sofort sichtbar ist.
-  try {
-    if (typeof renderCosts === 'function') renderCosts();
-  } catch {}
+  // Sichtbare Add-on-Version. APP_VERSION/Datenschlüssel bleiben unberührt, damit bestehende Daten sicher bleiben.
+  const badge=document.querySelector('.ver');if(badge)badge.textContent='v63';document.title='CampManager v63';
+  setTimeout(injectReceiptUI,0);
 })();
