@@ -1,8 +1,11 @@
 'use strict';
-/* CampManager v60: robust offline shell. Does not modify localStorage or IndexedDB. */
+/* CampManager v61 service worker.
+   Preserves the current index.html and injects the v61 receipt/car-fix add-on.
+   LocalStorage and IndexedDB are never modified here.
+*/
 const CACHE_PREFIX = 'campmanager-';
-const CACHE_NAME = 'campmanager-v60-offline-20261008';
-const REQUIRED = ['./index.html'];
+const CACHE_NAME = 'campmanager-v61-offline-20261009';
+const REQUIRED = ['./index.html', './cost-receipts.js'];
 const OPTIONAL = [
   './', './manifest.webmanifest', './version.json',
   './logo.jpg', './logo-fallback.jpg', './top-banner.jpg',
@@ -12,49 +15,71 @@ const OPTIONAL = [
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // Don't switch to this worker until the complete application HTML is stored.
     await cache.addAll(REQUIRED);
     await Promise.allSettled(OPTIONAL.map(url => cache.add(url)));
-    // CampManager has its own update banner: wait for user's update action.
+    // Activate the update immediately; the open page changes on the next reload/reopen.
+    await self.skipWaiting();
   })());
-});
-
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names
-      .filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
-      .map(name => caches.delete(name)));
+    await Promise.all(
+      names
+        .filter(name => name.startsWith(CACHE_PREFIX) && name !== CACHE_NAME)
+        .map(name => caches.delete(name))
+    );
     await self.clients.claim();
   })());
 });
 
+async function injectAddon(response) {
+  if (!response) return response;
+  const type = response.headers.get('content-type') || '';
+  // GitHub Pages can serve index.html as text/html; only transform HTML.
+  if (!type.includes('text/html')) return response;
+
+  const html = await response.text();
+  const tag = '<script src="./cost-receipts.js?v=61"></script>';
+  const transformed = html.includes('cost-receipts.js')
+    ? html
+    : (html.includes('</body>') ? html.replace('</body>', tag + '</body>') : html + tag);
+
+  const headers = new Headers(response.headers);
+  headers.set('Content-Type', 'text/html; charset=utf-8');
+  headers.delete('Content-Length');
+  return new Response(transformed, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 async function fetchNavigation(request) {
   const cache = await caches.open(CACHE_NAME);
   try {
-    const response = await fetch(request);
+    const response = await fetch(new Request(request, {cache:'no-store'}));
     if (response.ok) {
-      await cache.put(request, response.clone()).catch(() => {});
-      return response;
+      await cache.put('./index.html', response.clone()).catch(() => {});
+      return await injectAddon(response);
     }
-    return await cache.match(request) || await cache.match('./index.html') || response;
+    const cached = await cache.match('./index.html') || await cache.match(request);
+    return cached ? await injectAddon(cached) : response;
   } catch {
-    return await cache.match(request) || await cache.match('./index.html') ||
-      new Response('CampManager wurde noch nicht fuer die Offline-Nutzung gespeichert. Bitte einmal online oeffnen.', {
-        status: 503, headers: {'Content-Type': 'text/plain; charset=utf-8'}
-      });
+    const cached = await cache.match('./index.html') || await cache.match(request);
+    if (cached) return await injectAddon(cached);
+    return new Response(
+      'CampManager wurde noch nicht fuer die Offline-Nutzung gespeichert. Bitte einmal online oeffnen.',
+      {status:503, headers:{'Content-Type':'text/plain; charset=utf-8'}}
+    );
   }
 }
 
 async function fetchVersion(request) {
-  // Don't return an out-of-date version result when online.
   const cache = await caches.open(CACHE_NAME);
   try {
-    const response = await fetch(new Request(request, {cache: 'no-store'}));
+    const response = await fetch(new Request(request, {cache:'no-store'}));
     if (response.ok) await cache.put('./version.json', response.clone()).catch(() => {});
     return response;
   } catch {
@@ -80,6 +105,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
   if (url.pathname.endsWith('/version.json')) {
     event.respondWith(fetchVersion(request));
   } else if (request.mode === 'navigate' || /\/index\.html$/.test(url.pathname)) {

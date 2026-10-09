@@ -1,23 +1,42 @@
-CampManager v56 – Kfz-Tarif-Hotfix
+CampManager v61 – Update für den aktuellen v60-Stand
 
-Korrektur:
-- Das Auto ist ein eigener Kostenpunkt.
-- Die tatsächlichen Stellplatz-Übernachtungen bestimmen nur die Kfz-Tarifstufe:
-  0–90 / 91–180 / 181–365.
-- Berechnung: Anzahl Autos × Tarif der erreichten Stufe.
-- Das Auto wird NICHT unter Personen abgerechnet.
-- Die Personenauswahl beeinflusst die Kfz-Kosten nicht.
+Dieses Update ist so gebaut, dass deine aktuelle index.html unverändert bleibt.
+Dadurch gehen die neueren Funktionen der v60 nicht verloren.
 
-Beispiel:
-122 Übernachtungen + 1 Auto + Kfz-Tarif 91–180 = 80,00 €
-=> Auto = 1 × 80,00 € = 80,00 €.
+NEU:
+- Unter jeder Kostenstelle gibt es einen Bereich „Rechnungen & Belege“.
+- Rechnung direkt mit der Kamera fotografieren.
+- Vorhandenes Bild aus der iPhone-Mediathek auswählen.
+- Gespeicherte Rechnungen direkt öffnen, bearbeiten und löschen.
+- Rechnungen werden im bestehenden CampManager-Dokumentenspeicher abgelegt.
+- Damit werden sie auch vom vorhandenen Monatsbackup / Wiederherstellungssystem erfasst.
 
-Installation:
-1. sw.js und version.json in deinem GitHub-Projekt ersetzen.
-2. Web-App öffnen.
-3. Falls „Neue CampManager-Version verfügbar“ erscheint: Aktualisieren tippen.
-4. Falls nötig App einmal vollständig schließen und erneut öffnen.
+Kostenstellen mit Rechnungsbereich:
+- Jahresmiete / Jahresbeitrag
+- Kaution
+- Versicherungen
+- Steuer
+- Ratenzahlung
+- Strom
+- Hin- & Rückfahrten
+- allgemeine Kosten / Jahresbeitrag / Reparatur / Neuanschaffung / Sonstiges
+- Petroleum
+- Gas
 
-Hinweis:
-Der direkte GitHub-Schreibzugriff war beim Erstellen dieses Hotfixes mit HTTP 403 blockiert.
-Darum wird die Korrektur über den Service Worker auf die vorhandene v55 angewendet, ohne deine bestehenden Daten zu verändern.
+ZUSÄTZLICH KORRIGIERT:
+- Auto bleibt ein eigener Kostenpunkt.
+- Die tatsächlichen Übernachtungen bestimmen ausschließlich die Kfz-Tarifstufe.
+- Beispiel: 122 Übernachtungen = Tarifstufe 91–180.
+- Bei 1 Auto und 80 € Tarif werden genau 80 € berechnet.
+- Das Auto wird niemals als Person berechnet.
+- Die Nächte werden nicht mit dem Autotarif multipliziert.
+
+INSTALLATION AUF GITHUB:
+1. cost-receipts.js in das Hauptverzeichnis deines CampManager-Repositories hochladen.
+2. Die vorhandene sw.js durch die neue sw.js aus diesem Update ersetzen.
+3. index.html NICHT ersetzen.
+4. CampManager einmal vollständig schließen.
+5. Seite/App online neu öffnen und danach noch einmal neu laden bzw. erneut öffnen.
+
+Die neue Service-Worker-Datei lädt deine vorhandene index.html weiter und fügt die v61-Erweiterung automatisch hinzu.
+Bestehende CampManager-Daten in LocalStorage und IndexedDB werden nicht gelöscht.
