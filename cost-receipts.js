@@ -1,5 +1,5 @@
 'use strict';
-/* CampManager v63 add-on
+/* CampManager v64 add-on
    FIX:
    - Jahresabschluss öffnet wieder mit der originalen CampManager-Funktion.
    - Frage nach Rechnungen/Dokumenten erst beim PDF-Speichern.
@@ -7,8 +7,8 @@
    - Upload sichtbar in Kosten-Übersicht und in allen Kosten-Unterbereichen.
 */
 (() => {
-  if (window.__campmanagerV63Installed) return;
-  window.__campmanagerV63Installed = true;
+  if (window.__campmanagerV64Installed) return;
+  window.__campmanagerV64Installed = true;
 
   const SECTION_LABELS = {
     annualRent:'Jahresmiete / Jahresbeitrag',
@@ -125,7 +125,7 @@
       p.documents||(p.documents=[]); p.documents.push(meta);
       if(typeof save==='function')save(); else if(typeof persist==='function')persist();
       try{toast('Rechnung / Beleg gespeichert')}catch{}
-      if(typeof renderCosts==='function')renderCosts(); setTimeout(injectReceiptUI,0);
+      if(typeof renderCosts==='function')renderCosts(); setTimeout(injectReceiptUI,0);setTimeout(wireExportButtons,0);
     }catch(err){ console.error('Beleg speichern',err); try{toast('Rechnung konnte nicht gespeichert werden')}catch{} }
   }
 
@@ -155,58 +155,297 @@
     if(typeof renderCosts==='function')renderCosts(); setTimeout(injectReceiptUI,0); try{toast('Beleg gelöscht')}catch{}
   }
 
-  // ---- Jahresabschluss: Öffnen NICHT abfangen. Original bleibt vollständig aktiv. ----
-  let pendingPdfChoice=false;
+  // ---- Jahresabschluss: PDF UND Drucken fragen immer nach Rechnungen/Dokumenten. ----
+  let pendingExportChoice=false;
+  let pendingExportAction='';
+  let bypassExportPrompt=false;
+
+  // Originalfunktionen merken, damit "Nein" oder ein Fallback ohne erneute Rückfrage funktioniert.
+  const originalSaveAnnualPdf = (typeof saveAnnualPdf==='function') ? saveAnnualPdf : null;
+  const originalPrintAnnualReport = (typeof printAnnualReport==='function') ? printAnnualReport : null;
+
   function annualDocuments(year){
     const y=String(year||''),p=P(); if(!p)return [];
-    return (p.documents||[]).filter(d=>String(d.year||'')===y||String(d.date||'').startsWith(y)||String(d.createdAt||'').startsWith(y))
-      .sort((a,b)=>String(a.date||a.createdAt||'').localeCompare(String(b.date||b.createdAt||'')));
+    return (p.documents||[]).filter(d=>
+      String(d.year||'')===y ||
+      String(d.date||'').startsWith(y) ||
+      String(d.createdAt||'').startsWith(y)
+    ).sort((a,b)=>String(a.date||a.createdAt||'').localeCompare(String(b.date||b.createdAt||'')));
   }
+
   function kind(d){
     try{if(typeof docLabel==='function')return docLabel(d.category)}catch{}
-    return d.category==='cost_receipt'?'Rechnung / Beleg':d.category==='insurance'?'Versicherungsdokument':d.category==='insurance_claim'?'Schadenfoto':'Dokument';
+    return d.category==='cost_receipt'?'Rechnung / Beleg':
+      d.category==='insurance'?'Versicherungsdokument':
+      d.category==='insurance_claim'?'Schadenfoto':'Dokument';
   }
-  function askPdfChoice(){
-    const docs=annualDocuments(typeof closingYear!=='undefined'?closingYear:Y());
-    pendingPdfChoice=true;
-    modal('Jahresabschluss speichern',`<div class="notice good"><b>Rechnungen & Dokumente</b><br>Sollen alle Rechnungen und Dokumente des gewählten Jahres mit in die PDF aufgenommen werden?</div><div class="card full"><h2>${docs.length} Dokument${docs.length===1?'':'e'} gefunden</h2><p>Bei „Ja“ werden Fotos/Bilder als PDF-Seiten angehängt. Vorhandene PDF-Dateien werden – soweit möglich – mit ihren Seiten übernommen.</p></div>`,`<button class="btn" type="button" data-cm-pdfchoice="yes">Ja – mit Rechnungen & Dokumenten</button><button class="btn sec" type="button" data-cm-pdfchoice="no">Nein – nur Jahresabschluss</button><button class="btn sec" type="button" data-close>Abbrechen</button>`);
+
+  function exportYear(){
+    try{return typeof closingYear!=='undefined'?closingYear:Y()}catch{return Y()}
+  }
+
+  function callOriginalSave(){
+    if(!originalSaveAnnualPdf){try{toast('PDF-Funktion nicht verfügbar')}catch{};return}
+    bypassExportPrompt=true;
+    try{return originalSaveAnnualPdf()}finally{setTimeout(()=>{bypassExportPrompt=false},0)}
+  }
+
+  function callOriginalPrint(){
+    if(!originalPrintAnnualReport){try{toast('Druckfunktion nicht verfügbar')}catch{};return}
+    bypassExportPrompt=true;
+    try{return originalPrintAnnualReport()}finally{setTimeout(()=>{bypassExportPrompt=false},0)}
+  }
+
+  function askExportChoice(action){
+    if(pendingExportChoice)return;
+    pendingExportChoice=true;
+    pendingExportAction=action==='print'?'print':'pdf';
+    const docs=annualDocuments(exportYear());
+    const isPrint=pendingExportAction==='print';
+    const title=isPrint?'Jahresabschluss drucken':'Jahresabschluss als PDF';
+    const target=isPrint?'in den Druck':'in die PDF';
+    const iphoneHint=isPrint?'<p class="rowsub"><b>iPhone/iPad:</b> Bei „Ja“ wird die zusammengeführte PDF vorbereitet. Im anschließenden Teilen-Menü bitte „Drucken“ wählen.</p>':'';
+    modal(title,
+      `<div class="notice good"><b>Rechnungen & Dokumente</b><br>Sollen alle Rechnungen und Dokumente des gewählten Jahres mit ${target} aufgenommen werden?</div>
+       <div class="card full"><h2>${docs.length} Dokument${docs.length===1?'':'e'} gefunden</h2>
+       <p>„Ja“ fügt die verfügbaren Rechnungen, Fotos und PDF-Dokumente als Anlagen an den Jahresabschluss an.</p>${iphoneHint}</div>`,
+      `<button class="btn" type="button" data-cm-exportchoice="yes">Ja – mit Rechnungen & Dokumenten</button>
+       <button class="btn sec" type="button" data-cm-exportchoice="no">Nein – nur Jahresabschluss</button>
+       <button class="btn sec" type="button" data-cm-exportchoice="cancel">Abbrechen</button>`
+    );
   }
 
   function loadPdfLib(){
     if(window.PDFLib?.PDFDocument)return Promise.resolve(window.PDFLib);
     if(window.__cmPdfLibPromise)return window.__cmPdfLibPromise;
-    const urls=['https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js','https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js'];
-    window.__cmPdfLibPromise=new Promise((resolve,reject)=>{let i=0;const next=()=>{if(window.PDFLib?.PDFDocument)return resolve(window.PDFLib);if(i>=urls.length)return reject(new Error('PDF-Bibliothek nicht verfügbar'));const s=document.createElement('script');s.src=urls[i++];s.async=true;s.onload=()=>window.PDFLib?.PDFDocument?resolve(window.PDFLib):next();s.onerror=()=>{s.remove();next()};document.head.appendChild(s)};next()}).catch(e=>{window.__cmPdfLibPromise=null;throw e});
+    const urls=[
+      'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js',
+      'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js'
+    ];
+    window.__cmPdfLibPromise=new Promise((resolve,reject)=>{
+      let i=0;
+      const next=()=>{
+        if(window.PDFLib?.PDFDocument)return resolve(window.PDFLib);
+        if(i>=urls.length)return reject(new Error('PDF-Bibliothek nicht verfügbar'));
+        const el=document.createElement('script');
+        el.src=urls[i++];el.async=true;
+        el.onload=()=>window.PDFLib?.PDFDocument?resolve(window.PDFLib):next();
+        el.onerror=()=>{el.remove();next()};
+        document.head.appendChild(el)
+      };
+      next()
+    }).catch(e=>{window.__cmPdfLibPromise=null;throw e});
     return window.__cmPdfLibPromise;
   }
+
   async function getBlob(meta){
-    let b=null;try{b=await dbGet(meta.id)}catch{}
-    if(!b&&meta.cloudPath&&typeof downloadDocumentCloud==='function'){try{b=await downloadDocumentCloud(meta.cloudPath);if(b)await dbPut(meta.id,b).catch(()=>{})}catch(e){console.warn(e)}}
+    let b=null;
+    try{b=await dbGet(meta.id)}catch{}
+    if(!b&&meta.cloudPath&&typeof downloadDocumentCloud==='function'){
+      try{
+        b=await downloadDocumentCloud(meta.cloudPath);
+        if(b)await dbPut(meta.id,b).catch(()=>{})
+      }catch(e){console.warn(e)}
+    }
     return b;
   }
+
   async function imageForPdf(blob){
-    const t=String(blob?.type||'').toLowerCase(); if(t.includes('jpeg')||t.includes('jpg')||t.includes('png'))return blob;
+    const t=String(blob?.type||'').toLowerCase();
+    if(t.includes('jpeg')||t.includes('jpg')||t.includes('png'))return blob;
     if(!t.startsWith('image/'))return blob;
-    const bmp=await createImageBitmap(blob);try{const max=2200,scale=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale)),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);return await new Promise((res,rej)=>c.toBlob(x=>x?res(x):rej(new Error('Bildkonvertierung fehlgeschlagen')),'image/jpeg',.9))}finally{bmp.close?.()}
+    const bmp=await createImageBitmap(blob);
+    try{
+      const max=2200,scale=Math.min(1,max/Math.max(bmp.width,bmp.height));
+      const w=Math.max(1,Math.round(bmp.width*scale)),h=Math.max(1,Math.round(bmp.height*scale));
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(bmp,0,0,w,h);
+      return await new Promise((res,rej)=>c.toBlob(x=>x?res(x):rej(new Error('Bildkonvertierung fehlgeschlagen')),'image/jpeg',.9))
+    }finally{bmp.close?.()}
   }
-  function clean(v){return String(v??'').replace(/[\u{1F300}-\u{1FAFF}]/gu,'').replace(/[\r\n\t]+/g,' ').trim()}
+
+  function clean(v){
+    return String(v??'').replace(/[\u{1F300}-\u{1FAFF}]/gu,'').replace(/[\r\n\t]+/g,' ').trim()
+  }
 
   async function buildWithDocs(p,year){
     if(typeof buildAnnualPdfBlob!=='function')throw new Error('Jahresabschluss-PDF-Funktion fehlt');
-    const L=await loadPdfLib(),{PDFDocument,StandardFonts,rgb}=L,base=buildAnnualPdfBlob(p,year),out=await PDFDocument.load(await base.arrayBuffer()),regular=await out.embedFont(StandardFonts.Helvetica),bold=await out.embedFont(StandardFonts.HelveticaBold),docs=annualDocuments(year),A4=[595.28,841.89];
-    if(docs.length){const cover=out.addPage(A4);cover.drawText('Rechnungen und Dokumente',{x:42,y:790,size:21,font:bold,color:rgb(.08,.16,.11)});cover.drawText(`Jahresabschluss ${year} - ${docs.length} Anlage${docs.length===1?'':'n'}`,{x:42,y:758,size:12,font:regular});let yy=720;for(let i=0;i<docs.length;i++){if(yy<60){break}cover.drawText(`${i+1}. ${clean(docs[i].title||docs[i].filename||kind(docs[i])).slice(0,80)}`,{x:52,y:yy,size:9,font:regular,maxWidth:490});yy-=15}}
+    const L=await loadPdfLib();
+    const {PDFDocument,StandardFonts,rgb}=L;
+    const base=buildAnnualPdfBlob(p,year);
+    const out=await PDFDocument.load(await base.arrayBuffer());
+    const regular=await out.embedFont(StandardFonts.Helvetica);
+    const bold=await out.embedFont(StandardFonts.HelveticaBold);
+    const docs=annualDocuments(year),A4=[595.28,841.89];
+
+    if(docs.length){
+      const cover=out.addPage(A4);
+      cover.drawText('Rechnungen und Dokumente',{x:42,y:790,size:21,font:bold,color:rgb(.08,.16,.11)});
+      cover.drawText(`Jahresabschluss ${year} - ${docs.length} Anlage${docs.length===1?'':'n'}`,{x:42,y:758,size:12,font:regular});
+      let yy=720;
+      for(let i=0;i<docs.length;i++){
+        if(yy<60)break;
+        cover.drawText(`${i+1}. ${clean(docs[i].title||docs[i].filename||kind(docs[i])).slice(0,80)}`,{x:52,y:yy,size:9,font:regular,maxWidth:490});
+        yy-=15
+      }
+    }
+
     let included=0,missing=0;
-    for(const meta of docs){const b=await getBlob(meta);if(!b){const pg=out.addPage(A4);pg.drawText('Anlage nicht verfügbar',{x:42,y:790,size:18,font:bold});pg.drawText(clean(meta.title||meta.filename||kind(meta)),{x:42,y:755,size:11,font:regular,maxWidth:510});missing++;continue}const mime=String(b.type||meta.mime||'').toLowerCase(),fn=String(meta.filename||'').toLowerCase();try{if(mime.includes('pdf')||fn.endsWith('.pdf')){const src=await PDFDocument.load(await b.arrayBuffer(),{ignoreEncryption:true}),pages=await out.copyPages(src,src.getPageIndices());pages.forEach(pg=>out.addPage(pg));included++}else if(mime.startsWith('image/')){const ib=await imageForPdf(b),bytes=await ib.arrayBuffer(),img=String(ib.type||'').includes('png')?await out.embedPng(bytes):await out.embedJpg(bytes),pg=out.addPage(A4);pg.drawText(clean(meta.title||meta.filename||kind(meta)).slice(0,90),{x:42,y:808,size:11,font:bold,maxWidth:510});pg.drawText(`${clean(kind(meta))} - ${clean(F(meta.date))}`,{x:42,y:790,size:8,font:regular});const maxW=511,maxH=725,scale=Math.min(maxW/img.width,maxH/img.height),w=img.width*scale,h=img.height*scale;pg.drawImage(img,{x:(A4[0]-w)/2,y:45+(maxH-h)/2,width:w,height:h});included++}else{missing++}}catch(e){console.warn('Anlage',e);missing++}}
+    for(const meta of docs){
+      const b=await getBlob(meta);
+      if(!b){
+        const pg=out.addPage(A4);
+        pg.drawText('Anlage nicht verfügbar',{x:42,y:790,size:18,font:bold});
+        pg.drawText(clean(meta.title||meta.filename||kind(meta)),{x:42,y:755,size:11,font:regular,maxWidth:510});
+        missing++;
+        continue
+      }
+      const mime=String(b.type||meta.mime||'').toLowerCase();
+      const fn=String(meta.filename||'').toLowerCase();
+      try{
+        if(mime.includes('pdf')||fn.endsWith('.pdf')){
+          const src=await PDFDocument.load(await b.arrayBuffer(),{ignoreEncryption:true});
+          const pages=await out.copyPages(src,src.getPageIndices());
+          pages.forEach(pg=>out.addPage(pg));
+          included++
+        }else if(mime.startsWith('image/')){
+          const ib=await imageForPdf(b),bytes=await ib.arrayBuffer();
+          const img=String(ib.type||'').includes('png')?await out.embedPng(bytes):await out.embedJpg(bytes);
+          const pg=out.addPage(A4);
+          pg.drawText(clean(meta.title||meta.filename||kind(meta)).slice(0,90),{x:42,y:808,size:11,font:bold,maxWidth:510});
+          pg.drawText(`${clean(kind(meta))} - ${clean(F(meta.date))}`,{x:42,y:790,size:8,font:regular});
+          const maxW=511,maxH=725,scale=Math.min(maxW/img.width,maxH/img.height),w=img.width*scale,h=img.height*scale;
+          pg.drawImage(img,{x:(A4[0]-w)/2,y:45+(maxH-h)/2,width:w,height:h});
+          included++
+        }else{
+          missing++
+        }
+      }catch(e){
+        console.warn('Anlage',e);missing++
+      }
+    }
     return {blob:new Blob([await out.save()],{type:'application/pdf'}),included,missing,total:docs.length};
   }
+
   async function deliverPdf(blob,name,title){
-    if(typeof File!=='undefined'&&navigator.share){const f=new File([blob],name,{type:'application/pdf'}),can=!navigator.canShare||navigator.canShare({files:[f]});if(can){try{await navigator.share({title,files:[f]});return}catch(e){if(e?.name==='AbortError')return}}}
-    const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000);
+    if(typeof File!=='undefined'&&navigator.share){
+      const f=new File([blob],name,{type:'application/pdf'});
+      const can=!navigator.canShare||navigator.canShare({files:[f]});
+      if(can){
+        try{await navigator.share({title,files:[f]});return}
+        catch(e){if(e?.name==='AbortError')return}
+      }
+    }
+    const u=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=u;a.download=name;a.rel='noopener';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),60000);
   }
+
+  async function printPdfBlob(blob,name,year){
+    // Auf iPhone/iPad ist das native Teilen-Menü der zuverlässigste Weg zum System-Druck.
+    if(typeof File!=='undefined'&&navigator.share){
+      const f=new File([blob],name,{type:'application/pdf'});
+      const can=!navigator.canShare||navigator.canShare({files:[f]});
+      if(can){
+        try{
+          try{toast('Im Teilen-Menü bitte „Drucken“ wählen')}catch{}
+          await navigator.share({title:`CampManager Jahresabschluss ${year} – Drucken`,files:[f]});
+          return
+        }catch(e){
+          if(e?.name==='AbortError')return;
+          console.warn('Druck teilen',e)
+        }
+      }
+    }
+
+    // Desktop/Browser-Fallback: PDF in eigenem Fenster öffnen und Druckdialog versuchen.
+    const u=URL.createObjectURL(blob);
+    const w=window.open(u,'_blank');
+    if(w){
+      setTimeout(()=>{try{w.focus();w.print()}catch{}},1400);
+      setTimeout(()=>URL.revokeObjectURL(u),120000);
+      return
+    }
+
+    // Letzter Fallback: Datei bereitstellen.
+    await deliverPdf(blob,name,`CampManager Jahresabschluss ${year} – Drucken`);
+  }
+
   async function saveWithDocs(){
-    const p=P(),y=typeof closingYear!=='undefined'?closingYear:Y(); if(!p)return;
-    const docs=annualDocuments(y); if(!docs.length){try{toast('Keine Dokumente gefunden – normale PDF wird erstellt')}catch{};return saveAnnualPdf()}
-    try{try{toast(`PDF mit ${docs.length} Anlage${docs.length===1?'':'n'} wird erstellt …`)}catch{};const r=await buildWithDocs(p,y),base=(typeof annualPdfFilename==='function'?annualPdfFilename(p,y):`CampManager-Jahresabschluss-${y}.pdf`).replace(/\.pdf$/i,''),name=base+'-mit-Rechnungen-und-Dokumenten.pdf';await deliverPdf(r.blob,name,`CampManager Jahresabschluss ${y} mit Anlagen`);try{toast(r.missing?`PDF erstellt: ${r.included} eingebunden, ${r.missing} nicht verfügbar`:`PDF mit ${r.included} Anlagen erstellt`)}catch{}}catch(err){console.error(err);if(confirm('Dokumente konnten nicht eingebunden werden. Jahresabschluss ohne Anlagen speichern?'))saveAnnualPdf()}
+    const p=P(),y=exportYear(); if(!p)return;
+    const docs=annualDocuments(y);
+    if(!docs.length){
+      try{toast('Keine Dokumente gefunden – normale PDF wird erstellt')}catch{}
+      return callOriginalSave()
+    }
+    try{
+      try{toast(`PDF mit ${docs.length} Anlage${docs.length===1?'':'n'} wird erstellt …`)}catch{}
+      const r=await buildWithDocs(p,y);
+      const base=(typeof annualPdfFilename==='function'?annualPdfFilename(p,y):`CampManager-Jahresabschluss-${y}.pdf`).replace(/\.pdf$/i,'');
+      const name=base+'-mit-Rechnungen-und-Dokumenten.pdf';
+      await deliverPdf(r.blob,name,`CampManager Jahresabschluss ${y} mit Anlagen`);
+      try{toast(r.missing?`PDF erstellt: ${r.included} eingebunden, ${r.missing} nicht verfügbar`:`PDF mit ${r.included} Anlagen erstellt`)}catch{}
+    }catch(err){
+      console.error(err);
+      if(confirm('Dokumente konnten nicht eingebunden werden. Jahresabschluss ohne Anlagen speichern?'))callOriginalSave()
+    }
+  }
+
+  async function printWithDocs(){
+    const p=P(),y=exportYear(); if(!p)return;
+    const docs=annualDocuments(y);
+    if(!docs.length){
+      try{toast('Keine Dokumente gefunden – normaler Druck wird geöffnet')}catch{}
+      return callOriginalPrint()
+    }
+    try{
+      try{toast(`Druckdatei mit ${docs.length} Anlage${docs.length===1?'':'n'} wird erstellt …`)}catch{}
+      const r=await buildWithDocs(p,y);
+      const base=(typeof annualPdfFilename==='function'?annualPdfFilename(p,y):`CampManager-Jahresabschluss-${y}.pdf`).replace(/\.pdf$/i,'');
+      const name=base+'-mit-Rechnungen-und-Dokumenten-Druck.pdf';
+      await printPdfBlob(r.blob,name,y);
+      try{if(r.missing)toast(`${r.included} Anlagen eingebunden, ${r.missing} nicht verfügbar`)}catch{}
+    }catch(err){
+      console.error(err);
+      if(confirm('Dokumente konnten nicht für den Druck eingebunden werden. Normalen Jahresabschluss drucken?'))callOriginalPrint()
+    }
+  }
+
+  function runExportChoice(answer){
+    const action=pendingExportAction;
+    pendingExportChoice=false;
+    pendingExportAction='';
+    try{closeModal()}catch{}
+    if(answer==='cancel')return;
+    if(action==='print'){
+      if(answer==='yes')printWithDocs(); else callOriginalPrint()
+    }else{
+      if(answer==='yes')saveWithDocs(); else callOriginalSave()
+    }
+  }
+
+  // Zusätzliche direkte Verdrahtung der beiden Jahresabschluss-Schaltflächen.
+  // Das ist absichtlich redundant zum globalen Click-Handler und verhindert,
+  // dass ein anderer Handler die Rückfrage umgeht.
+  function wireExportButtons(){
+    const save=document.querySelector('#reportSaveBtn');
+    const print=document.querySelector('#reportPrintBtn');
+    if(save&&!save.dataset.cmExportWired){
+      save.dataset.cmExportWired='1';
+      save.addEventListener('click',e=>{
+        if(bypassExportPrompt)return;
+        e.preventDefault();e.stopImmediatePropagation();askExportChoice('pdf')
+      },true)
+    }
+    if(print&&!print.dataset.cmExportWired){
+      print.dataset.cmExportWired='1';
+      print.addEventListener('click',e=>{
+        if(bypassExportPrompt)return;
+        e.preventDefault();e.stopImmediatePropagation();askExportChoice('print')
+      },true)
+    }
   }
 
   // Render-Wrapper statt nur MutationObserver: Belegbereich kommt zuverlässig nach jedem Kosten-Neuaufbau.
@@ -225,12 +464,23 @@
     const ed=e.target.closest('[data-costreceipt-edit]');if(ed){e.preventDefault();editReceipt(ed.dataset.costreceiptEdit);return}
     const del=e.target.closest('[data-costreceipt-del]');if(del){e.preventDefault();deleteReceipt(del.dataset.costreceiptDel);return}
 
-    // Wichtig: #pdfBtn wird NICHT abgefangen. So öffnet der Jahresabschluss immer original.
-    const close=e.target.closest('[data-close]');if(close&&pendingPdfChoice)pendingPdfChoice=false;
+    // #pdfBtn (Jahresabschluss öffnen) bleibt unangetastet.
+    const close=e.target.closest('[data-close]');
+    if(close&&pendingExportChoice){pendingExportChoice=false;pendingExportAction=''}
     const saveBtn=e.target.closest('#reportSaveBtn');
-    if(saveBtn&&!pendingPdfChoice){e.preventDefault();e.stopImmediatePropagation();askPdfChoice();return}
-    const choice=e.target.closest('[data-cm-pdfchoice]');
-    if(choice){e.preventDefault();e.stopImmediatePropagation();const yes=choice.dataset.cmPdfchoice==='yes';pendingPdfChoice=false;try{closeModal()}catch{};if(yes)saveWithDocs();else saveAnnualPdf();return}
+    if(saveBtn&&!bypassExportPrompt){
+      e.preventDefault();e.stopImmediatePropagation();askExportChoice('pdf');return
+    }
+    const printBtn=e.target.closest('#reportPrintBtn');
+    if(printBtn&&!bypassExportPrompt){
+      e.preventDefault();e.stopImmediatePropagation();askExportChoice('print');return
+    }
+    const choice=e.target.closest('[data-cm-exportchoice]');
+    if(choice){
+      e.preventDefault();e.stopImmediatePropagation();
+      runExportChoice(choice.dataset.cmExportchoice||'cancel');
+      return
+    }
   },true);
 
   document.addEventListener('submit',e=>{
@@ -240,10 +490,16 @@
     try{closeModal()}catch{};if(typeof save==='function')save();else if(typeof persist==='function')persist();if(typeof renderCosts==='function')renderCosts();try{toast('Rechnung aktualisiert')}catch{}
   },true);
 
+  // Exportbuttons sofort und nach jedem Öffnen des Jahresabschlusses neu verdrahten.
+  wireExportButtons();
+  const reportOverlay=document.querySelector('#reportOverlay');
+  if(reportOverlay)new MutationObserver(()=>wireExportButtons()).observe(reportOverlay,{childList:true,subtree:true,attributes:true});
+  document.addEventListener('click',e=>{if(e.target.closest('#pdfBtn'))setTimeout(wireExportButtons,0)},true);
+
   // Dokumentkategorie im normalen Dokumentbereich ergänzen.
   try{if(Array.isArray(DOCCAT)&&!DOCCAT.some(x=>x?.[0]==='cost_receipt'))DOCCAT.splice(1,0,['cost_receipt','Rechnung / Beleg'])}catch{}
 
   // Sichtbare Add-on-Version. APP_VERSION/Datenschlüssel bleiben unberührt, damit bestehende Daten sicher bleiben.
-  const badge=document.querySelector('.ver');if(badge)badge.textContent='v63';document.title='CampManager v63';
+  const badge=document.querySelector('.ver');if(badge)badge.textContent='v64';document.title='CampManager v64';
   setTimeout(injectReceiptUI,0);
 })();
